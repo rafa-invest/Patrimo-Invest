@@ -679,14 +679,19 @@ async function loadIbovChart(period){
       var chgPct=res.regularMarketChangePercent||0;
       var up=chgPct>=0;
       document.getElementById('ibov-price').textContent=price?Math.round(price).toLocaleString('pt-BR'):' — ';
-      document.getElementById('ibov-pct').textContent=pct(chgPct);
-      document.getElementById('ibov-pct').className=up?'up':'down';
-      document.getElementById('ibov-chg').className='chip '+(up?'badge-up':'badge-dn');
-      document.getElementById('ibov-chg').textContent=(up?'+':'')+chgPct.toFixed(2)+'%';
       var hist=res.historicalDataPrice||[];
+      // Period variation
+      var pChgPct=chgPct, pChgAbs=res.regularMarketChange||0;
       if(hist.length>1){
-        drawChart('ibov-svg',hist,null,['ibov-d1','ibov-d2']);
+        var fc=hist[0].close||price, lc=hist[hist.length-1].close||price;
+        pChgAbs=lc-fc; pChgPct=fc>0?((lc-fc)/fc*100):chgPct;
       }
+      var pup=pChgPct>=0;
+      document.getElementById('ibov-pct').textContent=(pup?'+':'')+pChgAbs.toFixed(0)+' ('+pChgPct.toFixed(2)+'%)';
+      document.getElementById('ibov-pct').className=pup?'up':'down';
+      document.getElementById('ibov-chg').className='chip '+(pup?'badge-up':'badge-dn');
+      document.getElementById('ibov-chg').textContent=(pup?'+':'')+pChgPct.toFixed(2)+'%';
+      if(hist.length>1) drawChart('ibov-svg',hist,null,['ibov-d1','ibov-d2']);
     }
   }catch(e){ 
     console.log('ibov err',e); 
@@ -726,7 +731,7 @@ async function loadStkChart(ticker,period,btn){
     document.querySelectorAll('#sc-periods .ptab').forEach(function(b){ b.classList.remove('on'); });
     btn.classList.add('on');
   }
-  var intv='1d';
+  var intMap={'1mo':'1d','3mo':'1d','6mo':'1d','1y':'1wk','ytd':'1d','5d':'1d','1d':'1d','2y':'1wk','5y':'1mo'};
   var intv=intMap[period]||'1d';
   document.getElementById('sc-svg').innerHTML='<text x="50%" y="50%" fill="#4A5568" text-anchor="middle" font-size="12">Carregando...</text>';
   try{
@@ -739,12 +744,24 @@ async function loadStkChart(ticker,period,btn){
       var up=chgPct>=0;
       D.prices[tk]=price; save();
       document.getElementById('sc-title').textContent=(res.shortName||tk);
-      document.getElementById('sc-info').innerHTML=
-        '<div style="display:flex;align-items:center;gap:12px">'
-        +'<span style="font-size:22px;font-weight:700">'+brl(price)+'</span>'
-        +'<span style="font-size:14px;font-weight:600;color:'+(up?'#22C55E':'#EF4444')+'">'+pct(chgPct)+' hoje</span>'
-        +'</div>';
       var hist=res.historicalDataPrice||[];
+      // Calc period variation from first to last historical price
+      var periodChg=0, periodChgPct=0;
+      if(hist.length>1){
+        var firstClose=hist[0].close||hist[0].price||price;
+        var lastClose=hist[hist.length-1].close||hist[hist.length-1].price||price;
+        periodChg=lastClose-firstClose;
+        periodChgPct=firstClose>0?(periodChg/firstClose*100):chgPct;
+      } else { periodChgPct=chgPct; periodChg=res.regularMarketChange||0; }
+      var pUp=periodChgPct>=0;
+      var periodLabel={'1mo':'1 mês','3mo':'3 meses','6mo':'6 meses','1y':'1 ano','ytd':'no ano','5d':'5 dias','1d':'hoje'};
+      document.getElementById('sc-info').innerHTML=
+        '<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">'
+        +'<span style="font-size:22px;font-weight:700">'+brl(price)+'</span>'
+        +'<div>'
+        +'<div style="font-size:14px;font-weight:600;color:'+(pUp?'#22C55E':'#EF4444')+'">'+(pUp?'+':'')+periodChg.toFixed(2)+' ('+periodChgPct.toFixed(2)+'%)</div>'
+        +'<div style="font-size:10px;color:#64748B">variacao em '+(periodLabel[period||'1mo']||period||'periodo')+'</div>'
+        +'</div></div>';
       if(hist.length>1) drawChart('sc-svg',hist,null,['sc-d1','sc-d2']);
       // Stats
       document.getElementById('sc-stats').innerHTML=[
@@ -985,6 +1002,22 @@ function rmMov(fiId,movId){
 // CALENDAR
 // ══════════════════════════════════════════════════════
 var calY=new Date().getFullYear(), calM=new Date().getMonth();
+function calDayClick(day){
+  var dateStr=calY+'-'+String(calM+1).padStart(2,'0')+'-'+String(day).padStart(2,'0');
+  // Check if events exist on this day
+  var existing=D.events.filter(function(ev){ return ev.date===dateStr; });
+  // Pre-fill the add event modal with this date
+  openM('m-add-ev');
+  var dtEl=document.getElementById('ev-dt');
+  if(dtEl) dtEl.value=dateStr;
+  // Show existing events for this day in a summary
+  if(existing.length>0){
+    var typeLabel={div:'Dividendo',buy:'Compra',dc:'Data-com',other:'Outro'};
+    var msg='Eventos em '+new Date(dateStr+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})+':\n';
+    existing.forEach(function(ev){ msg+='- '+(typeLabel[ev.type]||ev.type)+' '+(ev.ticker||'')+' '+(ev.value?brl(ev.value):'')+'\n'; });
+    toast(existing.length+' evento(s) ja cadastrado(s) neste dia');
+  }
+}
 function prevMo(){ calM--; if(calM<0){calM=11;calY--;} renderCal(); }
 function nextMo(){ calM++; if(calM>11){calM=0;calY++;} renderCal(); }
 
@@ -1012,7 +1045,7 @@ function renderCal(){
     else if(evs.some(function(e){ return e.type==='div'; })) cls='ev-div';
     else if(evs.some(function(e){ return e.type==='buy'; })) cls='ev-buy';
     else if(evs.some(function(e){ return e.type==='dc'; })) cls='ev-dc';
-    cells+='<div class="cday '+cls+'">'+d+(evs.length&&!isToday?'<span class="cedot"></span>':'')+'</div>';
+    cells+='<div class="cday '+cls+'" onclick="calDayClick('+d+')" style="cursor:pointer">'+d+(evs.length&&!isToday?'<span class="cedot"></span>':'')+'</div>';
   }
   document.getElementById('cal-grid').innerHTML=cells;
 
@@ -1169,6 +1202,136 @@ function impData(e){
 }
 function resetAll(){ if(confirm('Apagar TODOS os dados? Nao pode ser desfeito.')){ localStorage.removeItem(SK); location.reload(); } }
 
+
+// ══════════════════════════════════════════════════════
+// RF SIMULATOR COM TABELA REGRESSIVA IR
+// ══════════════════════════════════════════════════════
+function calcRF(){
+  var cap=+document.getElementById('rf-cap').value||0;
+  var taxaAA=+document.getElementById('rf-taxa').value||0;
+  var meses=+document.getElementById('rf-meses').value||1;
+  var apm=+document.getElementById('rf-apm').value||0;
+  var idx=document.getElementById('rf-idx').value;
+  var isento=document.getElementById('rf-isento').value==='1';
+
+  // Adjust rate by indexer
+  var rateAA=taxaAA/100;
+  if(idx==='cdi') rateAA=CDI*taxaAA/100;
+  if(idx==='selic') rateAA=SELIC*taxaAA/100;
+
+  var rateM=Math.pow(1+rateAA,1/12)-1;
+
+  // Tabela regressiva IR (CDB/RDB/LC)
+  // 0-180 dias: 22.5% | 181-360: 20% | 361-720: 17.5% | 721+: 15%
+  function irAliquota(dias){
+    if(dias<=180) return 0.225;
+    if(dias<=360) return 0.20;
+    if(dias<=720) return 0.175;
+    return 0.15;
+  }
+
+  // Simulate month by month
+  var balance=cap;
+  var totalAportado=cap;
+  var rows=[];
+  var anos=[3,6,12,18,24,36,48,60];
+  var mesesFinal=meses;
+
+  for(var m=1;m<=mesesFinal;m++){
+    balance=balance*(1+rateM)+apm;
+    totalAportado+=apm;
+    if(anos.indexOf(m)>=0||m===mesesFinal){
+      var dias=m*30;
+      var rendBruto=balance-totalAportado;
+      var aliq=isento?0:irAliquota(dias);
+      var ir=rendBruto*aliq;
+      var rendLiq=rendBruto-ir;
+      var balanceLiq=totalAportado+rendLiq;
+      rows.push({m:m,balance:balance,totalAp:totalAportado,rendBruto:rendBruto,ir:ir,rendLiq:rendLiq,balanceLiq:balanceLiq,aliq:aliq});
+    }
+  }
+
+  var last=rows[rows.length-1];
+  if(!last){ document.getElementById('rf-result').innerHTML=''; return; }
+
+  var html='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">'
+    +'<div style="background:var(--bg4);border-radius:8px;padding:10px"><div style="font-size:9px;color:var(--tx3)">Saldo bruto final</div><div style="font-size:16px;font-weight:700;color:#A855F7">'+brl(last.balance)+'</div></div>'
+    +'<div style="background:var(--bg4);border-radius:8px;padding:10px"><div style="font-size:9px;color:var(--tx3)">Saldo liq. (apos IR)</div><div style="font-size:16px;font-weight:700;color:#22C55E">'+brl(last.balanceLiq)+'</div></div>'
+    +'<div style="background:var(--bg4);border-radius:8px;padding:10px"><div style="font-size:9px;color:var(--tx3)">Rendimento bruto</div><div style="font-size:14px;font-weight:600;color:#F8FAFC">'+brl(last.rendBruto)+'</div></div>'
+    +'<div style="background:var(--bg4);border-radius:8px;padding:10px"><div style="font-size:9px;color:var(--tx3)">IR pago ('+isento?'0% isento':(last.aliq*100).toFixed(1)+'%)'+'</div><div style="font-size:14px;font-weight:600;color:#EF4444">'+brl(last.ir)+'</div></div>'
+    +'</div>';
+
+  // Table by milestone
+  html+='<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:11px">'
+    +'<thead><tr style="border-bottom:1px solid var(--bd)">'
+    +'<th style="padding:5px 4px;text-align:left;color:var(--tx3)">Prazo</th>'
+    +'<th style="padding:5px 4px;text-align:right;color:var(--tx3)">Saldo Bruto</th>'
+    +'<th style="padding:5px 4px;text-align:right;color:var(--tx3)">IR</th>'
+    +'<th style="padding:5px 4px;text-align:right;color:var(--tx3)">Saldo Liq.</th>'
+    +'<th style="padding:5px 4px;text-align:right;color:var(--tx3)">Aliq.</th>'
+    +'</tr></thead><tbody>';
+
+  rows.forEach(function(r){
+    var mLabel=r.m<12?r.m+'m':Math.round(r.m/12)+'a';
+    html+='<tr style="border-bottom:1px solid var(--bg3)">'
+      +'<td style="padding:5px 4px;color:var(--tx2)">'+mLabel+'</td>'
+      +'<td style="padding:5px 4px;text-align:right">'+K(r.balance)+'</td>'
+      +'<td style="padding:5px 4px;text-align:right;color:#EF4444">'+brl(r.ir)+'</td>'
+      +'<td style="padding:5px 4px;text-align:right;font-weight:600;color:#22C55E">'+K(r.balanceLiq)+'</td>'
+      +'<td style="padding:5px 4px;text-align:right;color:var(--tx3)">'+(isento?'0%':(r.aliq*100).toFixed(1)+'%')+'</td>'
+      +'</tr>';
+  });
+  html+='</tbody></table></div>';
+
+  // IR info box
+  html+='<div style="margin-top:10px;background:var(--bg4);border-radius:8px;padding:10px;font-size:11px;color:var(--tx3);line-height:1.7">'
+    +'<b style="color:var(--tx)">Tabela Regressiva IR (CDB/RDB/LC):</b><br>'
+    +'Ate 180 dias: 22,5% | 181-360 dias: 20% | 361-720 dias: 17,5% | Acima de 720 dias: 15%<br>'
+    +(isento?'<b style="color:#22C55E">LCI/LCA/Poupanca: Isentos de IR para pessoa fisica.</b>':'')
+    +'</div>';
+
+  document.getElementById('rf-result').innerHTML=html;
+  renderFcDivs();
+}
+
+// ══════════════════════════════════════════════════════
+// DIVIDENDOS FORECAST POR ACAO
+// ══════════════════════════════════════════════════════
+function renderFcDivs(){
+  var el=document.getElementById('fc-divs-list');
+  if(!el) return;
+  if(!D.stocks.length){ el.innerHTML='<div style="text-align:center;padding:16px;color:var(--tx3);font-size:13px">Cadastre acoes na carteira</div>'; return; }
+  var meses=+document.getElementById('rf-meses').value||24;
+  var html='';
+  var totalAnual=0;
+  D.stocks.forEach(function(s){
+    var price=D.prices[s.ticker]||s.pm;
+    var pos=price*s.qty;
+    var divAnual=pos*(s.dy||0)/100;
+    var divMes=divAnual/12;
+    totalAnual+=divAnual;
+    // project over period
+    var totalDivPeriod=divMes*meses;
+    // frequency label
+    var freqMeses={'Mensal':1,'Trimestral':3,'Semestral':6,'Anual':12};
+    var payments=Math.floor(meses/1); // approximate monthly
+    html+='<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--bg3)">'
+      +'<div>'
+      +'<div style="font-size:13px;font-weight:600;color:var(--tx)">'+s.ticker+' <span style="font-size:10px;color:var(--tx3)">'+s.qty+' cotas @ '+brl(price)+'</span></div>'
+      +'<div style="font-size:10px;color:var(--tx3);margin-top:2px">DY '+s.dy+'% &middot; posicao: '+brl(pos)+'</div>'
+      +'</div>'
+      +'<div style="text-align:right">'
+      +'<div style="font-size:13px;font-weight:700;color:#22C55E">'+brl(divMes)+'/mes</div>'
+      +'<div style="font-size:10px;color:var(--tx3)">em '+meses+'m: ~'+brl(totalDivPeriod)+'</div>'
+      +'</div></div>';
+  });
+  html+='<div style="border-top:1px solid var(--bd);padding-top:10px;margin-top:6px;display:flex;justify-content:space-between">'
+    +'<span style="font-size:12px;font-weight:600;color:var(--tx2)">Total estimado em '+meses+' meses</span>'
+    +'<div style="text-align:right"><div style="font-size:15px;font-weight:700;color:#22C55E">'+brl(totalAnual/12)+'/mes</div>'
+    +'<div style="font-size:11px;color:var(--tx3)">'+brl(totalAnual*meses/12)+' no periodo</div></div></div>';
+  el.innerHTML=html;
+}
+
 // ══════════════════════════════════════════════════════
 // PWA MANIFEST
 // ══════════════════════════════════════════════════════
@@ -1187,6 +1350,7 @@ document.addEventListener('DOMContentLoaded',function(){
   D.token='xo3upEvNqVsNQYdM7idyky';
   save();
   loadMarket();
+  setTimeout(calcRF,500);
   renderPort();
   renderCal();
   calcFc();
