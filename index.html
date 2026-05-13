@@ -367,8 +367,17 @@ body{font-family:-apple-system,system-ui,sans-serif;background:var(--bg);color:v
 // STORE
 // ══════════════════════════════════════════════════════
 var SK = 'rafa_v4';
+var HARDCODED_TOKEN = 'xo3upEvNqVsNQYdM7idyky';
 var D = (function(){
-  try{ var r=localStorage.getItem(SK); if(r) return JSON.parse(r); }catch(e){}
+  try{ 
+    var r=localStorage.getItem(SK); 
+    if(r){ 
+      var parsed=JSON.parse(r); 
+      // Always ensure token is set - overwrite if empty
+      if(!parsed.token) parsed.token=HARDCODED_TOKEN;
+      return parsed; 
+    } 
+  }catch(e){}
   return {
     banks:[
       {id:'inter',name:'Banco Inter',color:'#F97316',type:'broker'},
@@ -454,7 +463,7 @@ var TOP30=['PETR4','VALE3','ITUB4','BBDC4','ABEV3','WEGE3','RENT3','BBAS3','SUZB
 
 function apiURL(path){
   var base='https://brapi.dev/api';
-  var tok=D.token||'';
+  var tok=D.token||HARDCODED_TOKEN||'';
   var sep=path.indexOf('?')>=0?'&':'?';
   return base+path+(tok?sep+'token='+tok:'');
 }
@@ -1055,7 +1064,7 @@ function calcFc(){
 // CONFIG
 // ══════════════════════════════════════════════════════
 function renderCfg(){
-  var tok=document.getElementById('cfg-token'); if(tok) tok.value=D.token||'';
+  var tok=document.getElementById('cfg-token'); if(tok) tok.value=D.token||HARDCODED_TOKEN||'';
   var tp=document.getElementById('token-preview'); if(tp) tp.textContent=D.token?(D.token.slice(0,8)+'...'):'(sem token)';
   document.getElementById('banks-list').innerHTML=D.banks.map(function(b){
     return '<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--bg3)">'
@@ -1069,7 +1078,7 @@ function renderCfg(){
   // Update every minute
   setTimeout(function(){ var cd2=document.getElementById('cfg-date'); if(cd2) cd2.textContent=new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'})+' — '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}); },60000);
 }
-function saveToken(){ D.token=document.getElementById('cfg-token').value.trim(); save(); renderCfg(); toast('Token salvo!'); }
+function saveToken(){ var t=document.getElementById('cfg-token').value.trim(); D.token=t||HARDCODED_TOKEN; save(); renderCfg(); toast('Token salvo!'); }
 function addBk(){
   var b={id:uid(),name:document.getElementById('bk-nm').value,color:document.getElementById('bk-cl').value,type:document.getElementById('bk-tp').value};
   if(!b.name) return;
