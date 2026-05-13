@@ -612,7 +612,7 @@ async function loadIbovChart(period){
   var intMap={'1d':'5m','5d':'15m','1mo':'1d','3mo':'1d','1y':'1wk'};
   var intv=intMap[ibovPeriod]||'1d';
   try{
-    var r=await fetch(apiURL('/quote/%5EBVSP?range='+ibovPeriod+'&interval='+intv+'&history=true'));
+    var r=await fetch(apiURL('/quote/%5EBVSP?range='+ibovPeriod+'&interval='+intv+''));
     var j=await r.json();
     if(j.results&&j.results[0]){
       var res=j.results[0];
@@ -671,7 +671,7 @@ async function loadStkChart(ticker,period,btn){
   var intv=intMap[period]||'1d';
   document.getElementById('sc-svg').innerHTML='<text x="50%" y="50%" fill="#4A5568" text-anchor="middle" font-size="12">Carregando...</text>';
   try{
-    var r=await fetch(apiURL('/quote/'+tk+'?range='+period+'&interval='+intv+'&history=true'));
+    var r=await fetch(apiURL('/quote/'+tk+'?range='+period+'&interval='+intv+''));
     var j=await r.json();
     if(j.results&&j.results[0]){
       var res=j.results[0];
