@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#080B12">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="InvestRafa">
+<title>InvestRafa</title>
+<link rel="manifest" href="#" id="mflink">
+<style>
+:root{--bg:#080B12;--bg2:#0C1018;--bg3:#0F1320;--bg4:#1A1F2E;--bd:#1E2535;--bd2:#2A3245;--tx:#F8FAFC;--tx2:#94A3B8;--tx3:#4A5568;--blue:#3B82F6;--green:#22C55E;--red:#EF4444;--yel:#F59E0B;--pur:#A855F7;--ora:#F97316;--r:12px;--sb:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,system-ui,sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;overflow-x:hidden}
+#nav{position:fixed;bottom:0;left:0;right:0;background:rgba(12,16,24,.96);backdrop-filter:blur(20px);border-top:1px solid var(--bd);display:flex;z-index:100;padding-bottom:var(--sb)}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 0 8px;border:none;background:none;color:var(--tx3);cursor:pointer;font-size:10px;font-weight:500;transition:color .2s}
+.nb.active{color:var(--blue)}
+.nb svg{width:22px;height:22px}
+.page{display:none;padding:16px 16px 90px;max-width:620px;margin:0 auto}
+.page.active{display:block}
+.phdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;padding-top:8px}
+.ptitle{font-size:22px;font-weight:700;letter-spacing:-.03em}
+.psub{font-size:12px;color:var(--tx3);margin-top:2px}
+.card{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);padding:16px;margin-bottom:12px}
+.ctitle{font-size:11px;font-weight:600;color:var(--tx3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px}
+.kgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.kpi{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);padding:14px;position:relative;overflow:hidden}
+.kl{font-size:10px;color:var(--tx3);font-weight:500;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.kv{font-size:20px;font-weight:700}
+.ks{font-size:10px;color:var(--tx2);margin-top:3px}
+.trow{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--bg3)}
+.trow:last-child{border:none}
+.tbadge{width:38px;height:38px;border-radius:10px;background:var(--bg4);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--tx2);flex-shrink:0}
+.tinfo{flex:1;min-width:0}
+.tname{font-size:13px;font-weight:600}
+.tsub{font-size:10px;color:var(--tx3);margin-top:1px}
+.tprice{text-align:right;flex-shrink:0}
+.tval{font-size:14px;font-weight:700}
+.tchg{font-size:11px;font-weight:600;margin-top:1px}
+.up{color:var(--green)}.down{color:var(--red)}
+.swrap{position:relative;margin-bottom:14px}
+.sinput{width:100%;background:var(--bg2);border:1px solid var(--bd2);border-radius:12px;padding:12px 16px 12px 42px;color:var(--tx);font-size:14px;outline:none;-webkit-appearance:none}
+.sinput::placeholder{color:var(--tx3)}
+.sicon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--tx3);pointer-events:none}
+.chip{display:inline-block;font-size:10px;padding:3px 9px;border-radius:20px;font-weight:600}
+.tag{display:inline-block;font-size:9px;padding:2px 7px;border-radius:20px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.moverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);backdrop-filter:blur(4px);z-index:200;align-items:flex-end;justify-content:center}
+.moverlay.open{display:flex}
+.modal{background:var(--bg2);border-radius:20px 20px 0 0;border-top:1px solid var(--bd);padding:20px 20px calc(20px + var(--sb));width:100%;max-height:92vh;overflow-y:auto}
+.mhdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.mtitle{font-size:16px;font-weight:700}
+.mclose{background:var(--bg4);border:none;color:var(--tx2);width:30px;height:30px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:20px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:11px;color:var(--tx3);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.field input,.field select,.field textarea{width:100%;background:var(--bg3);border:1px solid var(--bd2);border-radius:10px;padding:12px 14px;color:var(--tx);font-size:14px;outline:none;-webkit-appearance:none;font-family:inherit}
+.fr2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fr3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.btn{width:100%;padding:14px;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit}
+.btn-blue{background:var(--blue);color:#fff}
+.btn-green{background:var(--green);color:#fff}
+.btn-red{background:var(--red);color:#fff}
+.btn-ghost{background:var(--bg4);color:var(--tx2)}
+.btn-sm{padding:8px 14px;font-size:12px;width:auto;border-radius:8px}
+.btn-pur{background:var(--pur);color:#fff}
+.shdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.badge-up{background:rgba(34,197,94,.15);color:var(--green)}
+.badge-dn{background:rgba(239,68,68,.15);color:var(--red)}
+.badge-n{background:var(--bg4);color:var(--tx2)}
+#toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-80px);background:var(--bg2);border:1px solid var(--bd2);border-radius:12px;padding:12px 20px;font-size:13px;font-weight:600;z-index:999;transition:transform .35s cubic-bezier(.34,1.56,.64,1);white-space:nowrap}
+#toast.show{transform:translateX(-50%) translateY(0)}
+.ldot{width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;animation:pulse 2s infinite;margin-right:4px}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.3)}}
+.cgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:8px}
+.cdh{text-align:center;font-size:9px;color:var(--tx3);font-weight:600;padding:4px 0}
+.cday{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:6px;font-size:11px;position:relative}
+.cday.empty{background:transparent}
+.cday.normal{background:var(--bg3);color:var(--tx2)}
+.cday.today{background:var(--blue);color:#fff;font-weight:700}
+.cday.ev-div{background:rgba(34,197,94,.2);color:var(--green);font-weight:600}
+.cday.ev-buy{background:rgba(59,130,246,.2);color:var(--blue);font-weight:600}
+.cday.ev-dc{background:rgba(239,68,68,.15);color:var(--red);font-weight:600}
+.cedot{width:4px;height:4px;border-radius:50%;background:currentColor;position:absolute;bottom:2px}
+.prow{display:flex;gap:10px;padding:12px 0;border-bottom:1px solid var(--bg3);align-items:flex-start}
+.prow:last-child{border:none}
+.pdot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+::-webkit-scrollbar{display:none}
+.spin{display:inline-block;width:16px;height:16px;border:2px solid var(--bd2);border-top-color:var(--blue);border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ptk{background:var(--bg4);border-radius:3px;height:6px;overflow:hidden;margin-top:6px}
+.pfill{height:100%;border-radius:3px;transition:width .5s}
+/* CHART */
+.chart-wrap{position:relative;width:100%;height:160px;margin:8px 0}
+.chart-svg{width:100%;height:100%;overflow:visible}
+.period-tabs{display:flex;gap:4px;margin-bottom:10px}
+.ptab{padding:5px 10px;border-radius:8px;border:none;background:var(--bg4);color:var(--tx3);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit}
+.ptab.on{background:var(--blue);color:#fff}
+/* STOCK DETAIL MODAL */
+.sdchart{width:100%;height:140px;margin:12px 0}
+/* RF MOVIMENTOS */
+.mov-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--bg3);font-size:12px}
+.mov-row:last-child{border:none}
+</style>
+</head>
+<body>
+<div id="toast">&#10003; Salvo</div>
+
+<!-- ══ PAGE: MERCADO ══ -->
+<div class="page active" id="page-market">
+  <div class="phdr">
+    <div>
+      <div class="ptitle">Mercado B3</div>
+      <div class="psub" id="mkt-time"><span class="ldot"></span>Carregando...</div>
+    </div>
+    <button class="btn btn-ghost btn-sm" onclick="loadMarket()">&#8635;</button>
+  </div>
+
+  <!-- IBOV Chart -->
+  <div class="card" id="ibov-card">
+    <div class="shdr">
+      <span class="ctitle" style="margin:0">IBOVESPA</span>
+      <span id="ibov-chg" class="chip badge-n">—</span>
+    </div>
+    <div id="ibov-vals" style="margin-bottom:8px">
+      <span id="ibov-price" style="font-size:22px;font-weight:700">—</span>
+      <span id="ibov-pct" style="font-size:13px;margin-left:8px;font-weight:600">—</span>
+    </div>
+    <div class="period-tabs" id="ibov-periods">
+      <button class="ptab on" onclick="setIbovPeriod('1d',this)">1D</button>
+      <button class="ptab" onclick="setIbovPeriod('5d',this)">5D</button>
+      <button class="ptab" onclick="setIbovPeriod('1mo',this)">1M</button>
+      <button class="ptab" onclick="setIbovPeriod('3mo',this)">3M</button>
+      <button class="ptab" onclick="setIbovPeriod('1y',this)">1A</button>
+    </div>
+    <div class="chart-wrap"><svg id="ibov-svg" class="chart-svg"></svg></div>
+    <div id="ibov-range" style="display:flex;justify-content:space-between;font-size:10px;color:var(--tx3)"><span id="ibov-d1"></span><span id="ibov-d2"></span></div>
+  </div>
+
+  <!-- Search -->
+  <div class="swrap">
+    <span class="sicon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></span>
+    <input type="text" class="sinput" id="srch" placeholder="Buscar ação (ex: PETR4, VALE3...)" oninput="doSearch()" autocomplete="off" autocorrect="off" spellcheck="false">
+  </div>
+  <div id="srch-res" style="display:none" class="card"></div>
+
+  <!-- Top 30 -->
+  <div class="card" style="padding:14px 16px">
+    <div class="shdr">
+      <span class="ctitle" style="margin:0">Top 30 Ações B3</span>
+      <span id="mkt-st" class="chip badge-n">—</span>
+    </div>
+    <div id="mkt-list"><div style="text-align:center;padding:30px;color:var(--tx3)"><div class="spin"></div><br><br>Carregando cotações...</div></div>
+  </div>
+</div>
+
+<!-- ══ PAGE: CARTEIRA ══ -->
+<div class="page" id="page-portfolio">
+  <div class="phdr">
+    <div><div class="ptitle">Minha Carteira</div><div class="psub" id="port-sub">—</div></div>
+    <button class="btn btn-ghost btn-sm" onclick="openM('m-add-stk')">+ Ação</button>
+  </div>
+  <div class="kgrid" id="port-kpis"></div>
+  <div class="card"><div class="ctitle">Por Banco / Corretora</div><div id="bank-list"></div></div>
+  <div class="card">
+    <div class="shdr"><span class="ctitle" style="margin:0">Posições em Ações</span><button class="btn btn-ghost btn-sm" onclick="openM('m-add-stk')">+</button></div>
+    <div id="pos-list"><div style="text-align:center;padding:20px;color:var(--tx3);font-size:13px">Nenhuma posição</div></div>
+  </div>
+  <div class="card">
+    <div class="shdr"><span class="ctitle" style="margin:0">Renda Fixa</span><button class="btn btn-ghost btn-sm" onclick="openM('m-add-fi')">+</button></div>
+    <div id="fi-list"><div style="text-align:center;padding:20px;color:var(--tx3);font-size:13px">Nenhum produto RF</div></div>
+  </div>
+</div>
+
+<!-- ══ PAGE: CALENDÁRIO ══ -->
+<div class="page" id="page-cal">
+  <div class="phdr">
+    <div><div class="ptitle">Calendário</div><div class="psub">Dividendos &amp; Compras</div></div>
+    <button class="btn btn-ghost btn-sm" onclick="openM('m-add-ev')">+ Evento</button>
+  </div>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+    <button class="btn btn-ghost btn-sm" onclick="prevMo()">&#8249;</button>
+    <span id="cal-lbl" style="font-size:15px;font-weight:700"></span>
+    <button class="btn btn-ghost btn-sm" onclick="nextMo()">&#8250;</button>
+  </div>
+  <div class="card" style="padding:14px"><div class="cgrid" id="cal-hdr"></div><div class="cgrid" id="cal-grid"></div></div>
+  <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:14px;font-size:11px;color:var(--tx2)">
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:rgba(34,197,94,.2);margin-right:4px"></span>Dividendo</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:rgba(59,130,246,.2);margin-right:4px"></span>Compra</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:rgba(239,68,68,.15);margin-right:4px"></span>Data-com</span>
+  </div>
+  <div class="card"><div class="ctitle" id="ev-mo-title">Eventos do Mês</div><div id="ev-list"></div></div>
+  <div class="card"><div class="ctitle">Previsão de Proventos (cotação atual)</div><div id="div-prev"></div></div>
+</div>
+
+<!-- ══ PAGE: FORECAST ══ -->
+<div class="page" id="page-fc">
+  <div class="phdr"><div><div class="ptitle">Forecast</div><div class="psub">Simulador de patrimônio</div></div></div>
+  <div class="card">
+    <div class="ctitle">Parâmetros</div>
+    <div class="field"><label>Aporte mensal: R$ <span id="apl">1.300</span></label>
+      <input type="range" min="100" max="10000" step="50" value="1300" oninput="document.getElementById('apl').textContent=Number(this.value).toLocaleString('pt-BR');calcFc()" id="fc-ap" style="width:100%;accent-color:var(--blue)"></div>
+    <div class="field"><label>Crescimento anual: <span id="gwl">3</span>%</label>
+      <input type="range" min="0" max="20" step=".5" value="3" oninput="document.getElementById('gwl').textContent=this.value;calcFc()" id="fc-gw" style="width:100%;accent-color:var(--pur)"></div>
+    <div class="fr2">
+      <div class="field" style="margin:0"><label>Prazo (anos)</label><input type="number" id="fc-yr" value="15" min="1" max="30" oninput="calcFc()" style="background:var(--bg3);border:1px solid var(--bd2);border-radius:10px;padding:10px;color:var(--tx);width:100%;font-size:14px;outline:none"></div>
+      <div class="field" style="margin:0"><label>Taxa RF % a.a.</label><input type="number" id="fc-rf" value="10.5" step=".25" oninput="calcFc()" style="background:var(--bg3);border:1px solid var(--bd2);border-radius:10px;padding:10px;color:var(--tx);width:100%;font-size:14px;outline:none"></div>
+    </div>
+    <div class="fr2" style="margin-top:12px">
+      <div class="field" style="margin:0"><label>DY ações % a.a.</label><input type="number" id="fc-dy" value="9.2" step=".1" oninput="calcFc()" style="background:var(--bg3);border:1px solid var(--bd2);border-radius:10px;padding:10px;color:var(--tx);width:100%;font-size:14px;outline:none"></div>
+      <div class="field" style="margin:0"><label>% em ações</label><input type="number" id="fc-ac" value="31" min="0" max="100" oninput="calcFc()" style="background:var(--bg3);border:1px solid var(--bd2);border-radius:10px;padding:10px;color:var(--tx);width:100%;font-size:14px;outline:none"></div>
+    </div>
+  </div>
+  <div class="kgrid">
+    <div class="kpi"><div class="kl">Patrimônio Final</div><div class="kv" id="fc-tot" style="color:var(--blue)">—</div></div>
+    <div class="kpi"><div class="kl">Dividendos/mês</div><div class="kv" id="fc-div" style="color:var(--green)">—</div></div>
+  </div>
+  <div class="card"><div class="ctitle">Evolução Patrimonial</div>
+    <div id="fc-bars" style="display:flex;align-items:flex-end;gap:2px;height:100px"></div>
+    <div id="fc-labs" style="display:flex;gap:2px;margin-top:4px"></div>
+  </div>
+  <div class="card"><div class="ctitle">Projeção por Marcos</div>
+    <table style="width:100%;border-collapse:collapse;font-size:12px">
+      <thead><tr style="border-bottom:1px solid var(--bd)">
+        <th style="padding:6px 4px;text-align:left;color:var(--tx3);font-weight:500">Ano</th>
+        <th style="padding:6px 4px;text-align:right;color:var(--tx3);font-weight:500">Aporte/mês</th>
+        <th style="padding:6px 4px;text-align:right;color:var(--tx3);font-weight:500">Total</th>
+        <th style="padding:6px 4px;text-align:right;color:var(--tx3);font-weight:500">Div/mês</th>
+      </tr></thead>
+      <tbody id="fc-tbl"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══ PAGE: CONFIG ══ -->
+<div class="page" id="page-cfg">
+  <div class="phdr"><div><div class="ptitle">Configurações</div><div class="psub">Bancos, backup, token</div></div></div>
+  <div class="card">
+    <div class="shdr"><span class="ctitle" style="margin:0">Bancos &amp; Corretoras</span><button class="btn btn-ghost btn-sm" onclick="openM('m-add-bank')">+</button></div>
+    <div id="banks-list"></div>
+  </div>
+  <div class="card"><div class="ctitle">Token brapi.dev</div>
+    <div class="field" style="margin:0"><label>Token (gratuito em brapi.dev)</label>
+      <input type="text" id="cfg-token" placeholder="Cole seu token aqui" oninput="saveToken()" style="background:var(--bg3);border:1px solid var(--bd2);border-radius:10px;padding:12px;color:var(--tx);width:100%;font-size:13px;outline:none"></div>
+    <div style="font-size:11px;color:var(--tx3);background:var(--bg4);border-radius:8px;padding:10px;margin-top:10px;line-height:1.6">
+      Token atual: <b id="token-preview" style="color:var(--blue)">—</b><br>
+      Sem token: apenas PETR4, VALE3, MGLU3, ITUB4 ao vivo.<br>Com token gratuito: todos os 30 principais + gráficos.
+    </div>
+  </div>
+  <div class="card"><div class="ctitle">Data &amp; Hora do Dispositivo</div>
+    <div id="cfg-date" style="font-size:16px;font-weight:600;color:var(--blue)"></div>
+    <div style="font-size:11px;color:var(--tx3);margin-top:4px">Usada para calcular rendimento de RF desde a data de aplicação.</div>
+  </div>
+  <div class="card"><div class="ctitle">Backup</div>
+    <div style="display:grid;gap:10px">
+      <button class="btn btn-blue" onclick="expData()">Exportar JSON</button>
+      <label class="btn btn-ghost" style="display:block;text-align:center;cursor:pointer">Importar JSON<input type="file" accept=".json" onchange="impData(event)" style="display:none"></label>
+      <button class="btn btn-red" onclick="resetAll()">Resetar todos os dados</button>
+    </div>
+  </div>
+  <div class="card" style="border-color:rgba(59,130,246,.3)"><div class="ctitle">Instalar como APP</div>
+    <div style="font-size:12px;color:var(--tx2);line-height:1.9">
+      <b style="color:var(--tx)">Android (Chrome):</b> Menu &#8942; &#8594; Adicionar à tela inicial<br>
+      <b style="color:var(--tx)">iPhone (Safari):</b> Compartilhar &#9633;&#8593; &#8594; Adicionar à Tela de Início<br>
+      <b style="color:var(--tx)">Para acessar em qualquer lugar:</b> Suba o arquivo no GitHub Pages (gratuito)
+    </div>
+  </div>
+</div>
+
+<!-- ══ NAV ══ -->
+<nav id="nav">
+  <button class="nb active" onclick="goPage('market',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Mercado</button>
+  <button class="nb" onclick="goPage('portfolio',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>Carteira</button>
+  <button class="nb" onclick="goPage('cal',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Calendário</button>
+  <button class="nb" onclick="goPage('fc',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><polyline points="7 16 11 10 15 14 19 8"/></svg>Forecast</button>
+  <button class="nb" onclick="goPage('cfg',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Config</button>
+</nav>
+
+<!-- ══ MODAIS ══ -->
+<div class="moverlay" id="m-add-stk"><div class="modal">
+  <div class="mhdr"><span class="mtitle">Adicionar Ação</span><button class="mclose" onclick="closeM('m-add-stk')">&#215;</button></div>
+  <div class="field"><label>Corretora</label><select id="stk-bank"></select></div>
+  <div class="fr2">
+    <div class="field" style="margin:0"><label>Ticker</label><input type="text" id="stk-tk" placeholder="ITUB4" oninput="this.value=this.value.toUpperCase()" autocomplete="off"></div>
+    <div class="field" style="margin:0"><label>Empresa</label><input type="text" id="stk-nm" placeholder="Itau Unibanco"></div>
+  </div>
+  <div class="fr3">
+    <div class="field" style="margin:0"><label>Cotas</label><input type="number" id="stk-qt" value="1" min="1"></div>
+    <div class="field" style="margin:0"><label>P.Médio R$</label><input type="number" id="stk-pm" placeholder="43.10" step="0.01"></div>
+    <div class="field" style="margin:0"><label>DY % est.</label><input type="number" id="stk-dy" value="8" step="0.1"></div>
+  </div>
+  <div class="field"><label>Setor</label><select id="stk-sec"><option>Financeiro</option><option>Energia</option><option>Telecom</option><option>Petroleo</option><option>Saneamento</option><option>Varejo</option><option>Saude</option><option>Mineracao</option><option>Outros</option></select></div>
+  <button class="btn btn-green" onclick="addStk()">Adicionar Posição</button>
+</div></div>
+
+<div class="moverlay" id="m-add-fi"><div class="modal">
+  <div class="mhdr"><span class="mtitle">Novo Investimento RF</span><button class="mclose" onclick="closeM('m-add-fi')">&#215;</button></div>
+  <div class="field"><label>Banco</label><select id="fi-bank"></select></div>
+  <div class="field"><label>Nome do Produto</label><input type="text" id="fi-nm" placeholder="RDB 115% CDI"></div>
+  <div class="fr3">
+    <div class="field" style="margin:0"><label>Valor inicial R$</label><input type="number" id="fi-am" placeholder="1000"></div>
+    <div class="field" style="margin:0"><label>Taxa %</label><input type="number" id="fi-rt" value="115" step="0.1"></div>
+    <div class="field" style="margin:0"><label>Índice</label><select id="fi-ix"><option value="CDI">CDI</option><option value="SELIC">SELIC</option><option value="IPCA">IPCA+</option><option value="PRE">Pré-fix</option></select></div>
+  </div>
+  <div class="field"><label>Data de aplicação</label><input type="date" id="fi-dt"></div>
+  <div class="field"><label>Obs (opcional)</label><input type="text" id="fi-nt" placeholder="Reserva emergencia..."></div>
+  <button class="btn btn-pur" onclick="addFI()">Adicionar</button>
+</div></div>
+
+<!-- Modal detalhe RF (aportes/retiradas) -->
+<div class="moverlay" id="m-fi-det"><div class="modal">
+  <div class="mhdr"><span class="mtitle" id="fi-det-title">Detalhes RF</span><button class="mclose" onclick="closeM('m-fi-det')">&#215;</button></div>
+  <div id="fi-det-body"></div>
+  <hr style="border:none;border-top:1px solid var(--bd);margin:16px 0">
+  <div class="ctitle">Registrar Movimento</div>
+  <div class="fr2">
+    <div class="field" style="margin:0"><label>Tipo</label><select id="mov-type"><option value="in">Aporte</option><option value="out">Retirada</option></select></div>
+    <div class="field" style="margin:0"><label>Data</label><input type="date" id="mov-dt"></div>
+  </div>
+  <div class="field"><label>Valor R$</label><input type="number" id="mov-val" placeholder="500" step="0.01"></div>
+  <div class="field"><label>Obs (opcional)</label><input type="text" id="mov-nt" placeholder="Aporte mensal..."></div>
+  <button class="btn btn-blue" onclick="addMov()" style="margin-bottom:8px">Registrar</button>
+</div></div>
+
+<!-- Modal gráfico ação -->
+<div class="moverlay" id="m-stk-chart"><div class="modal">
+  <div class="mhdr"><span class="mtitle" id="sc-title">Gráfico</span><button class="mclose" onclick="closeM('m-stk-chart')">&#215;</button></div>
+  <div id="sc-info" style="margin-bottom:10px"></div>
+  <div class="period-tabs" id="sc-periods">
+    <button class="ptab on" onclick="loadStkChart(null,'1d',this)">1D</button>
+    <button class="ptab" onclick="loadStkChart(null,'5d',this)">5D</button>
+    <button class="ptab" onclick="loadStkChart(null,'1mo',this)">1M</button>
+    <button class="ptab" onclick="loadStkChart(null,'3mo',this)">3M</button>
+    <button class="ptab" onclick="loadStkChart(null,'1y',this)">1A</button>
+  </div>
+  <div class="chart-wrap"><svg id="sc-svg" class="chart-svg"></svg></div>
+  <div id="sc-range" style="display:flex;justify-content:space-between;font-size:10px;color:var(--tx3)"><span id="sc-d1"></span><span id="sc-d2"></span></div>
+  <div id="sc-stats" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px"></div>
+</div></div>
+
+<div class="moverlay" id="m-add-ev"><div class="modal">
+  <div class="mhdr"><span class="mtitle">Novo Evento</span><button class="mclose" onclick="closeM('m-add-ev')">&#215;</button></div>
+  <div class="field"><label>Tipo</label><select id="ev-tp"><option value="div">Dividendo / JCP</option><option value="buy">Compra planejada</option><option value="dc">Data-com</option><option value="other">Outro</option></select></div>
+  <div class="fr2">
+    <div class="field" style="margin:0"><label>Ticker</label><input type="text" id="ev-tk" placeholder="ITUB4" oninput="this.value=this.value.toUpperCase()"></div>
+    <div class="field" style="margin:0"><label>Data</label><input type="date" id="ev-dt"></div>
+  </div>
+  <div class="fr2">
+    <div class="field" style="margin:0"><label>Valor R$ (por cota)</label><input type="number" id="ev-vl" placeholder="0.015" step="0.001"></div>
+    <div class="field" style="margin:0"><label>Qtd cotas</label><input type="number" id="ev-qt" placeholder="auto" min="0"></div>
+  </div>
+  <div class="field"><label>Observação</label><input type="text" id="ev-nt" placeholder="JCP mensal confirmado..."></div>
+  <button class="btn btn-blue" onclick="addEv()">Salvar Evento</button>
+</div></div>
+
+<div class="moverlay" id="m-add-bank"><div class="modal">
+  <div class="mhdr"><span class="mtitle">Adicionar Banco</span><button class="mclose" onclick="closeM('m-add-bank')">&#215;</button></div>
+  <div class="field"><label>Nome</label><input type="text" id="bk-nm" placeholder="Banco Inter"></div>
+  <div class="fr2">
+    <div class="field" style="margin:0"><label>Tipo</label><select id="bk-tp"><option value="broker">Corretora</option><option value="bank">Banco</option><option value="pension">Previdência</option></select></div>
+    <div class="field" style="margin:0"><label>Cor</label><input type="color" id="bk-cl" value="#3B82F6" style="padding:6px;height:44px;cursor:pointer;background:var(--bg3);border:1px solid var(--bd2);border-radius:10px;width:100%"></div>
+  </div>
+  <button class="btn btn-blue" onclick="addBk()">Adicionar</button>
+</div></div>
+
+<script>
+// ══════════════════════════════════════════════════════
+// STORE
+// ══════════════════════════════════════════════════════
+var SK = 'rafa_v4';
+var HARDCODED_TOKEN = 'xo3upEvNqVsNQYdM7idyky';
+var D = (function(){
+  try{ 
+    var r=localStorage.getItem(SK); 
+    if(r){ 
+      var parsed=JSON.parse(r); 
+      // Always ensure token is set - overwrite if empty
+      if(!parsed.token) parsed.token=HARDCODED_TOKEN;
+      return parsed; 
+    } 
+  }catch(e){}
+  return {
+    banks:[
+      {id:'inter',name:'Banco Inter',color:'#F97316',type:'broker'},
+      {id:'nubank',name:'Nubank',color:'#820AD1',type:'bank'},
+      {id:'xp',name:'XP Investimentos',color:'#1B3A6B',type:'broker'}
+    ],
+    stocks:[
+      {id:'s1',bankId:'inter',ticker:'ITUB4',name:'Itau Unibanco',qty:3,pm:43.10,sector:'Financeiro',dy:8.3},
+      {id:'s2',bankId:'inter',ticker:'TAEE11',name:'Taesa',qty:6,pm:45.39,sector:'Energia',dy:11.2},
+      {id:'s3',bankId:'inter',ticker:'ITSA4',name:'Itausa',qty:5,pm:11.20,sector:'Financeiro',dy:7.1},
+      {id:'s4',bankId:'inter',ticker:'CSMG3',name:'Copasa',qty:2,pm:19.80,sector:'Saneamento',dy:7.5}
+    ],
+    fi:[
+      {id:'fi1',bankId:'nubank',name:'RDB 115% CDI',initialAmount:2400,rate:115,index:'CDI',date:'2026-04-01',notes:'Reserva emergencia',movs:[]}
+    ],
+    events:[
+      {id:'e1',type:'div',ticker:'ITUB4',date:'2026-05-01',value:0.015,qty:0,notes:'JCP mensal confirmado'},
+      {id:'e2',type:'buy',ticker:'VIVT3',date:'2026-05-10',value:150,qty:2,notes:'Entrada maio'},
+      {id:'e3',type:'dc', ticker:'ITUB4',date:'2026-04-29',value:0,qty:0,notes:'Data-com maio'},
+      {id:'e4',type:'div',ticker:'TAEE11',date:'2026-05-15',value:0.74,qty:0,notes:'Dividendo trim.'},
+      {id:'e5',type:'div',ticker:'BBSE3',date:'2026-06-15',value:1.60,qty:0,notes:'Div. semestral'},
+      {id:'e6',type:'div',ticker:'EGIE3',date:'2026-10-15',value:1.90,qty:0,notes:'Div. semestral'}
+    ],
+    prices:{ITUB4:43.10,TAEE11:45.39,ITSA4:11.20,CSMG3:19.80,VIVT3:57.80,EGIE3:43.20,BBSE3:34.80,PETR4:47.50},
+    token:'xo3upEvNqVsNQYdM7idyky',
+    chartCache:{}
+  };
+})();
+
+function save(){ try{ localStorage.setItem(SK,JSON.stringify(D)); }catch(e){} }
+
+// ══════════════════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════════════════
+var CDI=0.1375, SELIC=0.15;
+function brl(v){ return 'R$'+Number(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function K(v){ if(v>=1e6) return 'R$'+(v/1e6).toFixed(2)+'M'; if(v>=1e3) return 'R$'+(v/1e3).toFixed(1)+'k'; return brl(v); }
+function pct(v){ return (v>=0?'+':'')+Number(v).toFixed(2)+'%'; }
+function uid(){ return '_'+Math.random().toString(36).slice(2); }
+function today(){ return new Date().toISOString().slice(0,10); }
+function daysDiff(d1,d2){ return Math.floor((new Date(d2)-new Date(d1))/(864e5)); }
+
+function toast(msg,c){
+  var t=document.getElementById('toast');
+  t.textContent=msg; t.style.borderColor=c||'var(--green)';
+  t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); },2500);
+}
+
+// ══════════════════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════════════════
+function goPage(name,btn){
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+  document.querySelectorAll('.nb').forEach(function(b){ b.classList.remove('active'); });
+  document.getElementById('page-'+name).classList.add('active');
+  btn.classList.add('active');
+  if(name==='portfolio') renderPort();
+  if(name==='cal') renderCal();
+  if(name==='cfg') renderCfg();
+  if(name==='fc') calcFc();
+}
+
+function openM(id){
+  document.getElementById(id).classList.add('open');
+  populateSel(id);
+}
+function closeM(id){ document.getElementById(id).classList.remove('open'); }
+
+function populateSel(id){
+  var bkOpts = D.banks.map(function(b){ return '<option value="'+b.id+'">'+b.name+'</option>'; }).join('');
+  if(id==='m-add-stk'){ var s=document.getElementById('stk-bank'); if(s) s.innerHTML=bkOpts; }
+  if(id==='m-add-fi'){ var s=document.getElementById('fi-bank'); if(s) s.innerHTML=bkOpts; }
+  var td=today();
+  ['fi-dt','ev-dt','mov-dt'].forEach(function(fid){
+    var el=document.getElementById(fid); if(el&&!el.value) el.value=td;
+  });
+}
+
+// ══════════════════════════════════════════════════════
+// BRAPI FETCH
+// ══════════════════════════════════════════════════════
+var TOP30=['PETR4','VALE3','ITUB4','BBDC4','ABEV3','WEGE3','RENT3','BBAS3','SUZB3','RDOR3','GGBR4','MGLU3','TAEE11','EGIE3','BBSE3','VIVT3','CSMG3','ITSA4','KLBN11','BPAC11','EQTL3','CPLE6','SAPR11','TRPL4','FLRY3','HAPV3','PETR3','VALE3','LREN3','BEEF3'];
+
+function apiURL(path){
+  var base='https://brapi.dev/api';
+  var tok=D.token||HARDCODED_TOKEN||'';
+  var sep=path.indexOf('?')>=0?'&':'?';
+  return base+path+(tok?sep+'token='+tok:'');
+}
+
+async function loadMarket(){
+  document.getElementById('mkt-st').textContent='Atualizando...';
+  document.getElementById('mkt-st').className='chip badge-n';
+  var tks=[...new Set(TOP30)].slice(0,20).join(',');
+  try{
+    var r=await fetch(apiURL('/quote/'+tks));
+    var j=await r.json();
+    if(j.results&&j.results.length>0){
+      j.results.forEach(function(x){ D.prices[x.symbol]=x.regularMarketPrice; D.chartCache[x.symbol+'_quote']=x; });
+      save();
+      renderMarket(j.results);
+      var now=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+      document.getElementById('mkt-time').innerHTML='<span class="ldot"></span>'+now+' ao vivo';
+      document.getElementById('mkt-st').className='chip badge-up';
+      document.getElementById('mkt-st').textContent='B3 ao vivo';
+    }
+  }catch(e){
+    document.getElementById('mkt-time').innerHTML='<span class="ldot"></span>Sem conexão';
+    document.getElementById('mkt-st').textContent='Offline';
+    renderMarketFromCache();
+  }
+  setTimeout(function(){ loadIbovChart('1d'); }, 300);
+}
+
+function renderMarket(results){
+  var html='';
+  results.forEach(function(d){
+    var up=d.regularMarketChangePercent>=0;
+    var vol=d.regularMarketVolume?(d.regularMarketVolume/1e6).toFixed(1)+'M':'—';
+    html+='<div class="trow" onclick="openStkChart(\''+d.symbol+'\')" style="cursor:pointer">'
+      +'<div class="tbadge" style="color:'+(up?'#22C55E':'#EF4444')+'">'+d.symbol.slice(0,5)+'</div>'
+      +'<div class="tinfo"><div class="tname">'+d.symbol+'</div><div class="tsub">'+(d.shortName||'')+' &middot; Vol: '+vol+'</div></div>'
+      +'<div class="tprice"><div class="tval">'+brl(d.regularMarketPrice)+'</div>'
+      +'<div class="tchg '+(up?'up':'down')+'">'+pct(d.regularMarketChangePercent)+' hoje</div></div>'
+      +'</div>';
+  });
+  document.getElementById('mkt-list').innerHTML=html||'<div style="text-align:center;padding:20px;color:var(--tx3)">Sem dados</div>';
+}
+
+function renderMarketFromCache(){
+  var html='';
+  TOP30.slice(0,10).forEach(function(tk){
+    var p=D.prices[tk]||0;
+    html+='<div class="trow"><div class="tbadge">'+tk.slice(0,4)+'</div>'
+      +'<div class="tinfo"><div class="tname">'+tk+'</div><div class="tsub">Última cotação em cache</div></div>'
+      +'<div class="tprice"><div class="tval">'+(p?brl(p):'—')+'</div></div></div>';
+  });
+  document.getElementById('mkt-list').innerHTML=html;
+}
+
+// ══════════════════════════════════════════════════════
+// SEARCH
+// ══════════════════════════════════════════════════════
+var searchTimer=null;
+function doSearch(){
+  var q=document.getElementById('srch').value.trim().toUpperCase();
+  var res=document.getElementById('srch-res');
+  if(q.length<2){ res.style.display='none'; return; }
+  clearTimeout(searchTimer);
+  searchTimer=setTimeout(async function(){
+    res.style.display='block'; res.innerHTML='<div class="spin"></div> Buscando...';
+    try{
+      var r=await fetch(apiURL('/quote/'+q));
+      var j=await r.json();
+      if(j.results&&j.results[0]){
+        var d=j.results[0]; var up=d.regularMarketChangePercent>=0;
+        D.prices[d.symbol]=d.regularMarketPrice; D.chartCache[d.symbol+'_quote']=d; save();
+        var min52=d.fiftyTwoWeekLow?brl(d.fiftyTwoWeekLow):'—';
+        var max52=d.fiftyTwoWeekHigh?brl(d.fiftyTwoWeekHigh):'—';
+        res.innerHTML='<div class="trow" onclick="openStkChart(\''+d.symbol+'\')" style="cursor:pointer">'
+          +'<div class="tbadge" style="color:'+(up?'#22C55E':'#EF4444')+'">'+d.symbol.slice(0,5)+'</div>'
+          +'<div class="tinfo"><div class="tname">'+d.symbol+' <span style="font-size:11px;color:var(--tx3)">'+( d.shortName||'')+'</span></div>'
+          +'<div class="tsub">Toque para ver gráfico</div></div>'
+          +'<div class="tprice"><div class="tval">'+brl(d.regularMarketPrice)+'</div>'
+          +'<div class="tchg '+(up?'up':'down')+'">'+pct(d.regularMarketChangePercent)+'</div></div></div>'
+          +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px">'
+          +[['Abertura',brl(d.regularMarketOpen||0)],['Min 52s',min52],['Max 52s',max52]].map(function(it){
+            return '<div style="background:#1A1F2E;border-radius:8px;padding:8px;text-align:center">'
+              +'<div style="font-size:10px;color:#4A5568">'+it[0]+'</div>'
+              +'<div style="font-size:13px;font-weight:600">'+it[1]+'</div></div>';
+          }).join('')+'</div>';
+      }else{
+        res.innerHTML='<div style="color:var(--tx3);font-size:13px">Nenhum resultado para "'+q+'"</div>';
+      }
+    }catch(e){ res.innerHTML='<div style="color:var(--tx3);font-size:13px">Erro ao buscar. Verifique o token.</div>'; }
+  },600);
+}
+
+// ══════════════════════════════════════════════════════
+// CHARTS (SVG inline)
+// ══════════════════════════════════════════════════════
+function drawChart(svgId,data,color,rangeIds){
+  var svg=document.getElementById(svgId);
+  if(!svg||!data||data.length<2){ if(svg) svg.innerHTML='<text x="50%" y="50%" fill="#4A5568" text-anchor="middle" font-size="12">Sem dados históricos</text>'; return; }
+  var rect=svg.getBoundingClientRect(); var W=rect.width>10?rect.width:svg.parentElement?svg.parentElement.getBoundingClientRect().width||320:320; var H=rect.height>10?rect.height:150;
+  if(W<10) W=320; if(H<10) H=150;
+  var prices=data.map(function(d){ return d.close||d.price||d; });
+  var min=Math.min.apply(null,prices), max=Math.max.apply(null,prices);
+  var range=max-min||1;
+  var pad=12;
+  var pts=prices.map(function(p,i){
+    var x=pad+(i/(prices.length-1))*(W-pad*2);
+    var y=pad+((max-p)/range)*(H-pad*2);
+    return x.toFixed(1)+','+y.toFixed(1);
+  }).join(' ');
+  var first=prices[0], last=prices[prices.length-1];
+  var isUp=last>=first;
+  var lineColor=color||(isUp?'#22C55E':'#EF4444');
+  var gradId='g'+svgId;
+  svg.innerHTML='<defs><linearGradient id="'+gradId+'" x1="0" y1="0" x2="0" y2="1">'
+    +'<stop offset="0%" stop-color="'+lineColor+'" stop-opacity="0.3"/>'
+    +'<stop offset="100%" stop-color="'+lineColor+'" stop-opacity="0.02"/>'
+    +'</linearGradient></defs>'
+    +'<polyline points="'+pts+' '+( pad+(W-pad*2)).toFixed(1)+','+(H-pad)+' '+pad+','+(H-pad)+'" fill="url(#'+gradId+')" stroke="none"/>'
+    +'<polyline points="'+pts+'" fill="none" stroke="'+lineColor+'" stroke-width="1.8" stroke-linejoin="round"/>';
+  if(rangeIds&&data.length>0){
+    var fmt=function(ts){ if(!ts) return ''; var d=ts.toString().length<=10?new Date(ts*1000):new Date(ts); return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}); };
+    var el1=document.getElementById(rangeIds[0]), el2=document.getElementById(rangeIds[1]);
+    if(el1) el1.textContent=fmt(data[0].date||data[0].timestamp);
+    if(el2) el2.textContent=fmt(data[data.length-1].date||data[data.length-1].timestamp);
+  }
+}
+
+// ══════════════════════════════════════════════════════
+// IBOV CHART
+// ══════════════════════════════════════════════════════
+var ibovPeriod='1d';
+async function loadIbovChart(period){
+  ibovPeriod=period||ibovPeriod;
+  var intMap={'1d':'5m','5d':'15m','1mo':'1d','3mo':'1d','1y':'1wk'};
+  var intv=intMap[ibovPeriod]||'1d';
+  try{
+    var r=await fetch(apiURL('/quote/%5EBVSP?range='+ibovPeriod+'&interval='+intv+'&history=true'));
+    var j=await r.json();
+    if(j.results&&j.results[0]){
+      var res=j.results[0];
+      var price=res.regularMarketPrice||0;
+      var chgPct=res.regularMarketChangePercent||0;
+      var up=chgPct>=0;
+      document.getElementById('ibov-price').textContent=price?Math.round(price).toLocaleString('pt-BR'):' — ';
+      document.getElementById('ibov-pct').textContent=pct(chgPct);
+      document.getElementById('ibov-pct').className=up?'up':'down';
+      document.getElementById('ibov-chg').className='chip '+(up?'badge-up':'badge-dn');
+      document.getElementById('ibov-chg').textContent=(up?'+':'')+chgPct.toFixed(2)+'%';
+      var hist=res.historicalDataPrice||[];
+      if(hist.length>1){
+        drawChart('ibov-svg',hist,null,['ibov-d1','ibov-d2']);
+      }
+    }
+  }catch(e){ 
+    console.log('ibov err',e); 
+    var svg=document.getElementById('ibov-svg');
+    if(svg) svg.innerHTML='<text x="50%" y="50%" fill="#4A5568" text-anchor="middle" font-size="11">Fora do horario de mercado ou sem dados</text>';
+    document.getElementById('ibov-price').textContent='—';
+    document.getElementById('ibov-pct').textContent='';
+  }
+}
+
+function setIbovPeriod(p,btn){
+  document.querySelectorAll('#ibov-periods .ptab').forEach(function(b){ b.classList.remove('on'); });
+  btn.classList.add('on');
+  loadIbovChart(p);
+}
+
+// ══════════════════════════════════════════════════════
+// STOCK CHART MODAL
+// ══════════════════════════════════════════════════════
+var activeStkTicker=null;
+function openStkChart(ticker){
+  activeStkTicker=ticker;
+  document.getElementById('sc-title').textContent=ticker+' — Gráfico';
+  document.querySelectorAll('#sc-periods .ptab').forEach(function(b){ b.classList.remove('on'); });
+  document.querySelector('#sc-periods .ptab').classList.add('on');
+  document.getElementById('sc-svg').innerHTML='<text x="50%" y="50%" fill="#4A5568" text-anchor="middle" font-size="12">Carregando...</text>';
+  document.getElementById('sc-info').innerHTML='';
+  document.getElementById('sc-stats').innerHTML='';
+  openM('m-stk-chart');
+  loadStkChart(ticker,'1d',document.querySelector('#sc-periods .ptab'));
+}
+
+async function loadStkChart(ticker,period,btn){
+  var tk=ticker||activeStkTicker; if(!tk) return;
+  activeStkTicker=tk;
+  if(btn){
+    document.querySelectorAll('#sc-periods .ptab').forEach(function(b){ b.classList.remove('on'); });
+    btn.classList.add('on');
+  }
+  var intMap={'1d':'5m','5d':'15m','1mo':'1d','3mo':'1d','1y':'1wk'};
+  var intv=intMap[period]||'1d';
+  document.getElementById('sc-svg').innerHTML='<text x="50%" y="50%" fill="#4A5568" text-anchor="middle" font-size="12">Carregando...</text>';
+  try{
+    var r=await fetch(apiURL('/quote/'+tk+'?range='+period+'&interval='+intv+'&history=true'));
+    var j=await r.json();
+    if(j.results&&j.results[0]){
+      var res=j.results[0];
+      var price=res.regularMarketPrice||0;
+      var chgPct=res.regularMarketChangePercent||0;
+      var up=chgPct>=0;
+      D.prices[tk]=price; save();
+      document.getElementById('sc-title').textContent=(res.shortName||tk);
+      document.getElementById('sc-info').innerHTML=
+        '<div style="display:flex;align-items:center;gap:12px">'
+        +'<span style="font-size:22px;font-weight:700">'+brl(price)+'</span>'
+        +'<span style="font-size:14px;font-weight:600;color:'+(up?'#22C55E':'#EF4444')+'">'+pct(chgPct)+' hoje</span>'
+        +'</div>';
+      var hist=res.historicalDataPrice||[];
+      if(hist.length>1) drawChart('sc-svg',hist,null,['sc-d1','sc-d2']);
+      // Stats
+      document.getElementById('sc-stats').innerHTML=[
+        ['Abertura',brl(res.regularMarketOpen||0)],
+        ['Min.',brl(res.regularMarketDayLow||0)],
+        ['Max.',brl(res.regularMarketDayHigh||0)],
+        ['Vol.',res.regularMarketVolume?(res.regularMarketVolume/1e6).toFixed(1)+'M':'—'],
+        ['Min 52s',res.fiftyTwoWeekLow?brl(res.fiftyTwoWeekLow):'—'],
+        ['Max 52s',res.fiftyTwoWeekHigh?brl(res.fiftyTwoWeekHigh):'—']
+      ].map(function(it){
+        return '<div style="background:#1A1F2E;border-radius:8px;padding:8px;text-align:center">'
+          +'<div style="font-size:9px;color:#4A5568">'+it[0]+'</div>'
+          +'<div style="font-size:12px;font-weight:600">'+it[1]+'</div></div>';
+      }).join('');
+    }
+  }catch(e){ document.getElementById('sc-svg').innerHTML='<text x="50%" y="50%" fill="#4A5568" text-anchor="middle" font-size="12">Erro ao carregar dados</text>'; }
+}
+
+// ══════════════════════════════════════════════════════
+// RF CALCULATIONS (date-aware)
+// ══════════════════════════════════════════════════════
+function calcFIBalance(fi){
+  var td=today();
+  var days=daysDiff(fi.date,td);
+  if(days<0) days=0;
+  var annualRate=fi.index==='CDI'?CDI*fi.rate/100:fi.index==='SELIC'?SELIC*fi.rate/100:fi.rate/100;
+  var dailyRate=Math.pow(1+annualRate,1/365)-1;
+
+  // Apply movimentos
+  var balance=fi.initialAmount||0;
+  var movs=(fi.movs||[]).slice().sort(function(a,b){ return new Date(a.date)-new Date(b.date); });
+  var prevDate=fi.date;
+
+  movs.forEach(function(m){
+    var dDays=daysDiff(prevDate,m.date);
+    if(dDays>0) balance*=Math.pow(1+dailyRate,dDays);
+    if(m.type==='in') balance+=m.amount;
+    else balance-=m.amount;
+    if(balance<0) balance=0;
+    prevDate=m.date;
+  });
+
+  var remainDays=daysDiff(prevDate,td);
+  if(remainDays>0) balance*=Math.pow(1+dailyRate,remainDays);
+
+  var totalInvested=fi.initialAmount+movs.filter(function(m){ return m.type==='in'; }).reduce(function(a,m){ return a+m.amount; },0);
+  var totalWithdrawn=movs.filter(function(m){ return m.type==='out'; }).reduce(function(a,m){ return a+m.amount; },0);
+  var earned=balance-(totalInvested-totalWithdrawn);
+  var monthlyIncome=balance*annualRate/12;
+
+  return {balance:balance,earned:earned,days:days,annualRate:annualRate*100,monthlyIncome:monthlyIncome,totalInvested:totalInvested,totalWithdrawn:totalWithdrawn};
+}
+
+// ══════════════════════════════════════════════════════
+// PORTFOLIO
+// ══════════════════════════════════════════════════════
+function renderPort(){
+  var stocks=D.stocks.map(function(s){
+    var curr=D.prices[s.ticker]||s.pm;
+    return Object.assign({},s,{curr:curr,perf:(curr-s.pm)/s.pm*100,total:curr*s.qty,pl:(curr-s.pm)*s.qty,bank:D.banks.find(function(b){ return b.id===s.bankId; })});
+  });
+  var fiEnriched=D.fi.map(function(f){
+    var calc=calcFIBalance(f);
+    return Object.assign({},f,calc,{bank:D.banks.find(function(b){ return b.id===f.bankId; })});
+  });
+
+  var stTotal=stocks.reduce(function(a,s){ return a+s.total; },0);
+  var fiTotal=fiEnriched.reduce(function(a,f){ return a+f.balance; },0);
+  var totPat=stTotal+fiTotal;
+  var divInc=stocks.reduce(function(a,s){ return a+s.total*(s.dy||0)/100/12; },0);
+  var fiInc=fiEnriched.reduce(function(a,f){ return a+f.monthlyIncome; },0);
+  var passiveMonth=divInc+fiInc;
+
+  document.getElementById('port-sub').textContent=stocks.length+' acoes | '+D.fi.length+' RF | '+new Date().toLocaleDateString('pt-BR');
+  document.getElementById('port-kpis').innerHTML=[
+    {l:'Patrimônio Total',v:K(totPat),c:'#3B82F6',s:'RF: '+K(fiTotal)+' + Acoes: '+K(stTotal)},
+    {l:'Renda Passiva/Mês',v:K(passiveMonth),c:'#22C55E',s:((passiveMonth*12/totPat||0)*100).toFixed(1)+'% a.a. est.'},
+    {l:'Ações',v:K(stTotal),c:'#F59E0B',s:stocks.length+' ativos'},
+    {l:'Renda Fixa',v:K(fiTotal),c:'#A855F7',s:'Saldo c/ juros'}
+  ].map(function(m){
+    return '<div class="kpi" style="border-color:'+m.c+'22"><div class="kl">'+m.l+'</div>'
+      +'<div class="kv" style="color:'+m.c+'">'+m.v+'</div><div class="ks">'+m.s+'</div></div>';
+  }).join('');
+
+  // Banks breakdown
+  var bmap={};
+  D.banks.forEach(function(b){ bmap[b.id]={bank:b,fi:0,stocks:0}; });
+  fiEnriched.forEach(function(f){ if(bmap[f.bankId]) bmap[f.bankId].fi+=f.balance; });
+  stocks.forEach(function(s){ if(bmap[s.bankId]) bmap[s.bankId].stocks+=s.total; });
+  document.getElementById('bank-list').innerHTML=Object.values(bmap).map(function(v){
+    var tot=v.fi+v.stocks, w=totPat>0?Math.round(tot/totPat*100):0;
+    return '<div style="padding:10px 0;border-bottom:1px solid var(--bg3)">'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">'
+      +'<div style="display:flex;align-items:center;gap:8px">'
+      +'<div style="width:8px;height:8px;border-radius:50%;background:'+v.bank.color+'"></div>'
+      +'<span style="font-size:13px;font-weight:600">'+v.bank.name+'</span></div>'
+      +'<span style="font-size:14px;font-weight:700;color:'+v.bank.color+'">'+K(tot)+'</span></div>'
+      +'<div class="ptk"><div class="pfill" style="width:'+w+'%;background:'+v.bank.color+'"></div></div>'
+      +'<div style="display:flex;gap:12px;margin-top:4px;font-size:10px;color:var(--tx3)">'
+      +(v.fi>0?'<span>RF: <b style="color:#A855F7">'+K(v.fi)+'</b></span>':'')
+      +(v.stocks>0?'<span>Acoes: <b style="color:#F59E0B">'+K(v.stocks)+'</b></span>':'')
+      +'<span>'+w+'% do total</span></div></div>';
+  }).join('');
+
+  // Stocks list
+  if(!stocks.length){
+    document.getElementById('pos-list').innerHTML='<div style="text-align:center;padding:20px;color:var(--tx3);font-size:13px">Nenhuma posição</div>';
+  }else{
+    document.getElementById('pos-list').innerHTML=stocks.map(function(s){
+      var bcolor=s.bank?s.bank.color:'#94A3B8';
+      return '<div class="trow" onclick="openStkChart(\''+s.ticker+'\')" style="cursor:pointer">'
+        +'<div class="tbadge" style="color:'+bcolor+'">'+s.ticker.slice(0,5)+'</div>'
+        +'<div class="tinfo"><div class="tname">'+s.ticker+' <span class="tag" style="background:'+bcolor+'22;color:'+bcolor+'">'+(s.bank?s.bank.name:'')+'</span></div>'
+        +'<div class="tsub">'+s.qty+' cotas &middot; PM: '+brl(s.pm)+' &middot; DY '+s.dy+'%</div></div>'
+        +'<div style="text-align:right;flex-shrink:0">'
+        +'<div style="font-size:13px;font-weight:700">'+K(s.total)+'</div>'
+        +'<div style="font-size:11px;color:'+(s.pl>=0?'#22C55E':'#EF4444')+'">'+pct(s.perf)+' &middot; '+(s.pl>=0?'+':'')+brl(s.pl)+'</div></div>'
+        +'<button onclick="event.stopPropagation();rmStk(\''+s.id+'\')" style="background:none;border:none;color:#EF4444;opacity:.4;cursor:pointer;font-size:18px;padding:4px">&#215;</button>'
+        +'</div>';
+    }).join('');
+  }
+
+  // RF list
+  if(!fiEnriched.length){
+    document.getElementById('fi-list').innerHTML='<div style="text-align:center;padding:20px;color:var(--tx3);font-size:13px">Nenhum produto RF</div>';
+  }else{
+    document.getElementById('fi-list').innerHTML=fiEnriched.map(function(f){
+      var bcolor=f.bank?f.bank.color:'#A855F7';
+      var daysLabel=f.days===1?'dia':'dias';
+      return '<div style="padding:14px 0;border-bottom:1px solid var(--bg3)">'
+        +'<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">'
+        +'<div>'
+        +'<div style="font-size:13px;font-weight:600">'+f.name+'</div>'
+        +'<div style="font-size:10px;color:var(--tx3);margin-top:2px">'+f.rate+'% do '+f.index+' &middot; '+( f.bank?f.bank.name:'')+' &middot; desde '+new Date(f.date+'T12:00:00').toLocaleDateString('pt-BR')+'</div>'
+        +(f.notes?'<div style="font-size:10px;color:var(--tx3);margin-top:2px">'+f.notes+'</div>':'')
+        +'</div>'
+        +'<button onclick="rmFI(\''+f.id+'\')" style="background:none;border:none;color:#EF4444;opacity:.4;cursor:pointer;font-size:18px;padding:4px">&#215;</button>'
+        +'</div>'
+        +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">'
+        +'<div style="background:var(--bg4);border-radius:8px;padding:10px"><div style="font-size:9px;color:var(--tx3)">Saldo atual</div><div style="font-size:16px;font-weight:700;color:#A855F7">'+brl(f.balance)+'</div></div>'
+        +'<div style="background:var(--bg4);border-radius:8px;padding:10px"><div style="font-size:9px;color:var(--tx3)">Juros acumulados</div><div style="font-size:16px;font-weight:700;color:#22C55E">+'+brl(f.earned)+'</div></div>'
+        +'<div style="background:var(--bg4);border-radius:8px;padding:10px"><div style="font-size:9px;color:var(--tx3)">Rend./mês est.</div><div style="font-size:14px;font-weight:600;color:#22C55E">'+brl(f.monthlyIncome)+'</div></div>'
+        +'<div style="background:var(--bg4);border-radius:8px;padding:10px"><div style="font-size:9px;color:var(--tx3)">Dias aplicado</div><div style="font-size:14px;font-weight:600">'+f.days+' '+daysLabel+'</div></div>'
+        +'</div>'
+        +'<button onclick="openFIDet(\''+f.id+'\')" style="background:var(--bg4);border:none;color:var(--tx2);border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;width:100%;font-family:inherit">Ver movimentos &amp; aportes</button>'
+        +'</div>';
+    }).join('');
+  }
+}
+
+function addStk(){
+  var s={id:uid(),bankId:document.getElementById('stk-bank').value,
+    ticker:document.getElementById('stk-tk').value.toUpperCase(),
+    name:document.getElementById('stk-nm').value,
+    qty:+document.getElementById('stk-qt').value,
+    pm:+document.getElementById('stk-pm').value,
+    sector:document.getElementById('stk-sec').value,
+    dy:+document.getElementById('stk-dy').value};
+  if(!s.ticker||!s.pm){ toast('Preencha ticker e preco','#EF4444'); return; }
+  D.stocks.push(s);
+  if(!D.prices[s.ticker]) D.prices[s.ticker]=s.pm;
+  save(); closeM('m-add-stk'); renderPort(); toast('Posicao adicionada!');
+}
+function rmStk(id){ D.stocks=D.stocks.filter(function(s){ return s.id!==id; }); save(); renderPort(); }
+
+function addFI(){
+  var f={id:uid(),bankId:document.getElementById('fi-bank').value,
+    name:document.getElementById('fi-nm').value,
+    initialAmount:+document.getElementById('fi-am').value,
+    rate:+document.getElementById('fi-rt').value,
+    index:document.getElementById('fi-ix').value,
+    date:document.getElementById('fi-dt').value,
+    notes:document.getElementById('fi-nt').value,
+    movs:[]};
+  if(!f.name||!f.initialAmount){ toast('Preencha nome e valor','#EF4444'); return; }
+  D.fi.push(f); save(); closeM('m-add-fi'); renderPort(); toast('Investimento adicionado!');
+}
+function rmFI(id){ D.fi=D.fi.filter(function(f){ return f.id!==id; }); save(); renderPort(); }
+
+// ══════════════════════════════════════════════════════
+// RF DETAIL MODAL (aportes/retiradas)
+// ══════════════════════════════════════════════════════
+var activeFI=null;
+function openFIDet(id){
+  activeFI=id;
+  var f=D.fi.find(function(x){ return x.id===id; }); if(!f) return;
+  var calc=calcFIBalance(f);
+  document.getElementById('fi-det-title').textContent=f.name;
+  var movs=(f.movs||[]).slice().sort(function(a,b){ return new Date(b.date)-new Date(a.date); });
+  var movHTML='';
+  if(movs.length){
+    movHTML='<div style="margin-bottom:12px">';
+    movs.forEach(function(m){
+      movHTML+='<div class="mov-row">'
+        +'<div><div style="font-weight:600;color:'+(m.type==='in'?'#22C55E':'#EF4444')+'">'+(m.type==='in'?'+':'-')+brl(m.amount)+'</div>'
+        +'<div style="font-size:10px;color:var(--tx3)">'+new Date(m.date+'T12:00:00').toLocaleDateString('pt-BR')+(m.notes?' &middot; '+m.notes:'')+'</div></div>'
+        +'<button onclick="rmMov(\''+id+'\',\''+m.id+'\')" style="background:none;border:none;color:#EF4444;opacity:.4;cursor:pointer;font-size:16px">&#215;</button>'
+        +'</div>';
+    });
+    movHTML+='</div>';
+  }else{
+    movHTML='<div style="text-align:center;padding:10px;color:var(--tx3);font-size:12px">Nenhum movimento registrado</div>';
+  }
+  document.getElementById('fi-det-body').innerHTML=
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">'
+    +'<div style="background:var(--bg4);border-radius:8px;padding:10px"><div style="font-size:9px;color:var(--tx3)">Saldo atual</div><div style="font-size:16px;font-weight:700;color:#A855F7">'+brl(calc.balance)+'</div></div>'
+    +'<div style="background:var(--bg4);border-radius:8px;padding:10px"><div style="font-size:9px;color:var(--tx3)">Total juros ganhos</div><div style="font-size:16px;font-weight:700;color:#22C55E">+'+brl(calc.earned)+'</div></div>'
+    +'<div style="background:var(--bg4);border-radius:8px;padding:10px"><div style="font-size:9px;color:var(--tx3)">Total aportado</div><div style="font-size:14px;font-weight:600">'+brl(calc.totalInvested)+'</div></div>'
+    +'<div style="background:var(--bg4);border-radius:8px;padding:10px"><div style="font-size:9px;color:var(--tx3)">Total retirado</div><div style="font-size:14px;font-weight:600;color:#EF4444">'+brl(calc.totalWithdrawn)+'</div></div>'
+    +'</div>'
+    +'<div class="ctitle">Histórico de Movimentos</div>'+movHTML;
+  var td=today();
+  var mdt=document.getElementById('mov-dt'); if(mdt) mdt.value=td;
+  openM('m-fi-det');
+}
+
+function addMov(){
+  if(!activeFI) return;
+  var f=D.fi.find(function(x){ return x.id===activeFI; }); if(!f) return;
+  var m={id:uid(),type:document.getElementById('mov-type').value,
+    amount:+document.getElementById('mov-val').value,
+    date:document.getElementById('mov-dt').value,
+    notes:document.getElementById('mov-nt').value};
+  if(!m.amount||!m.date){ toast('Preencha valor e data','#EF4444'); return; }
+  if(!f.movs) f.movs=[];
+  f.movs.push(m);
+  save(); openFIDet(activeFI); renderPort(); toast('Movimento registrado!');
+  document.getElementById('mov-val').value='';
+  document.getElementById('mov-nt').value='';
+}
+function rmMov(fiId,movId){
+  var f=D.fi.find(function(x){ return x.id===fiId; }); if(!f) return;
+  f.movs=(f.movs||[]).filter(function(m){ return m.id!==movId; });
+  save(); openFIDet(fiId); renderPort(); toast('Movimento removido');
+}
+
+// ══════════════════════════════════════════════════════
+// CALENDAR
+// ══════════════════════════════════════════════════════
+var calY=new Date().getFullYear(), calM=new Date().getMonth();
+function prevMo(){ calM--; if(calM<0){calM=11;calY--;} renderCal(); }
+function nextMo(){ calM++; if(calM>11){calM=0;calY++;} renderCal(); }
+
+function renderCal(){
+  var td=new Date(), dim=new Date(calY,calM+1,0).getDate(), fd=new Date(calY,calM,1).getDay();
+  var mnames=['Janeiro','Fevereiro','Marco','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  document.getElementById('cal-lbl').textContent=mnames[calM]+' '+calY;
+  document.getElementById('ev-mo-title').textContent='Eventos — '+mnames[calM];
+  document.getElementById('cal-hdr').innerHTML=['D','S','T','Q','Q','S','S'].map(function(d){ return '<div class="cdh">'+d+'</div>'; }).join('');
+  var evMap={};
+  D.events.forEach(function(ev){
+    var d=new Date(ev.date+'T12:00:00');
+    if(d.getFullYear()===calY&&d.getMonth()===calM){
+      var day=d.getDate(); if(!evMap[day]) evMap[day]=[];
+      evMap[day].push(ev);
+    }
+  });
+  var cells='';
+  for(var i=0;i<fd;i++) cells+='<div class="cday empty"></div>';
+  for(var d=1;d<=dim;d++){
+    var isToday=td.getDate()===d&&td.getMonth()===calM&&td.getFullYear()===calY;
+    var evs=evMap[d]||[];
+    var cls='normal';
+    if(isToday) cls='today';
+    else if(evs.some(function(e){ return e.type==='div'; })) cls='ev-div';
+    else if(evs.some(function(e){ return e.type==='buy'; })) cls='ev-buy';
+    else if(evs.some(function(e){ return e.type==='dc'; })) cls='ev-dc';
+    cells+='<div class="cday '+cls+'">'+d+(evs.length&&!isToday?'<span class="cedot"></span>':'')+'</div>';
+  }
+  document.getElementById('cal-grid').innerHTML=cells;
+
+  var typeLabel={div:'Dividendo',buy:'Compra',dc:'Data-com',other:'Outro'};
+  var typeColor={div:'#22C55E',buy:'#3B82F6',dc:'#EF4444',other:'#94A3B8'};
+  var monthEvs=D.events.filter(function(ev){
+    var d=new Date(ev.date+'T12:00:00');
+    return d.getFullYear()===calY&&d.getMonth()===calM;
+  }).sort(function(a,b){ return new Date(a.date)-new Date(b.date); });
+
+  if(!monthEvs.length){
+    document.getElementById('ev-list').innerHTML='<div style="text-align:center;padding:16px;color:var(--tx3);font-size:13px">Nenhum evento</div>';
+  }else{
+    document.getElementById('ev-list').innerHTML=monthEvs.map(function(ev){
+      var price=D.prices[ev.ticker]||0;
+      var stockInCart=D.stocks.find(function(s){ return s.ticker===ev.ticker; });
+      var qtyEff=ev.qty||(stockInCart?stockInCart.qty:0);
+      var divTotal=ev.value&&qtyEff?ev.value*qtyEff:null;
+      var evDate=new Date(ev.date+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'});
+      var dotColor=typeColor[ev.type]||'#94A3B8';
+      var notesDiv=ev.notes?('<div style="font-size:11px;color:#4A5568;margin-top:2px">'+ev.notes+'</div>'):'';
+      var divDiv=divTotal?('<div style="font-size:11px;color:#22C55E;margin-top:2px">Est: <b>'+brl(divTotal)+'</b> ('+qtyEff+' cotas x R$'+ev.value+'/cota)</div>'):'';
+      var buyDiv=(ev.type==='buy'&&ev.value)?('<div style="font-size:11px;color:#3B82F6;margin-top:2px">Valor: <b>'+brl(ev.value)+'</b>'+(ev.qty?' (~'+ev.qty+' cotas)':'')+(price?' @ '+brl(price):'')+' </div>'):'';
+      var rmBtn='<button onclick="rmEv(\''+ev.id+'\')" style="background:none;border:none;color:#EF4444;opacity:.4;cursor:pointer;font-size:18px;padding:4px">&#215;</button>';
+      return '<div class="prow">'
+        +'<div class="pdot" style="background:'+dotColor+'"></div>'
+        +'<div style="flex:1">'
+        +'<div style="font-size:13px;font-weight:600">'+evDate+' &middot; <span style="color:'+dotColor+'">'+(typeLabel[ev.type]||ev.type)+'</span>'+(ev.ticker?' <b>'+ev.ticker+'</b>':'')+'</div>'
+        +notesDiv+divDiv+buyDiv
+        +'</div>'+rmBtn+'</div>';
+    }).join('');
+  }
+  renderDivPrev();
+}
+
+function renderDivPrev(){
+  if(!D.stocks.length){ document.getElementById('div-prev').innerHTML='<div style="text-align:center;padding:16px;color:var(--tx3);font-size:13px">Cadastre acoes na carteira</div>'; return; }
+  var total=0; var html='';
+  D.stocks.forEach(function(s){
+    var price=D.prices[s.ticker]||s.pm;
+    var pos=price*s.qty, divAno=pos*(s.dy||0)/100, divMes=divAno/12;
+    total+=divAno;
+    html+='<div class="prow">'
+      +'<div class="pdot" style="background:#22C55E"></div>'
+      +'<div style="flex:1"><div style="font-size:13px;font-weight:600">'+s.ticker+' <span style="font-size:11px;color:var(--tx3)">'+s.qty+' cotas @ '+brl(price)+'</span></div>'
+      +'<div style="font-size:11px;color:var(--tx3)">DY '+s.dy+'% &middot; Posicao: '+brl(pos)+'</div></div>'
+      +'<div style="text-align:right"><div style="font-size:13px;font-weight:700;color:#22C55E">'+brl(divMes)+'/mes</div>'
+      +'<div style="font-size:10px;color:var(--tx3)">'+brl(divAno)+'/ano</div></div></div>';
+  });
+  html+='<div style="border-top:1px solid var(--bd);margin-top:8px;padding-top:10px;display:flex;justify-content:space-between;align-items:center">'
+    +'<span style="font-size:12px;font-weight:600;color:var(--tx2)">Total estimado</span>'
+    +'<div style="text-align:right"><div style="font-size:15px;font-weight:700;color:#22C55E">'+brl(total/12)+'/mes</div>'
+    +'<div style="font-size:11px;color:var(--tx3)">'+brl(total)+'/ano</div></div></div>';
+  document.getElementById('div-prev').innerHTML=html;
+}
+
+function addEv(){
+  var ev={id:uid(),type:document.getElementById('ev-tp').value,
+    ticker:document.getElementById('ev-tk').value.toUpperCase(),
+    date:document.getElementById('ev-dt').value,
+    value:+document.getElementById('ev-vl').value||0,
+    qty:+document.getElementById('ev-qt').value||0,
+    notes:document.getElementById('ev-nt').value};
+  if(!ev.date){ toast('Informe a data','#EF4444'); return; }
+  D.events.push(ev); save(); closeM('m-add-ev'); renderCal(); toast('Evento salvo!');
+}
+function rmEv(id){ D.events=D.events.filter(function(e){ return e.id!==id; }); save(); renderCal(); }
+
+// ══════════════════════════════════════════════════════
+// FORECAST
+// ══════════════════════════════════════════════════════
+function calcFc(){
+  var monthly=+document.getElementById('fc-ap').value;
+  var growth=+document.getElementById('fc-gw').value/100;
+  var years=Math.max(1,Math.min(30,+document.getElementById('fc-yr').value||15));
+  var rfRate=+document.getElementById('fc-rf').value/100;
+  var dy=+document.getElementById('fc-dy').value/100;
+  var acPct=(+document.getElementById('fc-ac').value||31)/100;
+  var rfPct=1-acPct;
+  var stTotal=D.stocks.reduce(function(a,s){ return a+(D.prices[s.ticker]||s.pm)*s.qty; },0);
+  var fiEnriched=D.fi.map(function(f){ return calcFIBalance(f); });
+  var fiStart=fiEnriched.reduce(function(a,f){ return a+f.balance; },0);
+  var rf=fiStart, ac=stTotal, rows=[], curY=new Date().getFullYear();
+  for(var y=0;y<years;y++){
+    var mInv=monthly*Math.pow(1+growth,y);
+    var yrDiv=0;
+    for(var m=0;m<12;m++){
+      rf+=mInv*rfPct; ac+=mInv*acPct;
+      rf*=(1+rfRate/12);
+      var dv=ac*dy/12; yrDiv+=dv; ac+=dv; ac*=1.004;
+    }
+    rows.push({year:curY+y+1,rf:Math.round(rf),ac:Math.round(ac),total:Math.round(rf+ac),divMonth:Math.round(yrDiv/12),aporte:Math.round(mInv)});
+  }
+  var final=rows[rows.length-1];
+  document.getElementById('fc-tot').textContent=K(final.total);
+  document.getElementById('fc-div').textContent=K(final.divMonth)+'/mes';
+  var maxT=Math.max.apply(null,rows.map(function(r){ return r.total; }));
+  document.getElementById('fc-bars').innerHTML=rows.map(function(r){
+    return '<div style="flex:1;min-width:6px;display:flex;flex-direction:column;gap:1px;justify-content:flex-end">'
+      +'<div style="background:rgba(59,130,246,.35);border-radius:2px 2px 0 0;height:'+Math.round(r.rf/maxT*96)+'px"></div>'
+      +'<div style="background:rgba(245,158,11,.55);height:'+Math.round(r.ac/maxT*96)+'px"></div>'
+      +'</div>';
+  }).join('');
+  document.getElementById('fc-labs').innerHTML=rows.map(function(r,i){
+    return '<div style="flex:1;min-width:6px;text-align:center;font-size:8px;color:var(--tx3)">'+(i%Math.ceil(years/6)===0?r.year:'')+'</div>';
+  }).join('');
+  var ms=[0,2,4,6,9,12,14].filter(function(i){ return i<rows.length; });
+  document.getElementById('fc-tbl').innerHTML=ms.map(function(i){
+    var r=rows[i];
+    return '<tr style="border-bottom:1px solid var(--bg3)">'
+      +'<td style="padding:7px 4px;color:var(--tx3)">'+r.year+'</td>'
+      +'<td style="padding:7px 4px;text-align:right;color:var(--tx2)">'+K(r.aporte)+'</td>'
+      +'<td style="padding:7px 4px;text-align:right;font-weight:600">'+K(r.total)+'</td>'
+      +'<td style="padding:7px 4px;text-align:right;color:#22C55E;font-weight:600">'+K(r.divMonth)+'</td>'
+      +'</tr>';
+  }).join('');
+}
+
+// ══════════════════════════════════════════════════════
+// CONFIG
+// ══════════════════════════════════════════════════════
+function renderCfg(){
+  var tok=document.getElementById('cfg-token'); if(tok) tok.value=D.token||HARDCODED_TOKEN||'';
+  var tp=document.getElementById('token-preview'); if(tp) tp.textContent=D.token?(D.token.slice(0,8)+'...'):'(sem token)';
+  document.getElementById('banks-list').innerHTML=D.banks.map(function(b){
+    return '<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--bg3)">'
+      +'<div style="width:10px;height:10px;border-radius:50%;background:'+b.color+';flex-shrink:0"></div>'
+      +'<div style="flex:1"><div style="font-size:13px;font-weight:600">'+b.name+'</div><div style="font-size:10px;color:var(--tx3)">'+b.type+'</div></div>'
+      +'<button onclick="rmBk(\''+b.id+'\')" style="background:none;border:none;color:#EF4444;opacity:.4;cursor:pointer;font-size:18px">&#215;</button>'
+      +'</div>';
+  }).join('');
+  var cd=document.getElementById('cfg-date');
+  if(cd) cd.textContent=new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'})+' — '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  // Update every minute
+  setTimeout(function(){ var cd2=document.getElementById('cfg-date'); if(cd2) cd2.textContent=new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'})+' — '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}); },60000);
+}
+function saveToken(){ var t=document.getElementById('cfg-token').value.trim(); D.token=t||HARDCODED_TOKEN; save(); renderCfg(); toast('Token salvo!'); }
+function addBk(){
+  var b={id:uid(),name:document.getElementById('bk-nm').value,color:document.getElementById('bk-cl').value,type:document.getElementById('bk-tp').value};
+  if(!b.name) return;
+  D.banks.push(b); save(); closeM('m-add-bank'); renderCfg(); toast('Banco adicionado!');
+}
+function rmBk(id){ D.banks=D.banks.filter(function(b){ return b.id!==id; }); save(); renderCfg(); }
+function expData(){
+  var blob=new Blob([JSON.stringify(D,null,2)],{type:'application/json'});
+  var a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='investrafa_'+today()+'.json'; a.click(); toast('Exportado!');
+}
+function impData(e){
+  var f=e.target.files[0]; if(!f) return;
+  var reader=new FileReader();
+  reader.onload=function(ev){ try{ D=JSON.parse(ev.target.result); save(); renderCfg(); renderPort(); toast('Importado!'); }catch(e2){ toast('Erro no arquivo','#EF4444'); } };
+  reader.readAsText(f);
+}
+function resetAll(){ if(confirm('Apagar TODOS os dados? Nao pode ser desfeito.')){ localStorage.removeItem(SK); location.reload(); } }
+
+// ══════════════════════════════════════════════════════
+// PWA MANIFEST
+// ══════════════════════════════════════════════════════
+(function(){
+  var m={name:'InvestRafa',short_name:'InvestRafa',description:'Painel de investimentos B3',start_url:'.',display:'standalone',background_color:'#080B12',theme_color:'#080B12',
+    icons:[{src:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23080B12'/%3E%3Ctext y='72' x='12' font-size='70'%3E%F0%9F%93%88%3C/text%3E%3C/svg%3E",sizes:'512x512',type:'image/svg+xml'}]};
+  var blob=new Blob([JSON.stringify(m)],{type:'application/manifest+json'});
+  document.getElementById('mflink').href=URL.createObjectURL(blob);
+})();
+
+// ══════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded',function(){
+  loadMarket();
+  renderPort();
+  renderCal();
+  calcFc();
+  renderCfg();
+  setInterval(loadMarket,60000); // atualiza cotações a cada 1 minuto
+});
+</script>
+</body>
+</html>
