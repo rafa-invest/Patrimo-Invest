@@ -126,11 +126,11 @@ body{font-family:-apple-system,system-ui,sans-serif;background:var(--bg);color:v
       <span id="ibov-pct" style="font-size:13px;margin-left:8px;font-weight:600">—</span>
     </div>
     <div class="period-tabs" id="ibov-periods">
-      <button class="ptab on" onclick="setIbovPeriod('1d',this)">1D</button>
-      <button class="ptab" onclick="setIbovPeriod('5d',this)">5D</button>
-      <button class="ptab" onclick="setIbovPeriod('1mo',this)">1M</button>
+      <button class="ptab on" onclick="setIbovPeriod('1mo',this)">1M</button>
       <button class="ptab" onclick="setIbovPeriod('3mo',this)">3M</button>
+      <button class="ptab" onclick="setIbovPeriod('6mo',this)">6M</button>
       <button class="ptab" onclick="setIbovPeriod('1y',this)">1A</button>
+      <button class="ptab" onclick="setIbovPeriod('ytd',this)">YTD</button>
     </div>
     <div class="chart-wrap"><svg id="ibov-svg" class="chart-svg"></svg></div>
     <div id="ibov-range" style="display:flex;justify-content:space-between;font-size:10px;color:var(--tx3)"><span id="ibov-d1"></span><span id="ibov-d2"></span></div>
@@ -326,11 +326,11 @@ body{font-family:-apple-system,system-ui,sans-serif;background:var(--bg);color:v
   <div class="mhdr"><span class="mtitle" id="sc-title">Gráfico</span><button class="mclose" onclick="closeM('m-stk-chart')">&#215;</button></div>
   <div id="sc-info" style="margin-bottom:10px"></div>
   <div class="period-tabs" id="sc-periods">
-    <button class="ptab on" onclick="loadStkChart(null,'1d',this)">1D</button>
-    <button class="ptab" onclick="loadStkChart(null,'5d',this)">5D</button>
-    <button class="ptab" onclick="loadStkChart(null,'1mo',this)">1M</button>
+    <button class="ptab on" onclick="loadStkChart(null,'1mo',this)">1M</button>
     <button class="ptab" onclick="loadStkChart(null,'3mo',this)">3M</button>
+    <button class="ptab" onclick="loadStkChart(null,'6mo',this)">6M</button>
     <button class="ptab" onclick="loadStkChart(null,'1y',this)">1A</button>
+    <button class="ptab" onclick="loadStkChart(null,'ytd',this)">YTD</button>
   </div>
   <div class="chart-wrap"><svg id="sc-svg" class="chart-svg"></svg></div>
   <div id="sc-range" style="display:flex;justify-content:space-between;font-size:10px;color:var(--tx3)"><span id="sc-d1"></span><span id="sc-d2"></span></div>
@@ -472,28 +472,33 @@ function apiURL(path){
 async function loadMarket(){
   document.getElementById('mkt-st').textContent='Atualizando...';
   document.getElementById('mkt-st').className='chip badge-n';
-  var tks=[...new Set(TOP30)].slice(0,10); // 10 acoes principais
+  var tks=[...new Set(TOP30)].slice(0,10);
   var results=[];
   try{
-    // Plano gratuito brapi: 1 ativo por requisicao
-    // Busca em paralelo, 1 por vez
-    var promises=tks.map(function(tk){
-      return fetch(apiURL('/quote/'+tk))
-        .then(function(r){ return r.json(); })
-        .then(function(j){ if(j.results&&j.results[0]) return j.results[0]; return null; })
-        .catch(function(){ return null; });
-    });
-    var all=await Promise.all(promises);
-    results=all.filter(function(x){ return x!==null; });
+    // Busca sequencial para respeitar rate limit do plano gratuito
+    for(var i=0;i<tks.length;i++){
+      try{
+        var r=await fetch(apiURL('/quote/'+tks[i]));
+        var j=await r.json();
+        if(j.results&&j.results[0]){
+          results.push(j.results[0]);
+          D.prices[j.results[0].symbol]=j.results[0].regularMarketPrice;
+          D.chartCache[j.results[0].symbol+'_quote']=j.results[0];
+        }
+        // small delay to avoid rate limiting
+        if(i<tks.length-1) await new Promise(function(res){ setTimeout(res,200); });
+      }catch(e2){}
+    }
     if(results.length>0){
-      results.forEach(function(x){ D.prices[x.symbol]=x.regularMarketPrice; D.chartCache[x.symbol+'_quote']=x; });
       save();
       renderMarket(results);
       var now=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
       document.getElementById('mkt-time').innerHTML='<span class="ldot"></span>'+now+' ao vivo';
       document.getElementById('mkt-st').className='chip badge-up';
-      document.getElementById('mkt-st').textContent='B3 ao vivo';
+      document.getElementById('mkt-st').textContent='B3 ao vivo ('+results.length+'/'+tks.length+')';
     }else{
+      document.getElementById('mkt-time').innerHTML='<span class="ldot"></span>Sem conexao';
+      document.getElementById('mkt-st').textContent='Offline';
       renderMarketFromCache();
     }
   }catch(e){
@@ -501,7 +506,7 @@ async function loadMarket(){
     document.getElementById('mkt-st').textContent='Offline';
     renderMarketFromCache();
   }
-  setTimeout(function(){ loadIbovChart('1d'); }, 300);
+  setTimeout(function(){ loadIbovChart('1mo'); }, 300);
 }
 
 function renderMarket(results){
@@ -513,7 +518,7 @@ function renderMarket(results){
       +'<div class="tbadge" style="color:'+(up?'#22C55E':'#EF4444')+'">'+d.symbol.slice(0,5)+'</div>'
       +'<div class="tinfo"><div class="tname">'+d.symbol+'</div><div class="tsub">'+(d.shortName||'')+' &middot; Vol: '+vol+'</div></div>'
       +'<div class="tprice"><div class="tval">'+brl(d.regularMarketPrice)+'</div>'
-      +'<div class="tchg '+(up?'up':'down')+'">'+pct(d.regularMarketChangePercent)+' hoje</div></div>'
+      +'<div class="tchg '+(up?'up':'down')+'">'+(d.regularMarketChange>0?'+':'')+String((d.regularMarketChange||0).toFixed(2))+' ('+pct(d.regularMarketChangePercent||0)+')</div></div>'
       +'</div>';
   });
   document.getElementById('mkt-list').innerHTML=html||'<div style="text-align:center;padding:20px;color:var(--tx3)">Sem dados</div>';
@@ -573,44 +578,98 @@ function doSearch(){
 // ══════════════════════════════════════════════════════
 function drawChart(svgId,data,color,rangeIds){
   var svg=document.getElementById(svgId);
-  if(!svg||!data||data.length<2){ if(svg) svg.innerHTML='<text x="50%" y="50%" fill="#4A5568" text-anchor="middle" font-size="12">Sem dados históricos</text>'; return; }
-  var rect=svg.getBoundingClientRect(); var W=rect.width>10?rect.width:svg.parentElement?svg.parentElement.getBoundingClientRect().width||320:320; var H=rect.height>10?rect.height:150;
-  if(W<10) W=320; if(H<10) H=150;
-  var prices=data.map(function(d){ return d.close||d.price||d; });
+  if(!svg||!data||data.length<2){ if(svg) svg.innerHTML='<text x="50%" y="50%" fill="#4A5568" text-anchor="middle" font-size="12">Sem dados</text>'; return; }
+  var rect=svg.getBoundingClientRect();
+  var W=rect.width>10?rect.width:(svg.parentElement?svg.parentElement.getBoundingClientRect().width||320:320);
+  var H=rect.height>10?rect.height:150;
+  var prices=data.map(function(d){ return typeof d==='object'?(d.close||d.price||0):d; });
+  var dates=data.map(function(d){
+    var ts=typeof d==='object'?(d.date||d.timestamp):null;
+    if(!ts) return '';
+    var dd=ts.toString().length<=10?new Date(ts*1000):new Date(ts);
+    return dd.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit'});
+  });
   var min=Math.min.apply(null,prices), max=Math.max.apply(null,prices);
-  var range=max-min||1;
-  var pad=12;
+  var rng=max-min||1;
+  var pL=8,pR=8,pT=10,pB=26;
+  var cW=W-pL-pR, cH=H-pT-pB;
   var pts=prices.map(function(p,i){
-    var x=pad+(i/(prices.length-1))*(W-pad*2);
-    var y=pad+((max-p)/range)*(H-pad*2);
-    return x.toFixed(1)+','+y.toFixed(1);
+    return (pL+(i/(prices.length-1||1))*cW).toFixed(1)+','+(pT+((max-p)/rng)*cH).toFixed(1);
   }).join(' ');
-  var first=prices[0], last=prices[prices.length-1];
-  var isUp=last>=first;
-  var lineColor=color||(isUp?'#22C55E':'#EF4444');
-  var gradId='g'+svgId;
-  svg.innerHTML='<defs><linearGradient id="'+gradId+'" x1="0" y1="0" x2="0" y2="1">'
-    +'<stop offset="0%" stop-color="'+lineColor+'" stop-opacity="0.3"/>'
-    +'<stop offset="100%" stop-color="'+lineColor+'" stop-opacity="0.02"/>'
+  var isUp=(prices[prices.length-1]||0)>=(prices[0]||0);
+  var lc=color||(isUp?'#22C55E':'#EF4444');
+  var gid='g'+svgId, hid=svgId+'_h';
+  var labs='';
+  var lc2=Math.min(5,data.length);
+  for(var li=0;li<lc2;li++){
+    var li2=Math.round(li/(lc2-1||1)*(data.length-1));
+    var lx=(pL+(li2/(prices.length-1||1))*cW).toFixed(1);
+    labs+='<text x="'+lx+'" y="'+(H-5)+'" fill="#4A5568" font-size="9" text-anchor="middle">'+(dates[li2]||'')+'</text>';
+  }
+  svg.innerHTML=''
+    +'<defs><linearGradient id="'+gid+'" x1="0" y1="0" x2="0" y2="1">'
+    +'<stop offset="0%" stop-color="'+lc+'" stop-opacity="0.35"/>'
+    +'<stop offset="100%" stop-color="'+lc+'" stop-opacity="0.02"/>'
     +'</linearGradient></defs>'
-    +'<polyline points="'+pts+' '+( pad+(W-pad*2)).toFixed(1)+','+(H-pad)+' '+pad+','+(H-pad)+'" fill="url(#'+gradId+')" stroke="none"/>'
-    +'<polyline points="'+pts+'" fill="none" stroke="'+lineColor+'" stroke-width="1.8" stroke-linejoin="round"/>';
+    +'<polyline points="'+pts+' '+(pL+cW).toFixed(1)+','+(pT+cH).toFixed(1)+' '+pL+','+(pT+cH).toFixed(1)+'" fill="url(#'+gid+')" stroke="none"/>'
+    +'<polyline points="'+pts+'" fill="none" stroke="'+lc+'" stroke-width="2" stroke-linejoin="round"/>'
+    +labs
+    +'<line id="'+hid+'vl" x1="0" y1="'+pT+'" x2="0" y2="'+(pT+cH)+'" stroke="#64748B" stroke-width="1" stroke-dasharray="3,3" opacity="0" pointer-events="none"/>'
+    +'<circle id="'+hid+'dt" r="4" fill="'+lc+'" stroke="#080B12" stroke-width="2" opacity="0" pointer-events="none"/>'
+    +'<rect id="'+hid+'bx" width="120" height="40" rx="5" fill="#1A1F2E" stroke="#2A3245" stroke-width="1" opacity="0" pointer-events="none"/>'
+    +'<text id="'+hid+'tv" fill="#F8FAFC" font-size="12" font-weight="bold" opacity="0" pointer-events="none"/>'
+    +'<text id="'+hid+'td" fill="#64748B" font-size="9" opacity="0" pointer-events="none"/>'
+    +'<rect id="'+hid+'hr" x="'+pL+'" y="'+pT+'" width="'+cW+'" height="'+cH+'" fill="transparent" cursor="crosshair"/>';
+  var ehr=document.getElementById(hid+'hr');
+  var evl=document.getElementById(hid+'vl');
+  var edt=document.getElementById(hid+'dt');
+  var ebx=document.getElementById(hid+'bx');
+  var etv=document.getElementById(hid+'tv');
+  var etd=document.getElementById(hid+'td');
+  function showTip(e){
+    var sr=svg.getBoundingClientRect();
+    var cx=(e.touches?e.touches[0].clientX:e.clientX)-sr.left;
+    var rx=Math.max(0,Math.min(cW,cx-pL));
+    var idx=Math.round((rx/cW)*(prices.length-1));
+    if(idx<0)idx=0; if(idx>=prices.length)idx=prices.length-1;
+    var px=pL+(idx/(prices.length-1||1))*cW;
+    var py=pT+((max-prices[idx])/rng)*cH;
+    evl.setAttribute('x1',px); evl.setAttribute('x2',px); evl.setAttribute('opacity','1');
+    edt.setAttribute('cx',px); edt.setAttribute('cy',py); edt.setAttribute('opacity','1');
+    var tw=120, th=40, tx=px+10, ty=py-50;
+    if(tx+tw>W-pR)tx=px-tw-10;
+    if(ty<pT)ty=pT+2;
+    ebx.setAttribute('x',tx); ebx.setAttribute('y',ty); ebx.setAttribute('opacity','0.95');
+    etv.setAttribute('x',tx+8); etv.setAttribute('y',ty+16); etv.setAttribute('opacity','1');
+    etv.textContent='R$ '+prices[idx].toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+    etd.setAttribute('x',tx+8); etd.setAttribute('y',ty+30); etd.setAttribute('opacity','1');
+    etd.textContent=dates[idx]||'';
+  }
+  function hideTip(){
+    evl.setAttribute('opacity','0'); edt.setAttribute('opacity','0');
+    ebx.setAttribute('opacity','0'); etv.setAttribute('opacity','0'); etd.setAttribute('opacity','0');
+  }
+  if(ehr){
+    ehr.addEventListener('mousemove',showTip);
+    ehr.addEventListener('mouseleave',hideTip);
+    ehr.addEventListener('touchmove',function(e){e.preventDefault();showTip(e);},{passive:false});
+    ehr.addEventListener('touchend',hideTip);
+  }
   if(rangeIds&&data.length>0){
-    var fmt=function(ts){ if(!ts) return ''; var d=ts.toString().length<=10?new Date(ts*1000):new Date(ts); return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}); };
-    var el1=document.getElementById(rangeIds[0]), el2=document.getElementById(rangeIds[1]);
-    if(el1) el1.textContent=fmt(data[0].date||data[0].timestamp);
-    if(el2) el2.textContent=fmt(data[data.length-1].date||data[data.length-1].timestamp);
+    var r1=document.getElementById(rangeIds[0]);
+    var r2=document.getElementById(rangeIds[1]);
+    if(r1)r1.textContent=dates[0]||'';
+    if(r2)r2.textContent=dates[data.length-1]||'';
   }
 }
 
 // ══════════════════════════════════════════════════════
 // IBOV CHART
 // ══════════════════════════════════════════════════════
-var ibovPeriod='1d';
+var ibovPeriod='1mo';
 async function loadIbovChart(period){
   ibovPeriod=period||ibovPeriod;
-  var intMap={'1d':'5m','5d':'15m','1mo':'1d','3mo':'1d','1y':'1wk'};
-  var intv=intMap[ibovPeriod]||'1d';
+  var intv='1d';
   try{
     var r=await fetch(apiURL('/quote/%5EBVSP?range='+ibovPeriod+'&interval='+intv+''));
     var j=await r.json();
@@ -667,7 +726,7 @@ async function loadStkChart(ticker,period,btn){
     document.querySelectorAll('#sc-periods .ptab').forEach(function(b){ b.classList.remove('on'); });
     btn.classList.add('on');
   }
-  var intMap={'1d':'5m','5d':'15m','1mo':'1d','3mo':'1d','1y':'1wk'};
+  var intv='1d';
   var intv=intMap[period]||'1d';
   document.getElementById('sc-svg').innerHTML='<text x="50%" y="50%" fill="#4A5568" text-anchor="middle" font-size="12">Carregando...</text>';
   try{
