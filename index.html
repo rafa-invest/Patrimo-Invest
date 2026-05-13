@@ -146,7 +146,7 @@ body{font-family:-apple-system,system-ui,sans-serif;background:var(--bg);color:v
   <!-- Top 30 -->
   <div class="card" style="padding:14px 16px">
     <div class="shdr">
-      <span class="ctitle" style="margin:0">Top 30 Ações B3</span>
+      <span class="ctitle" style="margin:0">Top 10 Ações B3 (ao vivo)</span>
       <span id="mkt-st" class="chip badge-n">—</span>
     </div>
     <div id="mkt-list"><div style="text-align:center;padding:30px;color:var(--tx3)"><div class="spin"></div><br><br>Carregando cotações...</div></div>
@@ -472,21 +472,32 @@ function apiURL(path){
 async function loadMarket(){
   document.getElementById('mkt-st').textContent='Atualizando...';
   document.getElementById('mkt-st').className='chip badge-n';
-  var tks=[...new Set(TOP30)].slice(0,20).join(',');
+  var tks=[...new Set(TOP30)].slice(0,10); // 10 acoes principais
+  var results=[];
   try{
-    var r=await fetch(apiURL('/quote/'+tks));
-    var j=await r.json();
-    if(j.results&&j.results.length>0){
-      j.results.forEach(function(x){ D.prices[x.symbol]=x.regularMarketPrice; D.chartCache[x.symbol+'_quote']=x; });
+    // Plano gratuito brapi: 1 ativo por requisicao
+    // Busca em paralelo, 1 por vez
+    var promises=tks.map(function(tk){
+      return fetch(apiURL('/quote/'+tk))
+        .then(function(r){ return r.json(); })
+        .then(function(j){ if(j.results&&j.results[0]) return j.results[0]; return null; })
+        .catch(function(){ return null; });
+    });
+    var all=await Promise.all(promises);
+    results=all.filter(function(x){ return x!==null; });
+    if(results.length>0){
+      results.forEach(function(x){ D.prices[x.symbol]=x.regularMarketPrice; D.chartCache[x.symbol+'_quote']=x; });
       save();
-      renderMarket(j.results);
+      renderMarket(results);
       var now=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
       document.getElementById('mkt-time').innerHTML='<span class="ldot"></span>'+now+' ao vivo';
       document.getElementById('mkt-st').className='chip badge-up';
       document.getElementById('mkt-st').textContent='B3 ao vivo';
+    }else{
+      renderMarketFromCache();
     }
   }catch(e){
-    document.getElementById('mkt-time').innerHTML='<span class="ldot"></span>Sem conexão';
+    document.getElementById('mkt-time').innerHTML='<span class="ldot"></span>Sem conexao';
     document.getElementById('mkt-st').textContent='Offline';
     renderMarketFromCache();
   }
