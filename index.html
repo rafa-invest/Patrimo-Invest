@@ -463,9 +463,10 @@ var TOP30=['PETR4','VALE3','ITUB4','BBDC4','ABEV3','WEGE3','RENT3','BBAS3','SUZB
 
 function apiURL(path){
   var base='https://brapi.dev/api';
-  var tok=D.token||HARDCODED_TOKEN||'';
+  var tok='xo3upEvNqVsNQYdM7idyky';
+  if(D&&D.token&&D.token.length>5) tok=D.token;
   var sep=path.indexOf('?')>=0?'&':'?';
-  return base+path+(tok?sep+'token='+tok:'');
+  return base+path+sep+'token='+tok;
 }
 
 async function loadMarket(){
@@ -1112,12 +1113,15 @@ function resetAll(){ if(confirm('Apagar TODOS os dados? Nao pode ser desfeito.')
 // INIT
 // ══════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded',function(){
+  // Force token always
+  D.token='xo3upEvNqVsNQYdM7idyky';
+  save();
   loadMarket();
   renderPort();
   renderCal();
   calcFc();
   renderCfg();
-  setInterval(loadMarket,60000); // atualiza cotações a cada 1 minuto
+  setInterval(loadMarket,60000);
 });
 </script>
 </body>
