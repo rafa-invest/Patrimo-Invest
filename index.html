@@ -316,9 +316,9 @@ button:active{transform:translateY(1px) scale(.99)}
 #toast.show{transform:translateX(-50%) translateY(0)}
 .ldot{width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;animation:pulse 2s infinite;margin-right:6px;box-shadow:0 0 0 4px rgba(18,163,106,.13)}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.55;transform:scale(1.15)}}
-.cgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:8px}
+.cgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:8px}
 .cdh{text-align:center;font-size:10px;color:var(--tx3);font-weight:850;padding:4px 0;text-transform:uppercase;letter-spacing:.08em}
-.cday{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:12px;font-size:12px;position:relative;border:1px solid transparent;transition:background .18s ease,border-color .18s ease,transform .18s ease}
+.cday{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:10px;font-size:11px;position:relative;border:1px solid transparent;transition:background .18s ease,border-color .18s ease,transform .18s ease}
 .cday.empty{background:transparent}
 .cday.normal{background:rgba(255,255,255,.035);color:var(--tx2);border-color:rgba(148,163,184,.08)}
 .cday.normal:hover{background:rgba(212,175,55,.08);border-color:rgba(212,175,55,.18)}
@@ -426,6 +426,42 @@ input[type="color"]{min-height:44px}
   .card{border-radius:19px;padding:15px}
 }
 
+
+/* Ajustes v3 — mercado, calendário e seletores profissionais */
+.market-session{font-weight:800}
+.market-session.open{color:var(--green)}
+.market-session.pre{color:var(--gold)}
+.market-session.closed{color:var(--tx3)}
+.market-session.after{color:var(--blue)}
+.cal-card{max-width:720px;margin:0 auto 14px;padding:12px!important}
+.cal-legend{max-width:720px;margin:0 auto 14px;display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--tx2)}
+.cal-legend .lg{display:inline-flex;align-items:center;gap:6px}
+.cal-legend .box{display:inline-block;width:10px;height:10px;border-radius:3px;border:1px solid rgba(255,255,255,.18)}
+.cal-legend .div{background:rgba(18,163,106,.26);border-color:rgba(18,163,106,.42)}
+.cal-legend .buy{background:rgba(47,111,237,.24);border-color:rgba(47,111,237,.42)}
+.cal-legend .dc{background:rgba(217,74,74,.24);border-color:rgba(217,74,74,.42)}
+.cal-card .cgrid{gap:4px}
+.cal-card .cday{border-radius:10px;font-size:11px;min-height:44px}
+.mini-step{color:var(--tx)!important;font-weight:850;cursor:pointer;transition:all .18s ease}
+.mini-step:hover{background:rgba(212,175,55,.10)!important;border-color:rgba(212,175,55,.35)!important;color:#F4E6B5!important}
+.ticker-picker{position:relative;width:100%}
+.ticker-choice{width:100%;min-height:48px;background:var(--bg3);border:1px solid var(--bd2);border-radius:12px;color:var(--tx);display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 12px;text-align:left;cursor:pointer;transition:all .18s ease}
+.ticker-choice:hover,.ticker-choice.open{border-color:rgba(212,175,55,.55);box-shadow:0 0 0 4px rgba(212,175,55,.08)}
+.ticker-selected{display:flex;align-items:center;gap:10px;min-width:0}
+.ticker-logo{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,rgba(212,175,55,.22),rgba(47,111,237,.16));border:1px solid rgba(255,255,255,.10);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;color:var(--gold);font-size:10px;font-weight:900;letter-spacing:.02em}
+.ticker-logo img{width:100%;height:100%;object-fit:cover;background:#fff}
+.ticker-main{font-size:13px;font-weight:900;line-height:1.1}
+.ticker-sub{font-size:10px;color:var(--tx3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:270px}
+.ticker-caret{color:var(--tx3);font-size:12px}
+.ticker-menu{display:none;position:absolute;left:0;right:0;top:calc(100% + 8px);max-height:290px;overflow:auto;background:#0B1422;border:1px solid rgba(148,163,184,.20);border-radius:14px;box-shadow:0 22px 55px rgba(0,0,0,.42);z-index:260;padding:6px}
+.ticker-menu.open{display:block}
+.ticker-option{width:100%;border:none;background:transparent;color:var(--tx);display:flex;align-items:center;gap:10px;padding:9px;border-radius:10px;cursor:pointer;text-align:left}
+.ticker-option:hover{background:rgba(212,175,55,.10)}
+.ticker-option .price{margin-left:auto;text-align:right;font-size:11px;color:var(--tx2);font-weight:800}
+.token-alert{background:rgba(212,175,55,.10);border:1px solid rgba(212,175,55,.30);color:#F4E6B5;border-radius:12px;padding:11px 12px;font-size:12px;line-height:1.5;margin-top:10px}
+.logo-badge{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,rgba(212,175,55,.18),rgba(47,111,237,.12));border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;color:var(--gold);font-weight:900;font-size:10px}
+.logo-badge img{width:100%;height:100%;object-fit:contain;background:#fff;padding:3px}
+
 </style>
 </head>
 <body>
@@ -508,11 +544,11 @@ input[type="color"]{min-height:44px}
     <span id="cal-lbl" style="font-size:15px;font-weight:700"></span>
     <button class="btn btn-ghost btn-sm" onclick="nextMo()">&#8250;</button>
   </div>
-  <div class="card" style="padding:14px"><div class="cgrid" id="cal-hdr"></div><div class="cgrid" id="cal-grid"></div></div>
-  <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:14px;font-size:11px;color:var(--tx2)">
-    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:rgba(34,197,94,.2);margin-right:4px"></span>Dividendo</span>
-    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:rgba(59,130,246,.2);margin-right:4px"></span>Compra</span>
-    <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:rgba(239,68,68,.15);margin-right:4px"></span>Data-com</span>
+  <div class="card cal-card"><div class="cgrid" id="cal-hdr"></div><div class="cgrid" id="cal-grid"></div></div>
+  <div class="cal-legend">
+    <span class="lg"><span class="box div"></span>Dividendo / JCP</span>
+    <span class="lg"><span class="box buy"></span>Compra planejada</span>
+    <span class="lg"><span class="box dc"></span>Data-com</span>
   </div>
   <div class="card"><div class="ctitle" id="ev-mo-title">Eventos do Mês</div><div id="ev-list"></div></div>
   <div class="card"><div class="ctitle">Previsão de Proventos (cotação atual)</div><div id="div-prev"></div></div>
@@ -587,7 +623,7 @@ input[type="color"]{min-height:44px}
 <div class="page" id="page-radar">
   <div class="phdr"><div><div class="ptitle">Radar</div><div class="psub">Ações, notícias e roadmap profissional</div></div></div>
   <div class="card"><div class="ctitle">Pesquisar notícias por ativo</div>
-    <div class="fr2"><div class="field" style="margin:0"><label>Ticker</label><input list="ev-tickers" id="news-ticker" placeholder="PETR4" oninput="this.value=this.value.toUpperCase()"></div><div class="field" style="margin:0"><label>Fonte</label><select id="news-source"><option value="infomoney">InfoMoney</option><option value="statusinvest">Status Invest</option><option value="ri">RI / Google</option></select></div></div>
+    <div class="fr2"><div class="field" style="margin:0"><label>Ativo</label><div class="ticker-picker"><button type="button" class="ticker-choice" id="news-ticker-choice" onclick="toggleTickerMenu('news')"><span class="ticker-selected" id="news-ticker-label">Selecione uma ação</span><span class="ticker-caret">▼</span></button><input type="hidden" id="news-ticker" value="PETR4"><div class="ticker-menu" id="news-ticker-menu"></div></div></div><div class="field" style="margin:0"><label>Fonte</label><select id="news-source"><option value="infomoney">InfoMoney</option><option value="statusinvest">Status Invest</option><option value="ri">RI / Google</option></select></div></div>
     <button class="btn btn-blue" onclick="openNewsSearch()" style="margin-top:12px">Abrir notícias do ativo</button>
     <div class="notice">Para notícias automáticas dentro de um app comercial, o ideal é usar backend ou API de notícias licenciada. Em site estático, muitos portais bloqueiam leitura direta por CORS.</div>
   </div>
@@ -653,6 +689,7 @@ input[type="color"]{min-height:44px}
     <div class="field" style="margin:0"><label>P.Médio R$</label><input type="number" id="stk-pm" placeholder="43.10" step="0.01"></div>
     <div class="field" style="margin:0"><label>DY % est.</label><input type="number" id="stk-dy" value="8" step="0.1"></div>
   </div>
+  <div class="field"><label>Data da compra / início da posição</label><input type="date" id="stk-date"></div>
   <div class="field"><label>Setor</label><select id="stk-sec"><option>Financeiro</option><option>Energia</option><option>Telecom</option><option>Petroleo</option><option>Saneamento</option><option>Varejo</option><option>Saude</option><option>Mineracao</option><option>Outros</option></select></div>
   <button class="btn btn-green" onclick="addStk()">Adicionar Posição</button>
 </div></div>
@@ -706,7 +743,7 @@ input[type="color"]{min-height:44px}
   <div class="mhdr"><span class="mtitle">Novo Evento</span><button class="mclose" onclick="closeM('m-add-ev')">&#215;</button></div>
   <div class="field"><label>Tipo</label><select id="ev-tp" onchange="eventTickerChanged()"><option value="div">Dividendo / JCP</option><option value="buy">Compra planejada</option><option value="dc">Data-com</option><option value="other">Outro</option></select></div>
   <div class="fr2">
-    <div class="field" style="margin:0"><label>Ticker</label><input list="ev-tickers" type="text" id="ev-tk" placeholder="ITUB4" oninput="this.value=this.value.toUpperCase();eventTickerChanged()"><datalist id="ev-tickers"></datalist></div>
+    <div class="field" style="margin:0"><label>Ativo</label><div class="ticker-picker"><button type="button" class="ticker-choice" id="ev-ticker-choice" onclick="toggleTickerMenu('ev')"><span class="ticker-selected" id="ev-ticker-label">Selecione uma ação</span><span class="ticker-caret">▼</span></button><input type="hidden" id="ev-tk" value=""><div class="ticker-menu" id="ev-ticker-menu"></div></div></div>
     <div class="field" style="margin:0"><label>Data</label><input type="date" id="ev-dt"></div>
   </div>
   <div class="fr2">
@@ -736,14 +773,15 @@ input[type="color"]{min-height:44px}
 // STORE
 // ══════════════════════════════════════════════════════
 var SK = 'rafa_v4';
-var HARDCODED_TOKEN = ''; // não deixe token fixo em repositório público
+var TOKEN_STORAGE_KEY = 'investrafa_brapi_token';
+var HARDCODED_TOKEN = ''; // por segurança, cole o token pela aba Config em vez de deixá-lo no GitHub
 var D = (function(){
   try{ 
     var r=localStorage.getItem(SK); 
     if(r){ 
       var parsed=JSON.parse(r); 
       // Always ensure token is set - overwrite if empty
-      if(typeof parsed.token==='undefined') parsed.token=HARDCODED_TOKEN;
+      if(!parsed.token) parsed.token=localStorage.getItem(TOKEN_STORAGE_KEY)||HARDCODED_TOKEN||'';
       return parsed; 
     } 
   }catch(e){}
@@ -754,10 +792,10 @@ var D = (function(){
       {id:'xp',name:'XP Investimentos',color:'#1B3A6B',type:'broker'}
     ],
     stocks:[
-      {id:'s1',bankId:'inter',ticker:'ITUB4',name:'Itau Unibanco',qty:3,pm:43.10,sector:'Financeiro',dy:8.3},
-      {id:'s2',bankId:'inter',ticker:'TAEE11',name:'Taesa',qty:6,pm:45.39,sector:'Energia',dy:11.2},
-      {id:'s3',bankId:'inter',ticker:'ITSA4',name:'Itausa',qty:5,pm:11.20,sector:'Financeiro',dy:7.1},
-      {id:'s4',bankId:'inter',ticker:'CSMG3',name:'Copasa',qty:2,pm:19.80,sector:'Saneamento',dy:7.5}
+      {id:'s1',bankId:'inter',ticker:'ITUB4',name:'Itaú Unibanco',qty:3,pm:43.10,sector:'Financeiro',dy:8.3,buyDate:'2026-01-01'},
+      {id:'s2',bankId:'inter',ticker:'TAEE11',name:'Taesa',qty:6,pm:45.39,sector:'Energia',dy:11.2,buyDate:'2026-01-01'},
+      {id:'s3',bankId:'inter',ticker:'ITSA4',name:'Itaúsa',qty:5,pm:11.20,sector:'Financeiro',dy:7.1,buyDate:'2026-01-01'},
+      {id:'s4',bankId:'inter',ticker:'CSMG3',name:'Copasa',qty:2,pm:19.80,sector:'Saneamento',dy:7.5,buyDate:'2026-01-01'}
     ],
     fi:[
       {id:'fi1',bankId:'nubank',name:'RDB 115% CDI',initialAmount:2400,rate:115,index:'CDI',date:'2026-04-01',notes:'Reserva emergencia',movs:[]}
@@ -771,8 +809,9 @@ var D = (function(){
       {id:'e6',type:'div',ticker:'EGIE3',date:'2026-10-15',value:1.90,qty:0,notes:'Div. semestral'}
     ],
     prices:{ITUB4:43.10,TAEE11:45.39,ITSA4:11.20,CSMG3:19.80,VIVT3:57.80,EGIE3:43.20,BBSE3:34.80,PETR4:47.50},
-    token:'',
-    chartCache:{}
+    token:localStorage.getItem(TOKEN_STORAGE_KEY)||'',
+    chartCache:{},
+    meta:{}
   };
 })();
 
@@ -821,8 +860,9 @@ function populateSel(id){
   var bkOpts = D.banks.map(function(b){ return '<option value="'+b.id+'">'+b.name+'</option>'; }).join('');
   if(id==='m-add-stk'){ var s=document.getElementById('stk-bank'); if(s) s.innerHTML=bkOpts; }
   if(id==='m-add-fi'){ var s=document.getElementById('fi-bank'); if(s) s.innerHTML=bkOpts; }
+  updateTickerMenus();
   var td=today();
-  ['fi-dt','ev-dt','mov-dt'].forEach(function(fid){
+  ['fi-dt','ev-dt','mov-dt','stk-date'].forEach(function(fid){
     var el=document.getElementById(fid); if(el&&!el.value) el.value=td;
   });
 }
@@ -831,10 +871,20 @@ function populateSel(id){
 // BRAPI FETCH
 // ══════════════════════════════════════════════════════
 var TOP30=['PETR4','VALE3','ITUB4','BBDC4','ABEV3','WEGE3','RENT3','BBAS3','SUZB3','RDOR3','GGBR4','MGLU3','TAEE11','EGIE3','BBSE3','VIVT3','CSMG3','ITSA4','KLBN11','BPAC11','EQTL3','CPLE6','SAPR11','TRPL4','FLRY3','HAPV3','PETR3','VALE3','LREN3','BEEF3'];
+var TICKER_META={
+  PETR4:{name:'Petrobras PN'},PETR3:{name:'Petrobras ON'},VALE3:{name:'Vale'},ITUB4:{name:'Itaú Unibanco'},ITSA4:{name:'Itaúsa'},BBDC4:{name:'Bradesco'},ABEV3:{name:'Ambev'},WEGE3:{name:'WEG'},RENT3:{name:'Localiza'},BBAS3:{name:'Banco do Brasil'},SUZB3:{name:'Suzano'},RDOR3:{name:"Rede D'Or"},GGBR4:{name:'Gerdau'},MGLU3:{name:'Magazine Luiza'},TAEE11:{name:'Taesa'},EGIE3:{name:'Engie Brasil'},BBSE3:{name:'BB Seguridade'},VIVT3:{name:'Vivo / Telefônica Brasil'},CSMG3:{name:'Copasa'},KLBN11:{name:'Klabin'},BPAC11:{name:'BTG Pactual'},EQTL3:{name:'Equatorial Energia'},CPLE6:{name:'Copel'},SAPR11:{name:'Sanepar'},TRPL4:{name:'ISA Energia Brasil'},FLRY3:{name:'Fleury'},HAPV3:{name:'Hapvida'},LREN3:{name:'Lojas Renner'},BEEF3:{name:'Minerva'}
+};
+function tickerMeta(tk){ tk=String(tk||'').toUpperCase(); var fromD=(D.meta&&D.meta[tk])||{}; var base=TICKER_META[tk]||{}; return {ticker:tk,name:fromD.name||base.name||tk,logo:fromD.logo||base.logo||'',price:D.prices?D.prices[tk]:0}; }
+function updateQuoteMeta(res){ if(!res||!res.symbol) return; var tk=res.symbol; if(!D.meta) D.meta={}; D.meta[tk]={name:res.longName||res.shortName||tickerMeta(tk).name||tk,logo:res.logourl||res.logoUrl||res.logo||tickerMeta(tk).logo||''}; if(res.regularMarketPrice) D.prices[tk]=res.regularMarketPrice; }
+function logoHTML(tk,cls){ var m=tickerMeta(tk); var initials=(tk||'--').slice(0,4); if(m.logo) return '<span class="'+(cls||'logo-badge')+'"><img src="'+m.logo+'" alt="'+tk+'"></span>'; return '<span class="'+(cls||'logo-badge')+'">'+initials+'</span>'; }
+function allTickerOptions(){ var set={}; TOP30.forEach(function(t){set[t]=true;}); (D.stocks||[]).forEach(function(st){set[st.ticker]=true;}); Object.keys(D.prices||{}).forEach(function(t){set[t]=true;}); return Object.keys(set).sort().map(tickerMeta); }
+function getToken(){ var tok=(D&&D.token&&String(D.token).trim())||localStorage.getItem(TOKEN_STORAGE_KEY)||HARDCODED_TOKEN||''; return tok.trim(); }
+function hasToken(){ return getToken().length>5; }
+
 
 function apiURL(path){
   var base='https://brapi.dev/api';
-  var tok=(D&&D.token&&D.token.length>5)?D.token:HARDCODED_TOKEN;
+  var tok=getToken();
   if(!tok) return base+path;
   var sep=path.indexOf('?')>=0?'&':'?';
   return base+path+sep+'token='+encodeURIComponent(tok);
@@ -846,10 +896,12 @@ async function quoteOne(ticker, opts){
   if(opts.range) q+=(q?'&':'?')+'range='+encodeURIComponent(opts.range);
   if(opts.interval) q+=(q?'&':'?')+'interval='+encodeURIComponent(opts.interval);
   if(opts.dividends) q+=(q?'&':'?')+'dividends=true';
+  if(!hasToken()) throw new Error('MISSING_TOKEN: configure o token brapi na aba Config');
   var r=await fetch(apiURL('/quote/'+encodeURIComponent(ticker)+q));
   var j=await r.json();
   if(j.error) throw new Error((j.code||'ERRO')+': '+(j.message||'Falha na API'));
   if(!j.results||!j.results[0]) throw new Error('Sem resultado para '+ticker);
+  updateQuoteMeta(j.results[0]);
   return j.results[0];
 }
 
@@ -858,7 +910,55 @@ var PERIOD_LABEL={'1d':'1 dia','5d':'5 dias','1mo':'1 mês','3mo':'3 meses'};
 function intervalForPeriod(p){ return '1d'; }
 function isRangeAllowed(p){ return PLAN_RANGES.indexOf(p)>=0; }
 
+function spNowParts(){
+  var parts={};
+  new Intl.DateTimeFormat('pt-BR',{timeZone:'America/Sao_Paulo',weekday:'short',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false,day:'2-digit',month:'2-digit',year:'numeric'}).formatToParts(new Date()).forEach(function(p){parts[p.type]=p.value;});
+  var weekdayEN=new Intl.DateTimeFormat('en-US',{timeZone:'America/Sao_Paulo',weekday:'short'}).format(new Date());
+  return {hour:+parts.hour,minute:+parts.minute,second:+parts.second,weekdayEN:weekdayEN,date:(parts.day+'/'+parts.month+'/'+parts.year),time:(parts.hour+':'+parts.minute)};
+}
+function b3Session(){
+  var n=spNowParts(); var min=n.hour*60+n.minute; var weekend=(n.weekdayEN==='Sat'||n.weekdayEN==='Sun');
+  if(weekend) return {key:'closed',label:'Bolsa fechada',detail:'fim de semana',time:n.time,open:false,color:'var(--tx3)'};
+  if(min>=570&&min<585) return {key:'pre',label:'Cancelamento de ofertas',detail:'09:30–09:45',time:n.time,open:false,color:'var(--gold)'};
+  if(min>=585&&min<600) return {key:'pre',label:'Pré-abertura',detail:'09:45–10:00',time:n.time,open:false,color:'var(--gold)'};
+  if(min>=600&&min<1015) return {key:'open',label:'Negociação regular aberta',detail:'10:00–16:55',time:n.time,open:true,color:'var(--green)'};
+  if(min>=1015&&min<1020) return {key:'pre',label:'Call de fechamento',detail:'16:55–17:00',time:n.time,open:true,color:'var(--gold)'};
+  if(min>=1045&&min<1050) return {key:'after',label:'Pré after-market',detail:'17:25–17:30',time:n.time,open:false,color:'var(--blue)'};
+  if(min>=1050&&min<1080) return {key:'after',label:'After-market aberto',detail:'17:30–18:00',time:n.time,open:true,color:'var(--blue)'};
+  return {key:'closed',label:'Bolsa fechada',detail:'próxima abertura 09:30',time:n.time,open:false,color:'var(--tx3)'};
+}
+function updateMarketStatus(extra){
+  var el=document.getElementById('mkt-time'); if(!el) return;
+  var s=b3Session();
+  el.innerHTML='<span class="ldot" style="background:'+s.color+';box-shadow:0 0 0 4px rgba(212,175,55,.10)"></span><span class="market-session '+s.key+'">'+s.label+'</span> · '+s.detail+' · '+s.time+' BRT'+(extra?' · '+extra:'');
+}
+function synthesizeIntraday(res,period){
+  var hist=res.historicalDataPrice||[];
+  if(hist.length>1) return hist;
+  if(period==='1d'&&res.regularMarketOpen&&res.regularMarketPrice){
+    var now=Math.floor(Date.now()/1000);
+    return [{date:now-21600,close:res.regularMarketOpen},{date:now,close:res.regularMarketPrice}];
+  }
+  return hist;
+}
+async function quoteWithHistory(tk,period){
+  try{
+    return await quoteOne(tk,{range:period,interval:(period==='1d'?'5m':intervalForPeriod(period))});
+  }catch(e){
+    if(period==='1d') return await quoteOne(tk,{range:'1d',interval:'1d'});
+    throw e;
+  }
+}
+
 async function loadMarket(){
+  updateMarketStatus();
+  if(!hasToken()){
+    document.getElementById('mkt-st').textContent='Token pendente';
+    document.getElementById('mkt-st').className='chip badge-n';
+    renderMarketFromCache();
+    var svg=document.getElementById('ibov-svg'); if(svg) svg.innerHTML='<text x="50%" y="50%" fill="#64748B" text-anchor="middle" font-size="12">Configure o token brapi na aba Config para carregar o gráfico</text>';
+    return;
+  }
   document.getElementById('mkt-st').textContent='Atualizando...';
   document.getElementById('mkt-st').className='chip badge-n';
   var tks=[...new Set(TOP30)].slice(0,10);
@@ -871,7 +971,7 @@ async function loadMarket(){
         var j=await r.json();
         if(j.results&&j.results[0]){
           results.push(j.results[0]);
-          D.prices[j.results[0].symbol]=j.results[0].regularMarketPrice;
+          updateQuoteMeta(j.results[0]);
           D.chartCache[j.results[0].symbol+'_quote']=j.results[0];
         }
         // small delay to avoid rate limiting
@@ -882,16 +982,16 @@ async function loadMarket(){
       save();
       renderMarket(results);
       var now=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
-      document.getElementById('mkt-time').innerHTML='<span class="ldot"></span>'+now+' ao vivo';
+      updateMarketStatus(now+' cotação')
       document.getElementById('mkt-st').className='chip badge-up';
       document.getElementById('mkt-st').textContent='B3 ao vivo ('+results.length+'/'+tks.length+')';
     }else{
-      document.getElementById('mkt-time').innerHTML='<span class="ldot"></span>Sem conexao';
+      updateMarketStatus('sem conexão')
       document.getElementById('mkt-st').textContent='Offline';
       renderMarketFromCache();
     }
   }catch(e){
-    document.getElementById('mkt-time').innerHTML='<span class="ldot"></span>Sem conexao';
+    updateMarketStatus('sem conexão')
     document.getElementById('mkt-st').textContent='Offline';
     renderMarketFromCache();
   }
@@ -904,8 +1004,8 @@ function renderMarket(results){
     var up=d.regularMarketChangePercent>=0;
     var vol=d.regularMarketVolume?(d.regularMarketVolume/1e6).toFixed(1)+'M':'—';
     html+='<div class="trow" onclick="openStkChart(\''+d.symbol+'\')" style="cursor:pointer">'
-      +'<div class="tbadge" style="color:'+(up?'#22C55E':'#EF4444')+'">'+d.symbol.slice(0,5)+'</div>'
-      +'<div class="tinfo"><div class="tname">'+d.symbol+'</div><div class="tsub">'+(d.shortName||'')+' &middot; Vol: '+vol+'</div></div>'
+      +logoHTML(d.symbol,'logo-badge')
+      +'<div class="tinfo"><div class="tname">'+d.symbol+'</div><div class="tsub">'+tickerMeta(d.symbol).name+' &middot; Vol: '+vol+'</div></div>'
       +'<div class="tprice"><div class="tval">'+brl(d.regularMarketPrice)+'</div>'
       +'<div class="tchg '+(up?'up':'down')+'">'+(d.regularMarketChange>0?'+':'')+String((d.regularMarketChange||0).toFixed(2))+' ('+pct(d.regularMarketChangePercent||0)+')</div></div>'
       +'</div>';
@@ -917,8 +1017,8 @@ function renderMarketFromCache(){
   var html='';
   TOP30.slice(0,10).forEach(function(tk){
     var p=D.prices[tk]||0;
-    html+='<div class="trow"><div class="tbadge">'+tk.slice(0,4)+'</div>'
-      +'<div class="tinfo"><div class="tname">'+tk+'</div><div class="tsub">Última cotação em cache</div></div>'
+    html+='<div class="trow">'+logoHTML(tk,'logo-badge')
+      +'<div class="tinfo"><div class="tname">'+tk+'</div><div class="tsub">'+tickerMeta(tk).name+' · última cotação em cache</div></div>'
       +'<div class="tprice"><div class="tval">'+(p?brl(p):'—')+'</div></div></div>';
   });
   document.getElementById('mkt-list').innerHTML=html;
@@ -940,12 +1040,12 @@ function doSearch(){
       var j=await r.json();
       if(j.results&&j.results[0]){
         var d=j.results[0]; var up=d.regularMarketChangePercent>=0;
-        D.prices[d.symbol]=d.regularMarketPrice; D.chartCache[d.symbol+'_quote']=d; save();
+        updateQuoteMeta(d); D.chartCache[d.symbol+'_quote']=d; save();
         var min52=d.fiftyTwoWeekLow?brl(d.fiftyTwoWeekLow):'—';
         var max52=d.fiftyTwoWeekHigh?brl(d.fiftyTwoWeekHigh):'—';
         res.innerHTML='<div class="trow" onclick="openStkChart(\''+d.symbol+'\')" style="cursor:pointer">'
-          +'<div class="tbadge" style="color:'+(up?'#22C55E':'#EF4444')+'">'+d.symbol.slice(0,5)+'</div>'
-          +'<div class="tinfo"><div class="tname">'+d.symbol+' <span style="font-size:11px;color:var(--tx3)">'+( d.shortName||'')+'</span></div>'
+          +logoHTML(d.symbol,'logo-badge')
+          +'<div class="tinfo"><div class="tname">'+d.symbol+' <span style="font-size:11px;color:var(--tx3)">'+tickerMeta(d.symbol).name+'</span></div>'
           +'<div class="tsub">Toque para ver gráfico</div></div>'
           +'<div class="tprice"><div class="tval">'+brl(d.regularMarketPrice)+'</div>'
           +'<div class="tchg '+(up?'up':'down')+'">'+pct(d.regularMarketChangePercent)+'</div></div></div>'
@@ -1074,10 +1174,10 @@ async function loadIbovChart(period){
   ibovPeriod=period;
   var intv=intervalForPeriod(period);
   try{
-    var res=await quoteOne('^BVSP',{range:period,interval:intv});
+    var res=await quoteWithHistory('^BVSP',period);
     var price=res.regularMarketPrice||0;
     document.getElementById('ibov-price').textContent=price?Math.round(price).toLocaleString('pt-BR'):' — ';
-    var hist=res.historicalDataPrice||[];
+    var hist=synthesizeIntraday(res,period);
     var pChgPct=res.regularMarketChangePercent||0, pChgAbs=res.regularMarketChange||0;
     if(hist.length>1){
       var fc=hist[0].close||price, lc=hist[hist.length-1].close||price;
@@ -1136,12 +1236,12 @@ async function loadStkChart(ticker,period,btn){
   var intv=intervalForPeriod(period);
   document.getElementById('sc-svg').innerHTML='<text x="50%" y="50%" fill="#4A5568" text-anchor="middle" font-size="12">Carregando...</text>';
   try{
-    var res=await quoteOne(tk,{range:period,interval:intv});
+    var res=await quoteWithHistory(tk,period);
     var price=res.regularMarketPrice||0;
     var chgPct=res.regularMarketChangePercent||0;
-    D.prices[tk]=price; save();
-    document.getElementById('sc-title').textContent=(res.shortName||tk);
-    var hist=res.historicalDataPrice||[];
+    updateQuoteMeta(res); save();
+    document.getElementById('sc-title').textContent=tickerMeta(tk).name;
+    var hist=synthesizeIntraday(res,period);
     var periodChg=0, periodChgPct=chgPct;
     if(hist.length>1){
       var firstClose=hist[0].close||hist[0].price||price;
@@ -1271,9 +1371,9 @@ function renderPort(){
     document.getElementById('pos-list').innerHTML=stocks.map(function(s){
       var bcolor=s.bank?s.bank.color:'#94A3B8';
       return '<div class="trow" onclick="openStkChart(\''+s.ticker+'\')" style="cursor:pointer">'
-        +'<div class="tbadge" style="color:'+bcolor+'">'+s.ticker.slice(0,5)+'</div>'
+        +logoHTML(s.ticker,'logo-badge')
         +'<div class="tinfo"><div class="tname">'+s.ticker+' <span class="tag" style="background:'+bcolor+'22;color:'+bcolor+'">'+(s.bank?s.bank.name:'')+'</span></div>'
-        +'<div class="tsub">'+s.qty+' cotas &middot; PM: '+brl(s.pm)+' &middot; DY '+s.dy+'%</div></div>'
+        +'<div class="tsub">'+tickerMeta(s.ticker).name+' · '+s.qty+' cotas · PM: '+brl(s.pm)+' · DY '+s.dy+'%'+(s.buyDate?' · compra '+new Date(s.buyDate+'T12:00:00').toLocaleDateString('pt-BR'):'')+'</div></div>'
         +'<div style="text-align:right;flex-shrink:0">'
         +'<div style="font-size:13px;font-weight:700">'+K(s.total)+'</div>'
         +'<div style="font-size:11px;color:'+(s.pl>=0?'#22C55E':'#EF4444')+'">'+pct(s.perf)+' &middot; '+(s.pl>=0?'+':'')+brl(s.pl)+'</div></div>'
@@ -1313,11 +1413,12 @@ function renderPort(){
 function addStk(){
   var s={id:uid(),bankId:document.getElementById('stk-bank').value,
     ticker:document.getElementById('stk-tk').value.toUpperCase(),
-    name:document.getElementById('stk-nm').value,
+    name:document.getElementById('stk-nm').value||tickerMeta(document.getElementById('stk-tk').value.toUpperCase()).name,
     qty:+document.getElementById('stk-qt').value,
     pm:+document.getElementById('stk-pm').value,
     sector:document.getElementById('stk-sec').value,
-    dy:+document.getElementById('stk-dy').value};
+    dy:+document.getElementById('stk-dy').value,
+    buyDate:document.getElementById('stk-date').value||today()};
   if(!s.ticker||!s.pm){ toast('Preencha ticker e preco','#EF4444'); return; }
   D.stocks.push(s);
   if(!D.prices[s.ticker]) D.prices[s.ticker]=s.pm;
@@ -1568,7 +1669,7 @@ function calcFc(){
 // CONFIG
 // ══════════════════════════════════════════════════════
 function renderCfg(){
-  var tok=document.getElementById('cfg-token'); if(tok) tok.value=D.token||HARDCODED_TOKEN||'';
+  var tok=document.getElementById('cfg-token'); if(tok) tok.value=getToken()||'';
   var tp=document.getElementById('token-preview'); if(tp) tp.textContent=D.token?(D.token.slice(0,8)+'...'):'(sem token salvo neste navegador)';
   document.getElementById('banks-list').innerHTML=D.banks.map(function(b){
     return '<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--bg3)">'
@@ -1582,7 +1683,7 @@ function renderCfg(){
   // Update every minute
   setTimeout(function(){ var cd2=document.getElementById('cfg-date'); if(cd2) cd2.textContent=new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'})+' — '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}); },60000);
 }
-function saveToken(){ var t=document.getElementById('cfg-token').value.trim(); D.token=t||HARDCODED_TOKEN; save(); renderCfg(); toast('Token salvo!'); }
+function saveToken(){ var t=document.getElementById('cfg-token').value.trim(); D.token=t; try{ localStorage.setItem(TOKEN_STORAGE_KEY,t); }catch(e){} save(); renderCfg(); updateMarketStatus('token atualizado'); toast(t?'Token salvo!':'Token removido'); }
 function addBk(){
   var b={id:uid(),name:document.getElementById('bk-nm').value,color:document.getElementById('bk-cl').value,type:document.getElementById('bk-tp').value};
   if(!b.name) return;
@@ -1736,15 +1837,38 @@ function renderFcDivs(){
 // ══════════════════════════════════════════════════════
 // EVENTOS, PROVENTOS E RADAR — NOVAS FUNÇÕES
 // ══════════════════════════════════════════════════════
-function updateTickerDatalist(){
-  var dl=document.getElementById('ev-tickers'); if(!dl) return;
-  var set={};
-  TOP30.forEach(function(t){ set[t]=true; });
-  (D.stocks||[]).forEach(function(st){ set[st.ticker]=true; });
-  Object.keys(D.prices||{}).forEach(function(t){ set[t]=true; });
-  dl.innerHTML=Object.keys(set).sort().map(function(t){ var p=D.prices[t]; return '<option value="'+t+'">'+(p?brl(p):'')+'</option>'; }).join('');
+function updateTickerDatalist(){ updateTickerMenus(); }
+function tickerOptionHTML(op,target){
+  var logo=op.logo?'<span class="ticker-logo"><img src="'+op.logo+'" alt="'+op.ticker+'"></span>':'<span class="ticker-logo">'+op.ticker.slice(0,4)+'</span>';
+  return '<button type="button" class="ticker-option" onclick="selectTicker(\''+target+'\',\''+op.ticker+'\')">'+logo+'<span style="min-width:0"><span class="ticker-main">'+op.ticker+'</span><span class="ticker-sub">'+op.name+'</span></span><span class="price">'+(op.price?brl(op.price):'')+'</span></button>';
 }
-
+function renderTickerLabel(target,tk){
+  var lab=document.getElementById(target+'-ticker-label'); if(!lab) return;
+  if(!tk){ lab.innerHTML='<span style="color:var(--tx3)">Selecione uma ação</span>'; return; }
+  var op=tickerMeta(tk);
+  var logo=op.logo?'<span class="ticker-logo"><img src="'+op.logo+'" alt="'+op.ticker+'"></span>':'<span class="ticker-logo">'+op.ticker.slice(0,4)+'</span>';
+  lab.innerHTML=logo+'<span style="min-width:0"><span class="ticker-main">'+op.ticker+'</span><span class="ticker-sub">'+op.name+(op.price?' · '+brl(op.price):'')+'</span></span>';
+}
+function updateTickerMenus(){
+  var opts=allTickerOptions();
+  ['ev','news'].forEach(function(target){
+    var menu=document.getElementById(target+'-ticker-menu'); if(menu) menu.innerHTML=opts.map(function(op){return tickerOptionHTML(op,target);}).join('');
+    var inp=document.getElementById(target==='ev'?'ev-tk':'news-ticker'); if(inp) renderTickerLabel(target,inp.value||'');
+  });
+}
+function toggleTickerMenu(target){
+  document.querySelectorAll('.ticker-menu').forEach(function(m){ if(m.id!==target+'-ticker-menu') m.classList.remove('open'); });
+  document.querySelectorAll('.ticker-choice').forEach(function(c){ if(c.id!==target+'-ticker-choice') c.classList.remove('open'); });
+  var m=document.getElementById(target+'-ticker-menu'), c=document.getElementById(target+'-ticker-choice');
+  if(m){ m.classList.toggle('open'); if(c) c.classList.toggle('open',m.classList.contains('open')); }
+}
+function selectTicker(target,tk){
+  var inp=document.getElementById(target==='ev'?'ev-tk':'news-ticker'); if(inp) inp.value=tk;
+  renderTickerLabel(target,tk);
+  var m=document.getElementById(target+'-ticker-menu'), c=document.getElementById(target+'-ticker-choice');
+  if(m) m.classList.remove('open'); if(c) c.classList.remove('open');
+  if(target==='ev') eventTickerChanged();
+}
 function eventTickerChanged(){
   var tk=((document.getElementById('ev-tk')||{}).value||'').toUpperCase();
   var price=D.prices[tk]||0;
@@ -1762,6 +1886,17 @@ function eventTickerChanged(){
   }
 }
 
+function stockPurchaseDate(tk){
+  var st=(D.stocks||[]).find(function(x){return x.ticker===tk;});
+  return st?(st.buyDate||st.date||'2026-01-01'):'9999-12-31';
+}
+function isPortfolioDividendEvent(ev){
+  if(!(ev.type==='div'||ev.type==='dc')) return false;
+  var st=(D.stocks||[]).find(function(x){return x.ticker===ev.ticker;});
+  if(!st) return false;
+  var min=stockPurchaseDate(ev.ticker);
+  return String(ev.date||'')>=min;
+}
 async function syncDividends(){
   toast('Sincronizando proventos...','var(--blue)');
   var added=0, checked=0;
@@ -1777,6 +1912,7 @@ async function syncDividends(){
       pools.forEach(function(d){
         var dt=d.paymentDate||d.payableDate||d.date||d.approvedOn||d.exDate||d.lastDatePrior;
         if(!dt) return; dt=String(dt).slice(0,10);
+        if(dt<stockPurchaseDate(tk)) return;
         var val=+(d.rate||d.value||d.amount||d.cashDividend||d.dividend||0);
         if(!val) return;
         var kind=(d.label||d.type||'Provento').toString();
@@ -1797,14 +1933,15 @@ function renderDividendsPage(){
   k.innerHTML='<div class="kpi"><div class="kl">Estimado/mês</div><div class="kv" style="color:var(--green)">'+brl(totalMes)+'</div><div class="ks">baseado no DY cadastrado</div></div>'+
               '<div class="kpi"><div class="kl">Estimado/ano</div><div class="kv" style="color:var(--blue)">'+brl(totalAno)+'</div><div class="ks">proventos recorrentes</div></div>';
   var list=document.getElementById('div-stock-list');
-  list.innerHTML=rows.length?rows.map(function(r){ return '<div class="trow"><div class="tbadge">'+r.s.ticker.slice(0,5)+'</div><div class="tinfo"><div class="tname">'+r.s.ticker+'</div><div class="tsub">'+r.s.qty+' cotas · DY '+(r.s.dy||0)+'% · posição '+brl(r.pos)+'</div></div><div class="tprice"><div class="tval up">'+brl(r.mes)+'</div><div class="tchg">'+brl(r.ano)+'/ano</div></div></div>'; }).join(''):'<div style="color:var(--tx3);font-size:13px;text-align:center;padding:18px">Cadastre ações na carteira para gerar forecast.</div>';
-  var evs=(D.events||[]).filter(function(e){return e.type==='div'||e.type==='dc';}).sort(function(a,b){return new Date(a.date)-new Date(b.date);});
+  list.innerHTML=rows.length?rows.map(function(r){ return '<div class="trow">'+logoHTML(r.s.ticker,'logo-badge')+'<div class="tinfo"><div class="tname">'+r.s.ticker+'</div><div class="tsub">'+tickerMeta(r.s.ticker).name+' · '+r.s.qty+' cotas · DY '+(r.s.dy||0)+'% · posição '+brl(r.pos)+'</div></div><div class="tprice"><div class="tval up">'+brl(r.mes)+'</div><div class="tchg">'+brl(r.ano)+'/ano</div></div></div>'; }).join(''):'<div style="color:var(--tx3);font-size:13px;text-align:center;padding:18px">Cadastre ações na carteira para gerar forecast.</div>';
+  var evs=(D.events||[]).filter(isPortfolioDividendEvent).sort(function(a,b){return new Date(a.date)-new Date(b.date);});
   var evList=document.getElementById('div-event-list');
   evList.innerHTML=evs.length?evs.map(function(ev){ var st=stocks.find(function(x){return x.ticker===ev.ticker;}); var qty=ev.qty||(st?st.qty:0); var total=(ev.value||0)*qty; return '<div class="prow"><span class="pdot" style="background:'+(ev.type==='div'?'#22C55E':'#EF4444')+'"></span><div style="flex:1"><div style="font-weight:700;font-size:13px">'+ev.ticker+' · '+(ev.type==='div'?'Pagamento':'Data-com')+'</div><div style="font-size:11px;color:var(--tx3)">'+new Date(ev.date+'T12:00:00').toLocaleDateString('pt-BR')+' · R$ '+(ev.value||0)+' por cota · '+qty+' cotas</div></div><div style="text-align:right"><div style="font-weight:800;color:#22C55E">'+(total?brl(total):'—')+'</div><button onclick="rmEv(\''+ev.id+'\')" style="background:none;border:none;color:#EF4444;font-size:11px">remover</button></div></div>'; }).join(''):'<div style="color:var(--tx3);font-size:13px;text-align:center;padding:18px">Nenhum evento de provento cadastrado.</div>';
 }
 
 function renderRadar(){
-  updateTickerDatalist();
+  updateTickerMenus();
+  if(!(document.getElementById('news-ticker')||{}).value){ selectTicker('news','PETR4'); }
   var box=document.getElementById('roadmap-list'); if(!box) return;
   var items=[['Backend seguro','Colocar token brapi, Open Finance e IA fora do frontend.'],['Login e assinatura','Supabase Auth + Stripe/Mercado Pago para planos Free/Pro.'],['Atualização programada','Cron a cada 5 min no backend, salvando cache no banco.'],['Radar de notícias','API licenciada/RSS via backend para evitar CORS e termos de uso.'],['IA financeira','Agente que explica cenários, sem recomendar compra/venda direta.'],['Relatórios','PDF mensal, evolução patrimonial, dividendos e IR.']];
   box.innerHTML=items.map(function(it){return '<div class="prow"><span class="pdot" style="background:#3B82F6"></span><div><div style="font-weight:700;font-size:13px">'+it[0]+'</div><div style="font-size:11px;color:var(--tx3);margin-top:2px">'+it[1]+'</div></div></div>';}).join('');
@@ -1839,6 +1976,13 @@ function renderPlanVsReal(currentTotal, rows){
     '<div class="kpi"><div class="kl">Meta atingida</div><div class="kv" style="color:var(--pur)">'+pctGoal.toFixed(1)+'%</div><div class="ks">meta '+brl(target)+'</div></div>';
 }
 
+function migrateData(){
+  try{ var urlTok=new URL(location.href).searchParams.get('token'); if(urlTok){ D.token=urlTok.trim(); localStorage.setItem(TOKEN_STORAGE_KEY,D.token); history.replaceState(null,'',location.pathname+location.hash); } }catch(e){}
+  if(!D.meta) D.meta={};
+  (D.stocks||[]).forEach(function(st){ if(!st.buyDate) st.buyDate='2026-01-01'; if(st.ticker&&!TICKER_META[st.ticker]&&st.name) TICKER_META[st.ticker]={name:st.name}; });
+  if(!D.token) D.token=localStorage.getItem(TOKEN_STORAGE_KEY)||HARDCODED_TOKEN||'';
+  save();
+}
 // ══════════════════════════════════════════════════════
 // PWA MANIFEST
 // ══════════════════════════════════════════════════════
@@ -1853,7 +1997,9 @@ function renderPlanVsReal(currentTotal, rows){
 // INIT
 // ══════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded',function(){
-  updateTickerDatalist();
+  migrateData();
+  updateTickerMenus();
+  updateMarketStatus();
   loadMarket();
   setTimeout(calcRF,500);
   renderPort();
@@ -1862,6 +2008,8 @@ document.addEventListener('DOMContentLoaded',function(){
   renderRadar();
   calcFc();
   renderCfg();
+  document.addEventListener('click',function(e){ if(!e.target.closest('.ticker-picker')){ document.querySelectorAll('.ticker-menu').forEach(function(m){m.classList.remove('open');}); document.querySelectorAll('.ticker-choice').forEach(function(c){c.classList.remove('open');}); } });
+  setInterval(updateMarketStatus,30000);
   setInterval(loadMarket,300000); // 5 minutos
 });
 </script>
