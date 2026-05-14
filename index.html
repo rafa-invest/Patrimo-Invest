@@ -472,11 +472,11 @@ input[type="color"]{min-height:44px}
 .import-preview table{width:100%;border-collapse:collapse;font-size:11px}
 .import-preview th,.import-preview td{padding:8px 10px;border-bottom:1px solid rgba(148,163,184,.12);text-align:left;white-space:nowrap}
 .import-preview th{color:var(--gold);font-size:10px;text-transform:uppercase;letter-spacing:.06em;position:sticky;top:0;background:rgba(14,28,48,.96)}
-.import-status{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.import-status{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:10px}
 .import-status .stat{background:var(--bg4);border:1px solid var(--bd);border-radius:12px;padding:10px}
 .import-status .stat b{display:block;font-size:16px;color:var(--tx)}
 .import-status .stat span{font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:.05em}
-@media(max-width:760px){.import-grid,.import-status{grid-template-columns:1fr}.import-preview{max-height:220px}}
+@media(max-width:760px){.import-grid,.import-status{grid-template-columns:1fr}.import-preview{max-height:220px}.card div[style*="grid-template-columns:1.2fr 1fr 1fr"]{grid-template-columns:1fr!important}}
 
 </style>
 </head>
@@ -549,23 +549,32 @@ input[type="color"]{min-height:44px}
   </div>
 
   <div class="card">
-    <div class="shdr"><span class="ctitle" style="margin:0">Importar movimentações B3 / corretora</span><button class="btn btn-ghost btn-sm" onclick="syncPortfolioB3RI()">B3/RI</button></div>
+    <div class="shdr"><span class="ctitle" style="margin:0">Importar movimentações oficiais B3</span><button class="btn btn-ghost btn-sm" onclick="syncPortfolioB3RI()">Atualizar B3/RI</button></div>
     <div class="import-grid">
       <div class="import-box">
-        <div class="field" style="margin:0"><label>Arquivo CSV/TXT da B3 ou corretora</label><input type="file" accept=".csv,.txt,.xls,.xlsx" onchange="loadMovFile(event)"></div>
-        <div class="import-help">Compatível com extratos exportados como CSV/TXT da Área do Investidor B3 ou relatórios de negociação/custódia de corretoras. O app identifica ticker, data, instituição, quantidade, preço, compra/venda e proventos.</div>
+        <div class="field" style="margin:0"><label>Arquivo oficial da B3 (.xlsx)</label><input id="mov-file-input" type="file" accept=".xlsx,.xls,.csv,.txt" onchange="loadMovFile(event)"></div>
+        <div class="import-help">
+          Preparado para o arquivo exportado na Área do Investidor da B3 com as colunas:
+          <b>Entrada/Saída, Data, Movimentação, Produto, Instituição, Quantidade, Preço unitário e Valor da Operação</b>.
+          Também aceita CSV/TXT, mas o XLSX oficial da B3 agora é o formato principal.
+        </div>
       </div>
       <div class="import-box">
-        <div class="field" style="margin:0"><label>Ou cole as movimentações aqui</label><textarea id="mov-paste" placeholder="Cole aqui o CSV copiado da B3..." style="width:100%;background:var(--bg3);border:1px solid var(--bd2);border-radius:10px;padding:12px 14px;color:var(--tx);font-size:13px;outline:none;font-family:inherit"></textarea></div>
-        <button class="btn btn-ghost" onclick="parsePastedMovs()" style="margin-top:10px">Ler movimentações coladas</button>
+        <div class="field" style="margin:0"><label>Ou cole as movimentações aqui</label><textarea id="mov-paste" placeholder="Cole aqui a tabela copiada do Excel/B3..." style="width:100%;background:var(--bg3);border:1px solid var(--bd2);border-radius:10px;padding:12px 14px;color:var(--tx);font-size:13px;outline:none;font-family:inherit"></textarea></div>
+        <button class="btn btn-ghost" onclick="parsePastedMovs()" style="margin-top:10px">Ler tabela colada</button>
       </div>
     </div>
     <div class="import-status" id="mov-import-stats"></div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px">
-      <button class="btn btn-blue" onclick="buildPortfolioFromImportedMovs()">Montar carteira pela movimentação</button>
-      <button class="btn btn-ghost" onclick="clearImportedMovs()">Limpar importação</button>
+    <div style="display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:10px;margin-top:12px">
+      <button class="btn btn-blue" onclick="buildPortfolioFromImportedMovs()">Montar carteira B3</button>
+      <button class="btn btn-ghost" onclick="renderImportedMovements()">Pré-visualizar</button>
+      <button class="btn btn-ghost" onclick="clearImportedMovs()">Limpar</button>
     </div>
-    <div class="notice">A importação monta posição atual e preço médio por média ponderada. Compra aumenta quantidade/custo, venda baixa quantidade pelo preço médio e proventos são enviados para a agenda apenas quando pertencem a ativos da carteira.</div>
+    <div class="notice">
+      Regra aplicada ao arquivo B3: <b>Transferência - Liquidação</b> com Crédito entra como compra; com Débito entra como venda.
+      <b>Transferência</b>, <b>Atualização</b> e direitos não exercidos são tratados como informativos para evitar duplicidade.
+      Proventos entram na aba Dividendos apenas para ativos que permanecerem na carteira e após a primeira compra.
+    </div>
     <div id="mov-import-preview" class="import-preview" style="display:none"></div>
   </div>
 </div>
@@ -809,6 +818,7 @@ input[type="color"]{min-height:44px}
   <button class="btn btn-blue" onclick="addBk()">Adicionar</button>
 </div></div>
 
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script>
 // ══════════════════════════════════════════════════════
 // STORE
@@ -1878,22 +1888,51 @@ function renderFcDivs(){
 
 
 
+
 // ══════════════════════════════════════════════════════
 // IMPORTAÇÃO DE MOVIMENTAÇÕES B3 / CORRETORA
+// Formato oficial testado: movimentacao-YYYY-MM-DD-HH-MM-SS.xlsx
+// Colunas B3: Entrada/Saída | Data | Movimentação | Produto | Instituição | Quantidade | Preço unitário | Valor da Operação
 // ══════════════════════════════════════════════════════
-function normText(v){ return String(v||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().trim(); }
-function cleanTicker(v){ var m=String(v||'').toUpperCase().match(/[A-Z]{4}\d{1,2}[A-Z]?/); return m?m[0]:''; }
+function normText(v){
+  return String(v||'')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g,'')
+    .toLowerCase()
+    .trim();
+}
+function cleanTicker(v){
+  var m=String(v||'').toUpperCase().match(/\b[A-Z]{4}\d{1,2}[A-Z]?\b/);
+  return m?m[0]:'';
+}
 function parseBRNumber(v){
-  if(v===null||v===undefined) return 0;
-  var s=String(v).replace(/R\$/gi,'').replace(/\s/g,'').replace(/\./g,'').replace(',', '.').replace(/[^0-9.\-]/g,'');
-  var n=parseFloat(s); return isNaN(n)?0:n;
+  if(v===null||v===undefined||v==='-'||v==='') return 0;
+  if(typeof v==='number') return isFinite(v)?v:0;
+  var s=String(v).replace(/R\$/gi,'').replace(/\s/g,'').trim();
+  if(s==='-'||s==='') return 0;
+  if(s.indexOf(',')>=0){
+    s=s.replace(/\./g,'').replace(',', '.');
+  }
+  s=s.replace(/[^0-9.\-]/g,'');
+  var n=parseFloat(s);
+  return isNaN(n)?0:n;
 }
 function parseBRDate(v){
+  if(v===null||v===undefined||v==='') return today();
+  if(typeof v==='number'){
+    // Excel serial date
+    var d0=new Date(Date.UTC(1899,11,30));
+    var d=new Date(d0.getTime()+Math.round(v)*86400000);
+    return d.toISOString().slice(0,10);
+  }
   var s=String(v||'').trim();
   var m=s.match(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})/);
   if(m){ var y=m[3].length===2?'20'+m[3]:m[3]; return y+'-'+m[2].padStart(2,'0')+'-'+m[1].padStart(2,'0'); }
-  var d=new Date(s); if(!isNaN(d)) return d.toISOString().slice(0,10);
+  var d2=new Date(s); if(!isNaN(d2)) return d2.toISOString().slice(0,10);
   return today();
+}
+function brDateLabel(iso){
+  try{ return new Date(iso+'T12:00:00').toLocaleDateString('pt-BR'); }catch(e){ return iso||''; }
 }
 function splitCSVLine(line,sep){
   var out=[],cur='',q=false;
@@ -1903,71 +1942,226 @@ function splitCSVLine(line,sep){
     else if(ch===sep&&!q){ out.push(cur); cur=''; }
     else cur+=ch;
   }
-  out.push(cur); return out.map(function(x){return x.replace(/^"|"$/g,'').trim();});
+  out.push(cur); return out.map(function(x){return String(x||'').replace(/^"|"$/g,'').trim();});
 }
-function detectSep(text){ var first=(text.split(String.fromCharCode(13)).join('').split(String.fromCharCode(10)).find(function(l){return l.trim().length>0;})||''); var sc=(first.match(/;/g)||[]).length, cc=(first.match(/,/g)||[]).length, tc=(first.match(new RegExp(String.fromCharCode(9),'g'))||[]).length; return tc>sc&&tc>cc?String.fromCharCode(9):(sc>=cc?';':','); }
+function detectSep(text){
+  var first=(text.split(String.fromCharCode(13)).join('').split(String.fromCharCode(10)).find(function(l){return l.trim().length>0;})||'');
+  var sc=(first.match(/;/g)||[]).length, cc=(first.match(/,/g)||[]).length, tc=(first.match(new RegExp(String.fromCharCode(9),'g'))||[]).length;
+  return tc>sc&&tc>cc?String.fromCharCode(9):(sc>=cc?';':',');
+}
 function headerIndex(headers, names){
   var hs=headers.map(normText);
-  for(var n=0;n<names.length;n++){ var needle=normText(names[n]); for(var i=0;i<hs.length;i++){ if(hs[i]===needle||hs[i].indexOf(needle)>=0) return i; } }
+  for(var n=0;n<names.length;n++){
+    var needle=normText(names[n]);
+    for(var i=0;i<hs.length;i++){
+      if(hs[i]===needle||hs[i].indexOf(needle)>=0) return i;
+    }
+  }
   return -1;
+}
+function extractAssetFromProduct(product){
+  var prod=String(product||'').replace(/\s+/g,' ').trim();
+  var parts=prod.split(/\s+-\s+/);
+  var code=(parts[0]||'').trim().toUpperCase();
+  var name=parts.slice(1).join(' - ').trim();
+
+  if(/^CDB$/i.test(code)){
+    var cdb=prod.match(/CDB\s+-\s+([A-Z0-9]+)/i);
+    return {ticker:cdb?cdb[1].toUpperCase():'CDB', company:prod, assetType:'RF', productName:prod};
+  }
+  if(/^TESOURO/i.test(prod)){
+    return {ticker:prod.toUpperCase(), company:prod, assetType:'TESOURO', productName:prod};
+  }
+
+  var tk=cleanTicker(code)||cleanTicker(prod);
+  if(tk){
+    var type='RV';
+    if(/\d{2}$/.test(tk) && tk.endsWith('11')) type='FII/ETF';
+    if(/\d{2}$/.test(tk) && /1[2-9]$/.test(tk)) type='DIREITO/RECIBO';
+    return {ticker:tk, company:name||tickerMeta(tk).name||tk, assetType:type, productName:prod};
+  }
+
+  return {ticker:code||prod, company:name||prod, assetType:'OUTROS', productName:prod};
+}
+function rowArrayToB3Movement(row, idx, lineNumber){
+  function val(i){ return i>=0?row[i]:''; }
+  var entry=String(val(idx.entry)||'').trim();
+  var mov=String(val(idx.mov)||'').trim();
+  var product=String(val(idx.product)||'').trim();
+  var asset=extractAssetFromProduct(product);
+  var tk=asset.ticker;
+  var qty=parseBRNumber(val(idx.qty));
+  var unit=parseBRNumber(val(idx.unit));
+  var total=parseBRNumber(val(idx.total));
+  var raw=mov||'Importado B3';
+  var nMov=normText(mov);
+  var nEntry=normText(entry);
+  var broker=String(val(idx.broker)||'B3 / Importado').trim()||'B3 / Importado';
+  var kind='ignored';
+
+  var isCredit=nEntry.indexOf('credito')>=0 || nEntry.indexOf('entrada')>=0;
+  var isDebit=nEntry.indexOf('debito')>=0 || nEntry.indexOf('saida')>=0;
+  var isRF=asset.assetType==='RF'||asset.assetType==='TESOURO'||/^CDB/i.test(asset.productName)||/^TESOURO/i.test(asset.productName);
+
+  if(nMov.indexOf('dividendo')>=0 || nMov.indexOf('juros sobre capital')>=0 || nMov==='rendimento' || nMov.indexOf('reembolso')>=0 || nMov.indexOf('amortizacao')>=0){
+    kind='dividend';
+  }else if(isRF){
+    if(isCredit && (nMov.indexOf('aplicacao')>=0 || nMov.indexOf('compra')>=0 || nMov.indexOf('deposito')>=0 || nMov.indexOf('transferencia - liquidacao')>=0)){
+      kind='fi_buy';
+    }else if(isDebit || nMov.indexOf('resgate')>=0 || nMov.indexOf('retirada')>=0){
+      kind='fi_sell';
+    }else{
+      kind='fi_info';
+    }
+  }else if(nMov==='transferencia' || nMov.indexOf('atualizacao')>=0 || nMov.indexOf('emprestimo')>=0 || nMov.indexOf('cessao de direitos')>=0 || nMov.indexOf('nao exercido')>=0 || nMov.indexOf('transferido')>=0){
+    kind='ignored';
+  }else if(nMov.indexOf('direito de subscricao')>=0 && nMov.indexOf('exercido')<0){
+    kind='ignored';
+  }else if(nMov.indexOf('transferencia - liquidacao')>=0 || nMov==='compra' || nMov.indexOf('bonificacao em ativos')>=0 || nMov.indexOf('desdobro')>=0 || nMov.indexOf('grupamento')>=0 || nMov.indexOf('fracao em ativos')>=0 || nMov.indexOf('recibo de subscricao')>=0 || nMov.indexOf('subscricao')>=0){
+    kind=isDebit?'sell':'buy';
+  }else if(nMov.indexOf('venda')>=0 || nMov.indexOf('retirada')>=0 || nMov.indexOf('resgate')>=0){
+    kind='sell';
+  }else if(nMov.indexOf('compra')>=0 || nMov.indexOf('credito')>=0){
+    kind='buy';
+  }
+
+  if(!tk || tk==='-' || tk==='OUTROS'){
+    kind='ignored';
+  }
+
+  return {
+    id:uid(),
+    line:lineNumber||0,
+    date:parseBRDate(val(idx.date)),
+    kind:kind,
+    ticker:tk,
+    company:asset.company||tk,
+    assetType:asset.assetType,
+    productName:asset.productName||product,
+    broker:broker,
+    qty:qty,
+    unitPrice:unit,
+    total:Math.abs(total),
+    entry:entry,
+    rawType:raw,
+    source:'B3 XLSX'
+  };
+}
+function parseB3Aoa(aoa){
+  if(!aoa||!aoa.length) return [];
+  var headerLine=0;
+  for(var h=0;h<Math.min(aoa.length,12);h++){
+    var joined=(aoa[h]||[]).map(normText).join('|');
+    if(joined.indexOf('entrada/saida')>=0 && joined.indexOf('movimentacao')>=0 && joined.indexOf('valor da operacao')>=0){
+      headerLine=h; break;
+    }
+    if(joined.indexOf('data')>=0 && joined.indexOf('produto')>=0 && joined.indexOf('quantidade')>=0){
+      headerLine=h; break;
+    }
+  }
+  var headers=(aoa[headerLine]||[]).map(function(x){return String(x||'').trim();});
+  var idx={
+    entry:headerIndex(headers,['Entrada/Saída','Entrada Saída','Credito/Debito','Tipo de Operação']),
+    date:headerIndex(headers,['Data','Data do Negócio','Data da Movimentação','Data Liquidação']),
+    mov:headerIndex(headers,['Movimentação','Tipo de Movimentação','Operação','Negociação']),
+    product:headerIndex(headers,['Produto','Ativo','Código de Negociação','Ticker','Papel']),
+    broker:headerIndex(headers,['Instituição','Corretora','Agente de Custódia','Participante']),
+    qty:headerIndex(headers,['Quantidade','Qtd','Quant.']),
+    unit:headerIndex(headers,['Preço unitário','Preco unitario','Preço','Valor unitário','Preço médio']),
+    total:headerIndex(headers,['Valor da Operação','Valor Operação','Valor Líquido','Valor','Financeiro'])
+  };
+  var rows=[];
+  for(var i=headerLine+1;i<aoa.length;i++){
+    var row=aoa[i]||[];
+    if(!row.some(function(x){return String(x||'').trim()!=='';})) continue;
+    var item=rowArrayToB3Movement(row,idx,i+1);
+    rows.push(item);
+  }
+  rows.sort(function(a,b){return new Date(a.date)-new Date(b.date);});
+  return rows;
 }
 function parseMovementsText(text){
   var sep=detectSep(text);
   var lines=text.split(String.fromCharCode(13)).join('').split(String.fromCharCode(10)).filter(function(l){return l.trim().length>0;});
   if(!lines.length) return [];
-  var headerLine=0;
-  for(var h=0;h<Math.min(lines.length,8);h++){ var nh=normText(lines[h]); if(nh.indexOf('data')>=0&&(nh.indexOf('produto')>=0||nh.indexOf('codigo')>=0||nh.indexOf('ativo')>=0||nh.indexOf('negociacao')>=0)){ headerLine=h; break; } }
-  var headers=splitCSVLine(lines[headerLine],sep);
-  var idx={
-    date:headerIndex(headers,['data','data do negocio','data da movimentacao','data liquidacao']),
-    entry:headerIndex(headers,['entrada/saida','entrada saida','credito/debito','tipo de operacao']),
-    mov:headerIndex(headers,['movimentacao','tipo de movimentacao','operacao','negociacao']),
-    product:headerIndex(headers,['produto','ativo','codigo de negociacao','codigo negociacao','ticker','papel']),
-    broker:headerIndex(headers,['instituicao','corretora','agente de custodia','participante']),
-    qty:headerIndex(headers,['quantidade','qtd','quant.']),
-    unit:headerIndex(headers,['preco unitario','preco','valor unitario','preco medio']),
-    total:headerIndex(headers,['valor da operacao','valor operacao','valor liquido','valor','financeiro'])
-  };
-  var rows=[];
-  for(var i=headerLine+1;i<lines.length;i++){
-    var c=splitCSVLine(lines[i],sep); if(c.length<2) continue;
-    var raw=(idx.mov>=0?c[idx.mov]:'')+' '+(idx.entry>=0?c[idx.entry]:'');
-    var product=idx.product>=0?c[idx.product]:(c.join(' '));
-    var tk=cleanTicker(product)||cleanTicker(c.join(' '));
-    if(!tk) continue;
-    var q=idx.qty>=0?parseBRNumber(c[idx.qty]):0;
-    var unit=idx.unit>=0?parseBRNumber(c[idx.unit]):0;
-    var total=idx.total>=0?parseBRNumber(c[idx.total]):(q*unit);
-    var nraw=normText(raw), nprod=normText(product);
-    var kind='other';
-    if(nraw.indexOf('dividendo')>=0||nraw.indexOf('juros sobre capital')>=0||nraw.indexOf('jcp')>=0||nraw.indexOf('rendimento')>=0||nraw.indexOf('provento')>=0) kind='dividend';
-    else if(nraw.indexOf('venda')>=0||nraw.indexOf('debito')>=0||nraw.indexOf('saida')>=0) kind='sell';
-    else if(nraw.indexOf('compra')>=0||nraw.indexOf('credito')>=0||nraw.indexOf('entrada')>=0||nraw.indexOf('liquidacao')>=0) kind='buy';
-    if(kind==='other'&&nprod.indexOf('dividendo')>=0) kind='dividend';
-    rows.push({id:uid(),date:parseBRDate(idx.date>=0?c[idx.date]:''),kind:kind,ticker:tk,company:product.replace(tk,'').replace(/^\s*[-–]\s*/,'').trim(),broker:idx.broker>=0?c[idx.broker]:'B3 / Importado',qty:q,unitPrice:unit,total:Math.abs(total),rawType:raw||'Importado',source:'B3'});
-  }
-  return rows.sort(function(a,b){return new Date(a.date)-new Date(b.date);});
+  var aoa=lines.map(function(line){return splitCSVLine(line,sep);});
+  return parseB3Aoa(aoa);
 }
 function loadMovFile(ev){
   var f=ev.target.files&&ev.target.files[0]; if(!f) return;
-  if(/\.xlsx?$/i.test(f.name)){ toast('Para XLS/XLSX, exporte como CSV primeiro.','#F59E0B'); return; }
+  var isXlsx=/\.xlsx?$/i.test(f.name);
   var r=new FileReader();
-  r.onload=function(e){ applyImportedMovements(parseMovementsText(e.target.result)); };
-  r.readAsText(f,'utf-8');
+  r.onload=function(e){
+    try{
+      var rows=[];
+      if(isXlsx){
+        if(typeof XLSX==='undefined'){
+          toast('Leitor XLSX não carregou. Verifique conexão com a internet ou use CSV.','#EF4444');
+          return;
+        }
+        var wbX=XLSX.read(new Uint8Array(e.target.result),{type:'array',cellDates:false});
+        var sheetName=wbX.SheetNames[0];
+        var ws=wbX.Sheets[sheetName];
+        var aoa=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+        rows=parseB3Aoa(aoa);
+      }else{
+        rows=parseMovementsText(e.target.result);
+      }
+      applyImportedMovements(rows);
+    }catch(err){
+      console.error('Erro importando B3',err);
+      toast('Erro ao ler arquivo B3. Verifique se é a planilha de movimentação.','#EF4444');
+    }
+  };
+  if(isXlsx) r.readAsArrayBuffer(f); else r.readAsText(f,'utf-8');
 }
-function parsePastedMovs(){ var txt=(document.getElementById('mov-paste')||{}).value||''; applyImportedMovements(parseMovementsText(txt)); }
+function parsePastedMovs(){
+  var txt=(document.getElementById('mov-paste')||{}).value||'';
+  applyImportedMovements(parseMovementsText(txt));
+}
 function applyImportedMovements(rows){
-  D.importedMovements=rows||[]; save(); renderImportedMovements();
-  toast(rows.length?('Movimentações lidas: '+rows.length):'Nenhuma movimentação identificada',rows.length?'var(--green)':'#EF4444');
+  D.importedMovements=rows||[];
+  save();
+  renderImportedMovements();
+  var stats=movementStats(D.importedMovements);
+  toast(rows.length?('Arquivo B3 lido: '+rows.length+' linhas · '+stats.tickers+' ativos'):'Nenhuma movimentação identificada',rows.length?'var(--green)':'#EF4444');
 }
-function movementStats(rows){ rows=rows||D.importedMovements||[]; var buys=rows.filter(function(r){return r.kind==='buy';}).length, sells=rows.filter(function(r){return r.kind==='sell';}).length, divs=rows.filter(function(r){return r.kind==='dividend';}).length, tks={}; rows.forEach(function(r){tks[r.ticker]=true;}); return {total:rows.length,buys:buys,sells:sells,divs:divs,tickers:Object.keys(tks).length}; }
+function movementStats(rows){
+  rows=rows||D.importedMovements||[];
+  var buys=rows.filter(function(r){return r.kind==='buy';}).length;
+  var sells=rows.filter(function(r){return r.kind==='sell';}).length;
+  var divs=rows.filter(function(r){return r.kind==='dividend';}).length;
+  var rf=rows.filter(function(r){return r.kind==='fi_buy'||r.kind==='fi_sell'||r.kind==='fi_info';}).length;
+  var ignored=rows.filter(function(r){return r.kind==='ignored';}).length;
+  var tks={}; rows.forEach(function(r){ if(r.kind!=='ignored'&&r.ticker) tks[r.ticker]=true; });
+  return {total:rows.length,buys:buys,sells:sells,divs:divs,rf:rf,ignored:ignored,tickers:Object.keys(tks).length};
+}
+function kindLabel(k){
+  return ({buy:'Compra/Entrada',sell:'Venda/Saída',dividend:'Provento',fi_buy:'RF Aplicação',fi_sell:'RF Resgate',fi_info:'RF Info',ignored:'Informativo'})[k]||k;
+}
 function renderImportedMovements(){
-  var rows=D.importedMovements||[]; var stats=movementStats(rows); var st=document.getElementById('mov-import-stats');
-  if(st) st.innerHTML=[['Movs.',stats.total],['Ativos',stats.tickers],['Compras',stats.buys],['Proventos',stats.divs]].map(function(x){return '<div class="stat"><b>'+x[1]+'</b><span>'+x[0]+'</span></div>';}).join('');
+  var rows=D.importedMovements||[];
+  var stats=movementStats(rows);
+  var st=document.getElementById('mov-import-stats');
+  if(st){
+    st.innerHTML=[
+      ['Linhas',stats.total],
+      ['Ativos',stats.tickers],
+      ['Compras',stats.buys],
+      ['Vendas',stats.sells],
+      ['Proventos',stats.divs],
+      ['Ignoradas',stats.ignored]
+    ].map(function(x){return '<div class="stat"><b>'+x[1]+'</b><span>'+x[0]+'</span></div>';}).join('');
+  }
   var box=document.getElementById('mov-import-preview'); if(!box) return;
   if(!rows.length){ box.style.display='none'; box.innerHTML=''; return; }
   box.style.display='block';
-  box.innerHTML='<table><thead><tr><th>Data</th><th>Tipo</th><th>Ativo</th><th>Qtd</th><th>Preço</th><th>Total</th><th>Instituição</th></tr></thead><tbody>'+rows.slice(0,80).map(function(r){return '<tr><td>'+new Date(r.date+'T12:00:00').toLocaleDateString('pt-BR')+'</td><td>'+r.kind+'</td><td>'+r.ticker+'</td><td>'+r.qty+'</td><td>'+brl(r.unitPrice)+'</td><td>'+brl(r.total)+'</td><td>'+r.broker+'</td></tr>';}).join('')+'</tbody></table>'+(rows.length>80?'<div class="import-help" style="padding:10px">Mostrando 80 de '+rows.length+' movimentações.</div>':'');
+  var shown=rows.filter(function(r){return r.kind!=='ignored';}).slice(0,100);
+  box.innerHTML='<table><thead><tr><th>Data</th><th>Tipo</th><th>Ativo</th><th>Nome</th><th>Classe</th><th>Qtd</th><th>Preço</th><th>Total</th><th>Instituição</th><th>Mov. B3</th></tr></thead><tbody>'
+    +shown.map(function(r){
+      return '<tr><td>'+brDateLabel(r.date)+'</td><td>'+kindLabel(r.kind)+'</td><td><b>'+r.ticker+'</b></td><td>'+String(r.company||'').slice(0,36)+'</td><td>'+r.assetType+'</td><td>'+Number(r.qty||0).toLocaleString('pt-BR')+'</td><td>'+(r.unitPrice?brl(r.unitPrice):'—')+'</td><td>'+(r.total?brl(r.total):'—')+'</td><td>'+r.broker+'</td><td>'+r.rawType+'</td></tr>';
+    }).join('')+'</tbody></table>'
+    +(rows.length>shown.length?'<div class="import-help" style="padding:10px">Mostrando '+shown.length+' movimentações úteis de '+rows.length+' linhas importadas. Linhas informativas continuam salvas para auditoria, mas não entram na montagem da carteira.</div>':'');
 }
 function ensureBankByName(name){
   var clean=String(name||'B3 / Importado').trim()||'B3 / Importado';
@@ -1975,37 +2169,125 @@ function ensureBankByName(name){
   var id='bk_'+clean.toLowerCase().replace(/[^a-z0-9]+/g,'_').slice(0,24)+'_'+Math.random().toString(36).slice(2,5);
   D.banks.push({id:id,name:clean,color:'#D6B64C',type:'broker'}); return id;
 }
+function importedIsTradableAsset(r){
+  return r && (r.assetType==='RV'||r.assetType==='FII/ETF') && r.ticker && r.kind!=='ignored';
+}
 function buildPortfolioFromImportedMovs(){
   var rows=(D.importedMovements||[]).slice().sort(function(a,b){return new Date(a.date)-new Date(b.date);});
-  if(!rows.length){ toast('Importe ou cole movimentações primeiro.','#EF4444'); return; }
-  var pos={}, divEvents=0;
+  if(!rows.length){ toast('Importe a planilha oficial da B3 primeiro.','#EF4444'); return; }
+
+  var pos={}, fi={}, divEvents=0, fiCount=0;
   rows.forEach(function(r){
-    var tk=r.ticker; if(!pos[tk]) pos[tk]={ticker:tk,qty:0,cost:0,firstDate:r.date,lastBroker:r.broker,name:r.company||tickerMeta(tk).name,divs:[]};
-    var p=pos[tk]; if(r.date<p.firstDate) p.firstDate=r.date; if(r.broker) p.lastBroker=r.broker; if(r.company) p.name=r.company;
-    if(r.kind==='buy'){
-      var q=Math.abs(r.qty||0), total=r.total||(q*r.unitPrice); p.qty+=q; p.cost+=total; if(r.date<p.firstDate) p.firstDate=r.date;
-    }else if(r.kind==='sell'){
-      var sq=Math.abs(r.qty||0); if(sq>0&&p.qty>0){ var avg=p.cost/p.qty; var dec=Math.min(sq,p.qty); p.qty-=dec; p.cost-=avg*dec; if(p.qty<0.000001){p.qty=0;p.cost=0;} }
-    }else if(r.kind==='dividend'){
-      p.divs.push(r);
+    if(importedIsTradableAsset(r)){
+      var tk=r.ticker;
+      if(!pos[tk]) pos[tk]={ticker:tk,qty:0,cost:0,firstDate:r.date,lastBroker:r.broker,name:r.company||tickerMeta(tk).name,divs:[]};
+      var p=pos[tk];
+      if(r.date<p.firstDate) p.firstDate=r.date;
+      if(r.broker) p.lastBroker=r.broker;
+      if(r.company) p.name=r.company;
+      if(r.kind==='buy'){
+        var q=Math.abs(r.qty||0);
+        var total=r.total||(q*r.unitPrice);
+        p.qty+=q;
+        if(total>0 && r.unitPrice>0) p.cost+=total;
+      }else if(r.kind==='sell'){
+        var sq=Math.abs(r.qty||0);
+        if(sq>0&&p.qty>0){
+          var avg=p.cost/p.qty;
+          var dec=Math.min(sq,p.qty);
+          p.qty-=dec;
+          p.cost-=avg*dec;
+          if(p.qty<0.000001){p.qty=0;p.cost=0;}
+        }
+      }else if(r.kind==='dividend'){
+        p.divs.push(r);
+      }
+    }
+
+    if(r.kind==='fi_buy'||r.kind==='fi_sell'){
+      var fkey=(r.ticker||r.productName)+'|'+r.broker;
+      if(!fi[fkey]) fi[fkey]={name:r.productName||r.company||r.ticker,broker:r.broker,date:r.date,amount:0,assetType:r.assetType};
+      if(r.date<fi[fkey].date) fi[fkey].date=r.date;
+      if(r.kind==='fi_buy') fi[fkey].amount+=r.total||Math.abs((r.qty||0)*(r.unitPrice||0));
+      if(r.kind==='fi_sell') fi[fkey].amount-=r.total||Math.abs((r.qty||0)*(r.unitPrice||0));
     }
   });
+
   var built=[];
-  Object.keys(pos).forEach(function(tk){ var p=pos[tk]; if(p.qty>0.000001){ var pm=p.cost/p.qty; var bankId=ensureBankByName(p.lastBroker); built.push({id:'imp_'+tk+'_'+uid(),bankId:bankId,ticker:tk,name:p.name||tickerMeta(tk).name,qty:+p.qty.toFixed(6),pm:+pm.toFixed(6),sector:'Importado B3',dy:(D.stocks.find(function(s){return s.ticker===tk;})||{}).dy||0,buyDate:p.firstDate}); if(!TICKER_META[tk]) TICKER_META[tk]={name:p.name||tk}; } });
-  if(!built.length){ toast('Nenhuma posição em aberto encontrada.','#EF4444'); return; }
-  var keep=(D.stocks||[]).filter(function(st){ return !built.some(function(b){return b.ticker===st.ticker;}); });
+  Object.keys(pos).forEach(function(tk){
+    var p=pos[tk];
+    if(p.qty>0.000001){
+      var pm=p.cost>0?p.cost/p.qty:((D.prices&&D.prices[tk])||0);
+      var bankId=ensureBankByName(p.lastBroker);
+      built.push({
+        id:'b3_'+tk+'_'+uid(),
+        bankId:bankId,
+        ticker:tk,
+        name:p.name||tickerMeta(tk).name||tk,
+        qty:+p.qty.toFixed(6),
+        pm:+pm.toFixed(6),
+        sector:p.name&&p.name.toUpperCase().indexOf('FDO INV')>=0?'FII/ETF':'Importado B3',
+        dy:(D.stocks.find(function(s){return s.ticker===tk;})||{}).dy||0,
+        buyDate:p.firstDate,
+        source:'B3'
+      });
+      if(!TICKER_META[tk]) TICKER_META[tk]={name:p.name||tk};
+    }
+  });
+
+  // Renda fixa importada: entra como produto RF com taxa editável depois
+  var builtFI=[];
+  Object.keys(fi).forEach(function(k){
+    var f=fi[k];
+    if(f.amount>0.01){
+      var bankId=ensureBankByName(f.broker);
+      var isTesouro=f.assetType==='TESOURO';
+      builtFI.push({
+        id:'b3rf_'+uid(),
+        bankId:bankId,
+        name:f.name,
+        initialAmount:+f.amount.toFixed(2),
+        rate:isTesouro?0:100,
+        index:isTesouro?'IPCA':'CDI',
+        date:f.date,
+        notes:'Importado da planilha B3. Configure taxa/indexador se necessário.',
+        movs:[],
+        source:'B3'
+      });
+    }
+  });
+
+  if(!built.length && !builtFI.length){ toast('Nenhuma posição em aberto encontrada no arquivo B3.','#EF4444'); return; }
+
+  var newTickers={}; built.forEach(function(b){newTickers[b.ticker]=true;});
+  var keep=(D.stocks||[]).filter(function(st){ return !newTickers[st.ticker]; });
   D.stocks=keep.concat(built);
-  // eventos de proventos somente para ativos que ficaram na carteira e após a primeira compra
+
+  // Substitui RF importada anterior, preservando cadastros manuais
+  D.fi=(D.fi||[]).filter(function(f){return f.source!=='B3';}).concat(builtFI);
+  fiCount=builtFI.length;
+
   var active={}; built.forEach(function(b){active[b.ticker]=b;});
   rows.filter(function(r){return r.kind==='dividend'&&active[r.ticker]&&r.date>=active[r.ticker].buyDate;}).forEach(function(r){
-    var qty=active[r.ticker].qty||0; var valPer=r.qty?((r.total||0)/Math.max(r.qty,1)):((r.total||0)/Math.max(qty,1));
-    var exists=(D.events||[]).some(function(ev){return ev.ticker===r.ticker&&ev.date===r.date&&Math.abs((ev.value||0)-valPer)<0.0001;});
-    if(!exists){ D.events.push({id:uid(),type:'div',ticker:r.ticker,date:r.date,value:+valPer.toFixed(6),qty:qty,notes:'Importado da movimentação B3: '+r.rawType+' · total '+brl(r.total)}); divEvents++; }
+    var qty=r.qty||active[r.ticker].qty||0;
+    var valPer=qty?((r.total||0)/Math.max(qty,1)):0;
+    var exists=(D.events||[]).some(function(ev){return ev.ticker===r.ticker&&ev.date===r.date&&Math.abs((ev.value||0)-valPer)<0.0001&&String(ev.notes||'').indexOf('B3')>=0;});
+    if(!exists){
+      D.events.push({id:uid(),type:'div',ticker:r.ticker,date:r.date,value:+valPer.toFixed(6),qty:qty,notes:'Importado B3: '+r.rawType+' · total '+brl(r.total)});
+      divEvents++;
+    }
   });
-  save(); renderPort(); renderCal(); renderDividendsPage(); renderImportedMovements(); updateTickerMenus();
-  toast('Carteira montada: '+built.length+' ativos' +(divEvents?' · '+divEvents+' proventos':'') ,'var(--green)');
+
+  save();
+  renderPort();
+  renderCal();
+  if(typeof renderDividendsPage==='function') renderDividendsPage();
+  renderImportedMovements();
+  updateTickerMenus();
+  toast('Carteira B3 montada: '+built.length+' ativos' +(fiCount?' · '+fiCount+' RF':'') +(divEvents?' · '+divEvents+' proventos':'') ,'var(--green)');
 }
 function clearImportedMovs(){ D.importedMovements=[]; save(); renderImportedMovements(); toast('Importação limpa.'); }
+
 async function syncPortfolioB3RI(){
   var tickers=[...new Set((D.stocks||[]).map(function(s){return s.ticker;}))];
   if(!tickers.length){ toast('Monte ou cadastre a carteira primeiro.','#EF4444'); return; }
