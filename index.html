@@ -95,6 +95,10 @@ body{font-family:-apple-system,system-ui,sans-serif;background:var(--bg);color:v
 .period-tabs{display:flex;gap:4px;margin-bottom:10px}
 .ptab{padding:5px 10px;border-radius:8px;border:none;background:var(--bg4);color:var(--tx3);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit}
 .ptab.on{background:var(--blue);color:#fff}
+.ptab:disabled{opacity:.35;cursor:not-allowed}
+.mini-step{background:var(--bg4);border:1px solid var(--bd2);color:var(--tx);border-radius:10px;padding:10px;font-weight:800;cursor:pointer}
+.notice{font-size:11px;color:var(--tx2);background:var(--bg4);border:1px solid var(--bd);border-radius:10px;padding:10px;line-height:1.55;margin-top:8px}
+.pill{font-size:10px;border-radius:999px;padding:3px 8px;font-weight:700;background:var(--bg4);color:var(--tx2);display:inline-block}
 /* STOCK DETAIL MODAL */
 .sdchart{width:100%;height:140px;margin:12px 0}
 /* RF MOVIMENTOS */
@@ -126,12 +130,12 @@ body{font-family:-apple-system,system-ui,sans-serif;background:var(--bg);color:v
       <span id="ibov-pct" style="font-size:13px;margin-left:8px;font-weight:600">—</span>
     </div>
     <div class="period-tabs" id="ibov-periods">
+      <button class="ptab" onclick="setIbovPeriod('1d',this)">1D</button>
+      <button class="ptab" onclick="setIbovPeriod('5d',this)">5D</button>
       <button class="ptab on" onclick="setIbovPeriod('1mo',this)">1M</button>
       <button class="ptab" onclick="setIbovPeriod('3mo',this)">3M</button>
-      <button class="ptab" onclick="setIbovPeriod('6mo',this)">6M</button>
-      <button class="ptab" onclick="setIbovPeriod('1y',this)">1A</button>
-      <button class="ptab" onclick="setIbovPeriod('ytd',this)">YTD</button>
     </div>
+    <div class="notice">Plano atual: gráficos limitados a 1D, 5D, 1M e 3M para evitar INVALID_RANGE no token atual. 6M, 1A e YTD exigem plano com histórico maior.</div>
     <div class="chart-wrap"><svg id="ibov-svg" class="chart-svg"></svg></div>
     <div id="ibov-range" style="display:flex;justify-content:space-between;font-size:10px;color:var(--tx3)"><span id="ibov-d1"></span><span id="ibov-d2"></span></div>
   </div>
@@ -198,7 +202,13 @@ body{font-family:-apple-system,system-ui,sans-serif;background:var(--bg);color:v
   <div class="card">
     <div class="ctitle">Parâmetros</div>
     <div class="field"><label>Aporte mensal: R$ <span id="apl">1.300</span></label>
-      <input type="range" min="100" max="10000" step="50" value="1300" oninput="document.getElementById('apl').textContent=Number(this.value).toLocaleString('pt-BR');calcFc()" id="fc-ap" style="width:100%;accent-color:var(--blue)"></div>
+      <input type="range" min="100" max="10000" step="50" value="1300" oninput="syncAporteFromRange()" id="fc-ap" style="width:100%;accent-color:var(--blue)">
+      <div class="fr3" style="margin-top:10px">
+        <button class="mini-step" onclick="stepAporte(-100)">−100</button>
+        <input type="number" id="fc-ap-num" value="1300" min="0" step="50" oninput="syncAporteFromNumber()" style="background:var(--bg3);border:1px solid var(--bd2);border-radius:10px;padding:10px;color:var(--tx);width:100%;font-size:14px;text-align:center;outline:none">
+        <button class="mini-step" onclick="stepAporte(100)">+100</button>
+      </div>
+    </div>
     <div class="field"><label>Crescimento anual: <span id="gwl">3</span>%</label>
       <input type="range" min="0" max="20" step=".5" value="3" oninput="document.getElementById('gwl').textContent=this.value;calcFc()" id="fc-gw" style="width:100%;accent-color:var(--pur)"></div>
     <div class="fr2">
@@ -209,6 +219,18 @@ body{font-family:-apple-system,system-ui,sans-serif;background:var(--bg);color:v
       <div class="field" style="margin:0"><label>DY ações % a.a.</label><input type="number" id="fc-dy" value="9.2" step=".1" oninput="calcFc()" style="background:var(--bg3);border:1px solid var(--bd2);border-radius:10px;padding:10px;color:var(--tx);width:100%;font-size:14px;outline:none"></div>
       <div class="field" style="margin:0"><label>% em ações</label><input type="number" id="fc-ac" value="31" min="0" max="100" oninput="calcFc()" style="background:var(--bg3);border:1px solid var(--bd2);border-radius:10px;padding:10px;color:var(--tx);width:100%;font-size:14px;outline:none"></div>
     </div>
+  </div>
+  <div class="card">
+    <div class="ctitle">Planejamento x Realizado</div>
+    <div class="fr2">
+      <div class="field" style="margin:0"><label>Data inicial</label><input type="date" id="plan-start" oninput="calcFc()"></div>
+      <div class="field" style="margin:0"><label>Meta patrimônio R$</label><input type="number" id="plan-target" value="50000" step="100" oninput="calcFc()"></div>
+    </div>
+    <div class="fr2" style="margin-top:12px">
+      <div class="field" style="margin:0"><label>Aporte RF planejado</label><input type="number" id="plan-rf-ap" value="700" step="50" oninput="calcFc()"></div>
+      <div class="field" style="margin:0"><label>Aporte RV planejado</label><input type="number" id="plan-rv-ap" value="600" step="50" oninput="calcFc()"></div>
+    </div>
+    <div id="plan-vs-real" class="kgrid" style="margin-top:12px;margin-bottom:0"></div>
   </div>
   <div class="kgrid">
     <div class="kpi"><div class="kl">Patrimônio Final</div><div class="kv" id="fc-tot" style="color:var(--blue)">—</div></div>
@@ -231,6 +253,25 @@ body{font-family:-apple-system,system-ui,sans-serif;background:var(--bg);color:v
   </div>
 </div>
 
+<!-- ══ PAGE: DIVIDENDOS ══ -->
+<div class="page" id="page-dividends">
+  <div class="phdr"><div><div class="ptitle">Dividendos</div><div class="psub">Proventos previstos, realizados e estimados</div></div><button class="btn btn-ghost btn-sm" onclick="syncDividends()">Sincronizar</button></div>
+  <div class="kgrid" id="div-kpis"></div>
+  <div class="card"><div class="ctitle">Forecast por ação</div><div id="div-stock-list"></div></div>
+  <div class="card"><div class="ctitle">Agenda de proventos / data-com</div><div id="div-event-list"></div><div class="notice">A sincronização tenta usar os dados de dividendos retornados pela brapi. Se o plano/token não liberar o módulo, o app mantém a previsão estimada por DY e eventos manuais.</div></div>
+</div>
+
+<!-- ══ PAGE: RADAR ══ -->
+<div class="page" id="page-radar">
+  <div class="phdr"><div><div class="ptitle">Radar</div><div class="psub">Ações, notícias e roadmap profissional</div></div></div>
+  <div class="card"><div class="ctitle">Pesquisar notícias por ativo</div>
+    <div class="fr2"><div class="field" style="margin:0"><label>Ticker</label><input list="ev-tickers" id="news-ticker" placeholder="PETR4" oninput="this.value=this.value.toUpperCase()"></div><div class="field" style="margin:0"><label>Fonte</label><select id="news-source"><option value="infomoney">InfoMoney</option><option value="statusinvest">Status Invest</option><option value="ri">RI / Google</option></select></div></div>
+    <button class="btn btn-blue" onclick="openNewsSearch()" style="margin-top:12px">Abrir notícias do ativo</button>
+    <div class="notice">Para notícias automáticas dentro de um app comercial, o ideal é usar backend ou API de notícias licenciada. Em site estático, muitos portais bloqueiam leitura direta por CORS.</div>
+  </div>
+  <div class="card"><div class="ctitle">Roadmap profissional</div><div id="roadmap-list"></div></div>
+</div>
+
 <!-- ══ PAGE: CONFIG ══ -->
 <div class="page" id="page-cfg">
   <div class="phdr"><div><div class="ptitle">Configurações</div><div class="psub">Bancos, backup, token</div></div></div>
@@ -243,7 +284,7 @@ body{font-family:-apple-system,system-ui,sans-serif;background:var(--bg);color:v
       <input type="text" id="cfg-token" placeholder="Cole seu token aqui" oninput="saveToken()" style="background:var(--bg3);border:1px solid var(--bd2);border-radius:10px;padding:12px;color:var(--tx);width:100%;font-size:13px;outline:none"></div>
     <div style="font-size:11px;color:var(--tx3);background:var(--bg4);border-radius:8px;padding:10px;margin-top:10px;line-height:1.6">
       Token atual: <b id="token-preview" style="color:var(--blue)">—</b><br>
-      Sem token: apenas PETR4, VALE3, MGLU3, ITUB4 ao vivo.<br>Com token gratuito: todos os 30 principais + gráficos.
+      Sem token: testes limitados da brapi.<br>Com token: cotações e gráficos conforme limites do seu plano.<br><b>Atenção:</b> não deixe token fixo em repositório público.
     </div>
   </div>
   <div class="card"><div class="ctitle">Data &amp; Hora do Dispositivo</div>
@@ -270,8 +311,10 @@ body{font-family:-apple-system,system-ui,sans-serif;background:var(--bg);color:v
 <nav id="nav">
   <button class="nb active" onclick="goPage('market',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Mercado</button>
   <button class="nb" onclick="goPage('portfolio',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>Carteira</button>
-  <button class="nb" onclick="goPage('cal',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Calendário</button>
+  <button class="nb" onclick="goPage('cal',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Agenda</button>
+  <button class="nb" onclick="goPage('dividends',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 000 7H14a3.5 3.5 0 010 7H6"/></svg>Proventos</button>
   <button class="nb" onclick="goPage('fc',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><polyline points="7 16 11 10 15 14 19 8"/></svg>Forecast</button>
+  <button class="nb" onclick="goPage('radar',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>Radar</button>
   <button class="nb" onclick="goPage('cfg',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Config</button>
 </nav>
 
@@ -326,12 +369,12 @@ body{font-family:-apple-system,system-ui,sans-serif;background:var(--bg);color:v
   <div class="mhdr"><span class="mtitle" id="sc-title">Gráfico</span><button class="mclose" onclick="closeM('m-stk-chart')">&#215;</button></div>
   <div id="sc-info" style="margin-bottom:10px"></div>
   <div class="period-tabs" id="sc-periods">
+    <button class="ptab" onclick="loadStkChart(null,'1d',this)">1D</button>
+    <button class="ptab" onclick="loadStkChart(null,'5d',this)">5D</button>
     <button class="ptab on" onclick="loadStkChart(null,'1mo',this)">1M</button>
     <button class="ptab" onclick="loadStkChart(null,'3mo',this)">3M</button>
-    <button class="ptab" onclick="loadStkChart(null,'6mo',this)">6M</button>
-    <button class="ptab" onclick="loadStkChart(null,'1y',this)">1A</button>
-    <button class="ptab" onclick="loadStkChart(null,'ytd',this)">YTD</button>
   </div>
+  <div class="notice">No plano atual, o app limita os gráficos a 1D, 5D, 1M e 3M para evitar o erro INVALID_RANGE.</div>
   <div class="chart-wrap"><svg id="sc-svg" class="chart-svg"></svg></div>
   <div id="sc-range" style="display:flex;justify-content:space-between;font-size:10px;color:var(--tx3)"><span id="sc-d1"></span><span id="sc-d2"></span></div>
   <div id="sc-stats" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px"></div>
@@ -339,14 +382,18 @@ body{font-family:-apple-system,system-ui,sans-serif;background:var(--bg);color:v
 
 <div class="moverlay" id="m-add-ev"><div class="modal">
   <div class="mhdr"><span class="mtitle">Novo Evento</span><button class="mclose" onclick="closeM('m-add-ev')">&#215;</button></div>
-  <div class="field"><label>Tipo</label><select id="ev-tp"><option value="div">Dividendo / JCP</option><option value="buy">Compra planejada</option><option value="dc">Data-com</option><option value="other">Outro</option></select></div>
+  <div class="field"><label>Tipo</label><select id="ev-tp" onchange="eventTickerChanged()"><option value="div">Dividendo / JCP</option><option value="buy">Compra planejada</option><option value="dc">Data-com</option><option value="other">Outro</option></select></div>
   <div class="fr2">
-    <div class="field" style="margin:0"><label>Ticker</label><input type="text" id="ev-tk" placeholder="ITUB4" oninput="this.value=this.value.toUpperCase()"></div>
+    <div class="field" style="margin:0"><label>Ticker</label><input list="ev-tickers" type="text" id="ev-tk" placeholder="ITUB4" oninput="this.value=this.value.toUpperCase();eventTickerChanged()"><datalist id="ev-tickers"></datalist></div>
     <div class="field" style="margin:0"><label>Data</label><input type="date" id="ev-dt"></div>
   </div>
   <div class="fr2">
-    <div class="field" style="margin:0"><label>Valor R$ (por cota)</label><input type="number" id="ev-vl" placeholder="0.015" step="0.001"></div>
-    <div class="field" style="margin:0"><label>Qtd cotas</label><input type="number" id="ev-qt" placeholder="auto" min="0"></div>
+    <div class="field" style="margin:0"><label>Cotação atual R$</label><input type="number" id="ev-price" placeholder="auto" readonly></div>
+    <div class="field" style="margin:0"><label>Compra fracionada?</label><select id="ev-frac" onchange="eventTickerChanged()"><option value="1">Sim</option><option value="0">Não, lote inteiro</option></select></div>
+  </div>
+  <div class="fr2">
+    <div class="field" style="margin:0"><label>Valor R$ (div/cota ou compra total)</label><input type="number" id="ev-vl" placeholder="0.015" step="0.001" oninput="eventTickerChanged()"></div>
+    <div class="field" style="margin:0"><label>Qtd cotas</label><input type="number" id="ev-qt" placeholder="auto" min="0" step="0.0001"></div>
   </div>
   <div class="field"><label>Observação</label><input type="text" id="ev-nt" placeholder="JCP mensal confirmado..."></div>
   <button class="btn btn-blue" onclick="addEv()">Salvar Evento</button>
@@ -367,14 +414,14 @@ body{font-family:-apple-system,system-ui,sans-serif;background:var(--bg);color:v
 // STORE
 // ══════════════════════════════════════════════════════
 var SK = 'rafa_v4';
-var HARDCODED_TOKEN = 'xo3upEvNqVsNQYdM7idyky';
+var HARDCODED_TOKEN = ''; // não deixe token fixo em repositório público
 var D = (function(){
   try{ 
     var r=localStorage.getItem(SK); 
     if(r){ 
       var parsed=JSON.parse(r); 
       // Always ensure token is set - overwrite if empty
-      if(!parsed.token) parsed.token=HARDCODED_TOKEN;
+      if(typeof parsed.token==='undefined') parsed.token=HARDCODED_TOKEN;
       return parsed; 
     } 
   }catch(e){}
@@ -402,7 +449,7 @@ var D = (function(){
       {id:'e6',type:'div',ticker:'EGIE3',date:'2026-10-15',value:1.90,qty:0,notes:'Div. semestral'}
     ],
     prices:{ITUB4:43.10,TAEE11:45.39,ITSA4:11.20,CSMG3:19.80,VIVT3:57.80,EGIE3:43.20,BBSE3:34.80,PETR4:47.50},
-    token:'xo3upEvNqVsNQYdM7idyky',
+    token:'',
     chartCache:{}
   };
 })();
@@ -438,6 +485,8 @@ function goPage(name,btn){
   if(name==='cal') renderCal();
   if(name==='cfg') renderCfg();
   if(name==='fc') calcFc();
+  if(name==='dividends') renderDividendsPage();
+  if(name==='radar') renderRadar();
 }
 
 function openM(id){
@@ -463,11 +512,29 @@ var TOP30=['PETR4','VALE3','ITUB4','BBDC4','ABEV3','WEGE3','RENT3','BBAS3','SUZB
 
 function apiURL(path){
   var base='https://brapi.dev/api';
-  var tok='xo3upEvNqVsNQYdM7idyky';
-  if(D&&D.token&&D.token.length>5) tok=D.token;
+  var tok=(D&&D.token&&D.token.length>5)?D.token:HARDCODED_TOKEN;
+  if(!tok) return base+path;
   var sep=path.indexOf('?')>=0?'&':'?';
-  return base+path+sep+'token='+tok;
+  return base+path+sep+'token='+encodeURIComponent(tok);
 }
+
+async function quoteOne(ticker, opts){
+  opts=opts||{};
+  var q='';
+  if(opts.range) q+=(q?'&':'?')+'range='+encodeURIComponent(opts.range);
+  if(opts.interval) q+=(q?'&':'?')+'interval='+encodeURIComponent(opts.interval);
+  if(opts.dividends) q+=(q?'&':'?')+'dividends=true';
+  var r=await fetch(apiURL('/quote/'+encodeURIComponent(ticker)+q));
+  var j=await r.json();
+  if(j.error) throw new Error((j.code||'ERRO')+': '+(j.message||'Falha na API'));
+  if(!j.results||!j.results[0]) throw new Error('Sem resultado para '+ticker);
+  return j.results[0];
+}
+
+var PLAN_RANGES=['1d','5d','1mo','3mo'];
+var PERIOD_LABEL={'1d':'1 dia','5d':'5 dias','1mo':'1 mês','3mo':'3 meses'};
+function intervalForPeriod(p){ return '1d'; }
+function isRangeAllowed(p){ return PLAN_RANGES.indexOf(p)>=0; }
 
 async function loadMarket(){
   document.getElementById('mkt-st').textContent='Atualizando...';
@@ -616,9 +683,10 @@ function drawChart(svgId,data,color,rangeIds){
     +labs
     +'<line id="'+hid+'vl" x1="0" y1="'+pT+'" x2="0" y2="'+(pT+cH)+'" stroke="#64748B" stroke-width="1" stroke-dasharray="3,3" opacity="0" pointer-events="none"/>'
     +'<circle id="'+hid+'dt" r="4" fill="'+lc+'" stroke="#080B12" stroke-width="2" opacity="0" pointer-events="none"/>'
-    +'<rect id="'+hid+'bx" width="120" height="40" rx="5" fill="#1A1F2E" stroke="#2A3245" stroke-width="1" opacity="0" pointer-events="none"/>'
+    +'<rect id="'+hid+'bx" width="156" height="54" rx="7" fill="#1A1F2E" stroke="#2A3245" stroke-width="1" opacity="0" pointer-events="none"/>'
     +'<text id="'+hid+'tv" fill="#F8FAFC" font-size="12" font-weight="bold" opacity="0" pointer-events="none"/>'
     +'<text id="'+hid+'td" fill="#64748B" font-size="9" opacity="0" pointer-events="none"/>'
+    +'<text id="'+hid+'tc" fill="#22C55E" font-size="10" font-weight="bold" opacity="0" pointer-events="none"/>'
     +'<rect id="'+hid+'hr" x="'+pL+'" y="'+pT+'" width="'+cW+'" height="'+cH+'" fill="transparent" cursor="crosshair"/>';
   var ehr=document.getElementById(hid+'hr');
   var evl=document.getElementById(hid+'vl');
@@ -626,6 +694,7 @@ function drawChart(svgId,data,color,rangeIds){
   var ebx=document.getElementById(hid+'bx');
   var etv=document.getElementById(hid+'tv');
   var etd=document.getElementById(hid+'td');
+  var etc=document.getElementById(hid+'tc');
   function showTip(e){
     var sr=svg.getBoundingClientRect();
     var cx=(e.touches?e.touches[0].clientX:e.clientX)-sr.left;
@@ -636,7 +705,7 @@ function drawChart(svgId,data,color,rangeIds){
     var py=pT+((max-prices[idx])/rng)*cH;
     evl.setAttribute('x1',px); evl.setAttribute('x2',px); evl.setAttribute('opacity','1');
     edt.setAttribute('cx',px); edt.setAttribute('cy',py); edt.setAttribute('opacity','1');
-    var tw=120, th=40, tx=px+10, ty=py-50;
+    var tw=156, th=54, tx=px+10, ty=py-62;
     if(tx+tw>W-pR)tx=px-tw-10;
     if(ty<pT)ty=pT+2;
     ebx.setAttribute('x',tx); ebx.setAttribute('y',ty); ebx.setAttribute('opacity','0.95');
@@ -644,10 +713,16 @@ function drawChart(svgId,data,color,rangeIds){
     etv.textContent='R$ '+prices[idx].toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
     etd.setAttribute('x',tx+8); etd.setAttribute('y',ty+30); etd.setAttribute('opacity','1');
     etd.textContent=dates[idx]||'';
+    var base=prices[0]||prices[idx];
+    var varPct=base?((prices[idx]-base)/base*100):0;
+    var varAbs=prices[idx]-base;
+    etc.setAttribute('x',tx+8); etc.setAttribute('y',ty+43); etc.setAttribute('opacity','1');
+    etc.setAttribute('fill',varPct>=0?'#22C55E':'#EF4444');
+    etc.textContent=(varPct>=0?'+':'')+varAbs.toFixed(2)+' ('+(varPct>=0?'+':'')+varPct.toFixed(2)+'%) no período';
   }
   function hideTip(){
     evl.setAttribute('opacity','0'); edt.setAttribute('opacity','0');
-    ebx.setAttribute('opacity','0'); etv.setAttribute('opacity','0'); etd.setAttribute('opacity','0');
+    ebx.setAttribute('opacity','0'); etv.setAttribute('opacity','0'); etd.setAttribute('opacity','0'); if(etc) etc.setAttribute('opacity','0');
   }
   if(ehr){
     ehr.addEventListener('mousemove',showTip);
@@ -668,35 +743,35 @@ function drawChart(svgId,data,color,rangeIds){
 // ══════════════════════════════════════════════════════
 var ibovPeriod='1mo';
 async function loadIbovChart(period){
-  ibovPeriod=period||ibovPeriod;
-  var intv='1d';
-  try{
-    var r=await fetch(apiURL('/quote/%5EBVSP?range='+ibovPeriod+'&interval='+intv+''));
-    var j=await r.json();
-    if(j.results&&j.results[0]){
-      var res=j.results[0];
-      var price=res.regularMarketPrice||0;
-      var chgPct=res.regularMarketChangePercent||0;
-      var up=chgPct>=0;
-      document.getElementById('ibov-price').textContent=price?Math.round(price).toLocaleString('pt-BR'):' — ';
-      var hist=res.historicalDataPrice||[];
-      // Period variation
-      var pChgPct=chgPct, pChgAbs=res.regularMarketChange||0;
-      if(hist.length>1){
-        var fc=hist[0].close||price, lc=hist[hist.length-1].close||price;
-        pChgAbs=lc-fc; pChgPct=fc>0?((lc-fc)/fc*100):chgPct;
-      }
-      var pup=pChgPct>=0;
-      document.getElementById('ibov-pct').textContent=(pup?'+':'')+pChgAbs.toFixed(0)+' ('+pChgPct.toFixed(2)+'%)';
-      document.getElementById('ibov-pct').className=pup?'up':'down';
-      document.getElementById('ibov-chg').className='chip '+(pup?'badge-up':'badge-dn');
-      document.getElementById('ibov-chg').textContent=(pup?'+':'')+pChgPct.toFixed(2)+'%';
-      if(hist.length>1) drawChart('ibov-svg',hist,null,['ibov-d1','ibov-d2']);
-    }
-  }catch(e){ 
-    console.log('ibov err',e); 
+  period=period||ibovPeriod;
+  if(!isRangeAllowed(period)){
     var svg=document.getElementById('ibov-svg');
-    if(svg) svg.innerHTML='<text x="50%" y="50%" fill="#4A5568" text-anchor="middle" font-size="11">Fora do horario de mercado ou sem dados</text>';
+    if(svg) svg.innerHTML='<text x="50%" y="50%" fill="#4A5568" text-anchor="middle" font-size="11">Período indisponível no plano atual</text>';
+    return;
+  }
+  ibovPeriod=period;
+  var intv=intervalForPeriod(period);
+  try{
+    var res=await quoteOne('^BVSP',{range:period,interval:intv});
+    var price=res.regularMarketPrice||0;
+    document.getElementById('ibov-price').textContent=price?Math.round(price).toLocaleString('pt-BR'):' — ';
+    var hist=res.historicalDataPrice||[];
+    var pChgPct=res.regularMarketChangePercent||0, pChgAbs=res.regularMarketChange||0;
+    if(hist.length>1){
+      var fc=hist[0].close||price, lc=hist[hist.length-1].close||price;
+      pChgAbs=lc-fc; pChgPct=fc>0?((lc-fc)/fc*100):pChgPct;
+    }
+    var pup=pChgPct>=0;
+    document.getElementById('ibov-pct').textContent=(pup?'+':'')+pChgAbs.toFixed(0)+' ('+(pup?'+':'')+pChgPct.toFixed(2)+'%)';
+    document.getElementById('ibov-pct').className=pup?'up':'down';
+    document.getElementById('ibov-chg').className='chip '+(pup?'badge-up':'badge-dn');
+    document.getElementById('ibov-chg').textContent=(pup?'+':'')+pChgPct.toFixed(2)+'% em '+(PERIOD_LABEL[period]||period);
+    if(hist.length>1){ drawChart('ibov-svg',hist,null,['ibov-d1','ibov-d2']); }
+    else { document.getElementById('ibov-svg').innerHTML='<text x="50%" y="50%" fill="#4A5568" text-anchor="middle" font-size="11">Sem pontos suficientes para este período</text>'; }
+  }catch(e){
+    console.log('ibov err',e);
+    var svg=document.getElementById('ibov-svg');
+    if(svg) svg.innerHTML='<text x="50%" y="50%" fill="#4A5568" text-anchor="middle" font-size="11">'+String(e.message||'Erro ao carregar').replace(/[<>]/g,'')+'</text>';
     document.getElementById('ibov-price').textContent='—';
     document.getElementById('ibov-pct').textContent='';
   }
@@ -721,63 +796,63 @@ function openStkChart(ticker){
   document.getElementById('sc-info').innerHTML='';
   document.getElementById('sc-stats').innerHTML='';
   openM('m-stk-chart');
-  loadStkChart(ticker,'1d',document.querySelector('#sc-periods .ptab'));
+  loadStkChart(ticker,'1mo',document.querySelector('#sc-periods .ptab.on'));
 }
 
 async function loadStkChart(ticker,period,btn){
   var tk=ticker||activeStkTicker; if(!tk) return;
   activeStkTicker=tk;
+  period=period||'1mo';
   if(btn){
     document.querySelectorAll('#sc-periods .ptab').forEach(function(b){ b.classList.remove('on'); });
     btn.classList.add('on');
   }
-  var intMap={'1mo':'1d','3mo':'1d','6mo':'1d','1y':'1wk','ytd':'1d','5d':'1d','1d':'1d','2y':'1wk','5y':'1mo'};
-  var intv=intMap[period]||'1d';
+  if(!isRangeAllowed(period)){
+    document.getElementById('sc-svg').innerHTML='<text x="50%" y="50%" fill="#4A5568" text-anchor="middle" font-size="12">Período indisponível no plano atual</text>';
+    return;
+  }
+  var intv=intervalForPeriod(period);
   document.getElementById('sc-svg').innerHTML='<text x="50%" y="50%" fill="#4A5568" text-anchor="middle" font-size="12">Carregando...</text>';
   try{
-    var r=await fetch(apiURL('/quote/'+tk+'?range='+period+'&interval='+intv+''));
-    var j=await r.json();
-    if(j.results&&j.results[0]){
-      var res=j.results[0];
-      var price=res.regularMarketPrice||0;
-      var chgPct=res.regularMarketChangePercent||0;
-      var up=chgPct>=0;
-      D.prices[tk]=price; save();
-      document.getElementById('sc-title').textContent=(res.shortName||tk);
-      var hist=res.historicalDataPrice||[];
-      // Calc period variation from first to last historical price
-      var periodChg=0, periodChgPct=0;
-      if(hist.length>1){
-        var firstClose=hist[0].close||hist[0].price||price;
-        var lastClose=hist[hist.length-1].close||hist[hist.length-1].price||price;
-        periodChg=lastClose-firstClose;
-        periodChgPct=firstClose>0?(periodChg/firstClose*100):chgPct;
-      } else { periodChgPct=chgPct; periodChg=res.regularMarketChange||0; }
-      var pUp=periodChgPct>=0;
-      var periodLabel={'1mo':'1 mês','3mo':'3 meses','6mo':'6 meses','1y':'1 ano','ytd':'no ano','5d':'5 dias','1d':'hoje'};
-      document.getElementById('sc-info').innerHTML=
-        '<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">'
-        +'<span style="font-size:22px;font-weight:700">'+brl(price)+'</span>'
-        +'<div>'
-        +'<div style="font-size:14px;font-weight:600;color:'+(pUp?'#22C55E':'#EF4444')+'">'+(pUp?'+':'')+periodChg.toFixed(2)+' ('+periodChgPct.toFixed(2)+'%)</div>'
-        +'<div style="font-size:10px;color:#64748B">variacao em '+(periodLabel[period||'1mo']||period||'periodo')+'</div>'
-        +'</div></div>';
-      if(hist.length>1) drawChart('sc-svg',hist,null,['sc-d1','sc-d2']);
-      // Stats
-      document.getElementById('sc-stats').innerHTML=[
-        ['Abertura',brl(res.regularMarketOpen||0)],
-        ['Min.',brl(res.regularMarketDayLow||0)],
-        ['Max.',brl(res.regularMarketDayHigh||0)],
-        ['Vol.',res.regularMarketVolume?(res.regularMarketVolume/1e6).toFixed(1)+'M':'—'],
-        ['Min 52s',res.fiftyTwoWeekLow?brl(res.fiftyTwoWeekLow):'—'],
-        ['Max 52s',res.fiftyTwoWeekHigh?brl(res.fiftyTwoWeekHigh):'—']
-      ].map(function(it){
-        return '<div style="background:#1A1F2E;border-radius:8px;padding:8px;text-align:center">'
-          +'<div style="font-size:9px;color:#4A5568">'+it[0]+'</div>'
-          +'<div style="font-size:12px;font-weight:600">'+it[1]+'</div></div>';
-      }).join('');
-    }
-  }catch(e){ document.getElementById('sc-svg').innerHTML='<text x="50%" y="50%" fill="#4A5568" text-anchor="middle" font-size="12">Erro ao carregar dados</text>'; }
+    var res=await quoteOne(tk,{range:period,interval:intv});
+    var price=res.regularMarketPrice||0;
+    var chgPct=res.regularMarketChangePercent||0;
+    D.prices[tk]=price; save();
+    document.getElementById('sc-title').textContent=(res.shortName||tk);
+    var hist=res.historicalDataPrice||[];
+    var periodChg=0, periodChgPct=chgPct;
+    if(hist.length>1){
+      var firstClose=hist[0].close||hist[0].price||price;
+      var lastClose=hist[hist.length-1].close||hist[hist.length-1].price||price;
+      periodChg=lastClose-firstClose;
+      periodChgPct=firstClose>0?(periodChg/firstClose*100):chgPct;
+    }else{ periodChg=res.regularMarketChange||0; }
+    var pUp=periodChgPct>=0;
+    document.getElementById('sc-info').innerHTML=
+      '<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">'
+      +'<span style="font-size:22px;font-weight:700">'+brl(price)+'</span>'
+      +'<div>'
+      +'<div style="font-size:14px;font-weight:600;color:'+(pUp?'#22C55E':'#EF4444')+'">'+(pUp?'+':'')+periodChg.toFixed(2)+' ('+(pUp?'+':'')+periodChgPct.toFixed(2)+'%)</div>'
+      +'<div style="font-size:10px;color:#64748B">variação em '+(PERIOD_LABEL[period]||period)+'</div>'
+      +'</div></div>';
+    if(hist.length>1) drawChart('sc-svg',hist,null,['sc-d1','sc-d2']);
+    else document.getElementById('sc-svg').innerHTML='<text x="50%" y="50%" fill="#4A5568" text-anchor="middle" font-size="12">Sem pontos suficientes</text>';
+    document.getElementById('sc-stats').innerHTML=[
+      ['Abertura',brl(res.regularMarketOpen||0)],
+      ['Min.',brl(res.regularMarketDayLow||0)],
+      ['Max.',brl(res.regularMarketDayHigh||0)],
+      ['Vol.',res.regularMarketVolume?(res.regularMarketVolume/1e6).toFixed(1)+'M':'—'],
+      ['Min 52s',res.fiftyTwoWeekLow?brl(res.fiftyTwoWeekLow):'—'],
+      ['Max 52s',res.fiftyTwoWeekHigh?brl(res.fiftyTwoWeekHigh):'—']
+    ].map(function(it){
+      return '<div style="background:#1A1F2E;border-radius:8px;padding:8px;text-align:center">'
+        +'<div style="font-size:9px;color:#4A5568">'+it[0]+'</div>'
+        +'<div style="font-size:12px;font-weight:600">'+it[1]+'</div></div>';
+    }).join('');
+  }catch(e){
+    console.log('stock chart err',e);
+    document.getElementById('sc-svg').innerHTML='<text x="50%" y="50%" fill="#4A5568" text-anchor="middle" font-size="12">'+String(e.message||'Erro ao carregar').replace(/[<>]/g,'')+'</text>';
+  }
 }
 
 // ══════════════════════════════════════════════════════
@@ -819,6 +894,7 @@ function calcFIBalance(fi){
 // PORTFOLIO
 // ══════════════════════════════════════════════════════
 function renderPort(){
+  updateTickerDatalist();
   var stocks=D.stocks.map(function(s){
     var curr=D.prices[s.ticker]||s.pm;
     return Object.assign({},s,{curr:curr,perf:(curr-s.pm)/s.pm*100,total:curr*s.qty,pl:(curr-s.pm)*s.qty,bank:D.banks.find(function(b){ return b.id===s.bankId; })});
@@ -1079,6 +1155,8 @@ function renderCal(){
     }).join('');
   }
   renderDivPrev();
+  renderDividendsPage();
+  updateTickerDatalist();
 }
 
 function renderDivPrev(){
@@ -1112,13 +1190,13 @@ function addEv(){
   if(!ev.date){ toast('Informe a data','#EF4444'); return; }
   D.events.push(ev); save(); closeM('m-add-ev'); renderCal(); toast('Evento salvo!');
 }
-function rmEv(id){ D.events=D.events.filter(function(e){ return e.id!==id; }); save(); renderCal(); }
+function rmEv(id){ D.events=D.events.filter(function(e){ return e.id!==id; }); save(); renderCal(); renderDividendsPage(); }
 
 // ══════════════════════════════════════════════════════
 // FORECAST
 // ══════════════════════════════════════════════════════
 function calcFc(){
-  var monthly=+document.getElementById('fc-ap').value;
+  var monthly=+(document.getElementById('fc-ap-num')||document.getElementById('fc-ap')).value;
   var growth=+document.getElementById('fc-gw').value/100;
   var years=Math.max(1,Math.min(30,+document.getElementById('fc-yr').value||15));
   var rfRate=+document.getElementById('fc-rf').value/100;
@@ -1169,7 +1247,7 @@ function calcFc(){
 // ══════════════════════════════════════════════════════
 function renderCfg(){
   var tok=document.getElementById('cfg-token'); if(tok) tok.value=D.token||HARDCODED_TOKEN||'';
-  var tp=document.getElementById('token-preview'); if(tp) tp.textContent=D.token?(D.token.slice(0,8)+'...'):'(sem token)';
+  var tp=document.getElementById('token-preview'); if(tp) tp.textContent=D.token?(D.token.slice(0,8)+'...'):'(sem token salvo neste navegador)';
   document.getElementById('banks-list').innerHTML=D.banks.map(function(b){
     return '<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--bg3)">'
       +'<div style="width:10px;height:10px;border-radius:50%;background:'+b.color+';flex-shrink:0"></div>'
@@ -1332,6 +1410,113 @@ function renderFcDivs(){
   el.innerHTML=html;
 }
 
+
+// ══════════════════════════════════════════════════════
+// EVENTOS, PROVENTOS E RADAR — NOVAS FUNÇÕES
+// ══════════════════════════════════════════════════════
+function updateTickerDatalist(){
+  var dl=document.getElementById('ev-tickers'); if(!dl) return;
+  var set={};
+  TOP30.forEach(function(t){ set[t]=true; });
+  (D.stocks||[]).forEach(function(st){ set[st.ticker]=true; });
+  Object.keys(D.prices||{}).forEach(function(t){ set[t]=true; });
+  dl.innerHTML=Object.keys(set).sort().map(function(t){ var p=D.prices[t]; return '<option value="'+t+'">'+(p?brl(p):'')+'</option>'; }).join('');
+}
+
+function eventTickerChanged(){
+  var tk=((document.getElementById('ev-tk')||{}).value||'').toUpperCase();
+  var price=D.prices[tk]||0;
+  var priceEl=document.getElementById('ev-price'); if(priceEl) priceEl.value=price?price.toFixed(2):'';
+  var tp=(document.getElementById('ev-tp')||{}).value;
+  if(tp==='buy'){
+    var total=+(document.getElementById('ev-vl')||{}).value||0;
+    var frac=(document.getElementById('ev-frac')||{}).value!=='0';
+    var qEl=document.getElementById('ev-qt');
+    if(qEl&&price&&total) qEl.value=(frac?(total/price):Math.floor(total/price)).toFixed(frac?4:0);
+  }else if((tp==='div'||tp==='dc')&&tk){
+    var st=(D.stocks||[]).find(function(x){return x.ticker===tk;});
+    var qEl2=document.getElementById('ev-qt');
+    if(qEl2&&st&&!qEl2.value) qEl2.value=st.qty||0;
+  }
+}
+
+async function syncDividends(){
+  toast('Sincronizando proventos...','var(--blue)');
+  var added=0, checked=0;
+  var tickers=[...new Set((D.stocks||[]).map(function(st){return st.ticker;}))];
+  for(var i=0;i<tickers.length;i++){
+    var tk=tickers[i]; checked++;
+    try{
+      var res=await quoteOne(tk,{range:'3mo',interval:'1d',dividends:true});
+      var pools=[];
+      if(res.dividendsData&&Array.isArray(res.dividendsData.cashDividends)) pools=pools.concat(res.dividendsData.cashDividends);
+      if(Array.isArray(res.cashDividends)) pools=pools.concat(res.cashDividends);
+      if(Array.isArray(res.dividends)) pools=pools.concat(res.dividends);
+      pools.forEach(function(d){
+        var dt=d.paymentDate||d.payableDate||d.date||d.approvedOn||d.exDate||d.lastDatePrior;
+        if(!dt) return; dt=String(dt).slice(0,10);
+        var val=+(d.rate||d.value||d.amount||d.cashDividend||d.dividend||0);
+        if(!val) return;
+        var kind=(d.label||d.type||'Provento').toString();
+        var exists=(D.events||[]).some(function(ev){ return ev.ticker===tk&&ev.date===dt&&Math.abs((ev.value||0)-val)<0.00001; });
+        if(!exists){ D.events.push({id:uid(),type:'div',ticker:tk,date:dt,value:val,qty:0,notes:'Sincronizado via brapi: '+kind}); added++; }
+      });
+      await new Promise(function(r){setTimeout(r,180);});
+    }catch(e){ console.log('div sync',tk,e.message); }
+  }
+  save(); renderCal(); renderDividendsPage();
+  toast(added?('Proventos adicionados: '+added):('Nenhum provento novo encontrado nos '+checked+' ativos'),'var(--green)');
+}
+
+function renderDividendsPage(){
+  var k=document.getElementById('div-kpis'); if(!k) return;
+  var stocks=D.stocks||[]; var totalMes=0,totalAno=0;
+  var rows=stocks.map(function(st){ var price=D.prices[st.ticker]||st.pm||0; var pos=price*(st.qty||0); var ano=pos*((st.dy||0)/100); var mes=ano/12; totalMes+=mes; totalAno+=ano; return {s:st,price:price,pos:pos,mes:mes,ano:ano}; });
+  k.innerHTML='<div class="kpi"><div class="kl">Estimado/mês</div><div class="kv" style="color:var(--green)">'+brl(totalMes)+'</div><div class="ks">baseado no DY cadastrado</div></div>'+
+              '<div class="kpi"><div class="kl">Estimado/ano</div><div class="kv" style="color:var(--blue)">'+brl(totalAno)+'</div><div class="ks">proventos recorrentes</div></div>';
+  var list=document.getElementById('div-stock-list');
+  list.innerHTML=rows.length?rows.map(function(r){ return '<div class="trow"><div class="tbadge">'+r.s.ticker.slice(0,5)+'</div><div class="tinfo"><div class="tname">'+r.s.ticker+'</div><div class="tsub">'+r.s.qty+' cotas · DY '+(r.s.dy||0)+'% · posição '+brl(r.pos)+'</div></div><div class="tprice"><div class="tval up">'+brl(r.mes)+'</div><div class="tchg">'+brl(r.ano)+'/ano</div></div></div>'; }).join(''):'<div style="color:var(--tx3);font-size:13px;text-align:center;padding:18px">Cadastre ações na carteira para gerar forecast.</div>';
+  var evs=(D.events||[]).filter(function(e){return e.type==='div'||e.type==='dc';}).sort(function(a,b){return new Date(a.date)-new Date(b.date);});
+  var evList=document.getElementById('div-event-list');
+  evList.innerHTML=evs.length?evs.map(function(ev){ var st=stocks.find(function(x){return x.ticker===ev.ticker;}); var qty=ev.qty||(st?st.qty:0); var total=(ev.value||0)*qty; return '<div class="prow"><span class="pdot" style="background:'+(ev.type==='div'?'#22C55E':'#EF4444')+'"></span><div style="flex:1"><div style="font-weight:700;font-size:13px">'+ev.ticker+' · '+(ev.type==='div'?'Pagamento':'Data-com')+'</div><div style="font-size:11px;color:var(--tx3)">'+new Date(ev.date+'T12:00:00').toLocaleDateString('pt-BR')+' · R$ '+(ev.value||0)+' por cota · '+qty+' cotas</div></div><div style="text-align:right"><div style="font-weight:800;color:#22C55E">'+(total?brl(total):'—')+'</div><button onclick="rmEv(\''+ev.id+'\')" style="background:none;border:none;color:#EF4444;font-size:11px">remover</button></div></div>'; }).join(''):'<div style="color:var(--tx3);font-size:13px;text-align:center;padding:18px">Nenhum evento de provento cadastrado.</div>';
+}
+
+function renderRadar(){
+  updateTickerDatalist();
+  var box=document.getElementById('roadmap-list'); if(!box) return;
+  var items=[['Backend seguro','Colocar token brapi, Open Finance e IA fora do frontend.'],['Login e assinatura','Supabase Auth + Stripe/Mercado Pago para planos Free/Pro.'],['Atualização programada','Cron a cada 5 min no backend, salvando cache no banco.'],['Radar de notícias','API licenciada/RSS via backend para evitar CORS e termos de uso.'],['IA financeira','Agente que explica cenários, sem recomendar compra/venda direta.'],['Relatórios','PDF mensal, evolução patrimonial, dividendos e IR.']];
+  box.innerHTML=items.map(function(it){return '<div class="prow"><span class="pdot" style="background:#3B82F6"></span><div><div style="font-weight:700;font-size:13px">'+it[0]+'</div><div style="font-size:11px;color:var(--tx3);margin-top:2px">'+it[1]+'</div></div></div>';}).join('');
+}
+
+function openNewsSearch(){
+  var tk=((document.getElementById('news-ticker')||{}).value||'').toUpperCase().trim();
+  var src=(document.getElementById('news-source')||{}).value;
+  var url='https://www.google.com/search?q='+encodeURIComponent((tk?tk+' ':'')+'ações investimentos');
+  if(src==='infomoney') url='https://www.infomoney.com.br/busca/?q='+encodeURIComponent(tk||'ações');
+  if(src==='statusinvest'&&tk) url='https://statusinvest.com.br/acoes/'+encodeURIComponent(tk.toLowerCase());
+  if(src==='ri'&&tk) url='https://www.google.com/search?q='+encodeURIComponent(tk+' relações com investidores calendário resultados dividendos');
+  window.open(url,'_blank');
+}
+
+function syncAporteFromRange(){ var r=document.getElementById('fc-ap'), n=document.getElementById('fc-ap-num'), l=document.getElementById('apl'); if(n) n.value=r.value; if(l) l.textContent=Number(r.value).toLocaleString('pt-BR'); calcFc(); }
+function syncAporteFromNumber(){ var r=document.getElementById('fc-ap'), n=document.getElementById('fc-ap-num'), l=document.getElementById('apl'); var v=+(n.value||0); if(r) r.value=Math.min(+r.max,Math.max(+r.min,v)); if(l) l.textContent=Number(v).toLocaleString('pt-BR'); calcFc(); }
+function stepAporte(delta){ var n=document.getElementById('fc-ap-num'); n.value=Math.max(0,(+n.value||0)+delta); syncAporteFromNumber(); }
+
+function renderPlanVsReal(currentTotal, rows){
+  var el=document.getElementById('plan-vs-real'); if(!el) return;
+  var start=document.getElementById('plan-start'); if(start&&!start.value) start.value=new Date(new Date().getFullYear(),0,1).toISOString().slice(0,10);
+  var target=+(document.getElementById('plan-target')||{}).value||0;
+  var rfAp=+(document.getElementById('plan-rf-ap')||{}).value||0;
+  var rvAp=+(document.getElementById('plan-rv-ap')||{}).value||0;
+  var d0=start&&start.value?new Date(start.value+'T12:00:00'):new Date(new Date().getFullYear(),0,1);
+  var now=new Date(); var months=Math.max(0,(now.getFullYear()-d0.getFullYear())*12+(now.getMonth()-d0.getMonth())+1);
+  var plannedToday=(rfAp+rvAp)*months; var diff=currentTotal-plannedToday; var pctGoal=target?currentTotal/target*100:0;
+  el.innerHTML='<div class="kpi"><div class="kl">Realizado hoje</div><div class="kv">'+brl(currentTotal)+'</div><div class="ks">carteira atual</div></div>'+
+    '<div class="kpi"><div class="kl">Planejado até hoje</div><div class="kv">'+brl(plannedToday)+'</div><div class="ks">'+months+' meses de plano</div></div>'+
+    '<div class="kpi"><div class="kl">Diferença</div><div class="kv '+(diff>=0?'up':'down')+'">'+(diff>=0?'+':'')+brl(diff)+'</div><div class="ks">realizado - planejado</div></div>'+
+    '<div class="kpi"><div class="kl">Meta atingida</div><div class="kv" style="color:var(--pur)">'+pctGoal.toFixed(1)+'%</div><div class="ks">meta '+brl(target)+'</div></div>';
+}
+
 // ══════════════════════════════════════════════════════
 // PWA MANIFEST
 // ══════════════════════════════════════════════════════
@@ -1346,16 +1531,16 @@ function renderFcDivs(){
 // INIT
 // ══════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded',function(){
-  // Force token always
-  D.token='xo3upEvNqVsNQYdM7idyky';
-  save();
+  updateTickerDatalist();
   loadMarket();
   setTimeout(calcRF,500);
   renderPort();
   renderCal();
+  renderDividendsPage();
+  renderRadar();
   calcFc();
   renderCfg();
-  setInterval(loadMarket,60000);
+  setInterval(loadMarket,300000); // 5 minutos
 });
 </script>
 </body>
