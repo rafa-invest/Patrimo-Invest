@@ -533,10 +533,65 @@ input[type="color"]{min-height:44px}
 .div-month-label{font-size:8px;color:var(--tx3)}
 @media(max-width:760px){.analysis-grid,.port-analytics-grid,.score-wrap,.action-toolbar{grid-template-columns:1fr}.metric-grid{grid-template-columns:1fr 1fr}.bar-line{grid-template-columns:86px 1fr auto}.fund-title{font-size:18px}.fund-logo{width:48px;height:48px}.div-month-grid{gap:3px}}
 
+/* AUTH GATE + INVESTOR PROFILE */
+body.app-locked{overflow:hidden}
+body.app-locked #nav,body.app-locked .page,body.app-locked .moverlay{display:none!important}
+#login-screen{display:none;position:fixed;inset:0;z-index:500;align-items:center;justify-content:center;padding:22px;background:radial-gradient(circle at 12% 0%,rgba(18,163,106,.18),transparent 32%),radial-gradient(circle at 90% 15%,rgba(212,175,55,.15),transparent 34%),linear-gradient(180deg,#07111F,#0A1423)}
+body.app-locked #login-screen{display:flex}
+.login-shell{width:min(1080px,100%);display:grid;grid-template-columns:1.05fr .95fr;gap:22px;align-items:stretch}
+.login-hero,.login-panel{background:linear-gradient(180deg,rgba(18,31,51,.95),rgba(13,24,40,.92));border:1px solid rgba(148,163,184,.18);border-radius:28px;box-shadow:0 28px 80px rgba(0,0,0,.34);padding:28px;overflow:hidden;position:relative}
+.login-hero:before{content:"";position:absolute;inset:-40% -20% auto auto;width:420px;height:420px;background:radial-gradient(circle,rgba(212,175,55,.18),transparent 64%);pointer-events:none}
+.login-logo{width:56px;height:56px;border-radius:18px;background:linear-gradient(135deg,var(--gold),#F2D987);display:flex;align-items:center;justify-content:center;color:#07111F;font-weight:950;box-shadow:0 16px 35px rgba(212,175,55,.18);margin-bottom:18px}
+.login-title{font-size:42px;line-height:1.02;font-weight:900;letter-spacing:-.06em;margin-bottom:12px}
+.login-sub{font-size:15px;color:var(--tx2);line-height:1.7;max-width:560px;margin-bottom:22px}
+.login-features{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}
+.login-feature{border:1px solid rgba(148,163,184,.13);background:rgba(7,17,31,.46);border-radius:16px;padding:13px;font-size:12px;color:var(--tx2);line-height:1.45}
+.login-feature b{display:block;color:var(--tx);font-size:13px;margin-bottom:3px}
+.login-panel .ctitle{margin-bottom:18px}
+.login-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.login-note{margin-top:14px;font-size:11px;color:var(--tx3);line-height:1.6;background:rgba(212,175,55,.08);border:1px solid rgba(212,175,55,.22);border-radius:14px;padding:12px}
+#login-status{margin-top:12px;font-size:12px;color:var(--tx2);min-height:18px}
+.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.profile-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.profile-score{display:grid;grid-template-columns:190px 1fr;gap:16px;align-items:center}
+.score-circle{width:150px;height:150px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:conic-gradient(var(--green) var(--score-deg,180deg),rgba(148,163,184,.14) 0);border:1px solid rgba(148,163,184,.18);box-shadow:inset 0 0 0 12px rgba(7,17,31,.86)}
+.score-circle strong{font-size:36px;letter-spacing:-.06em}.score-circle span{font-size:11px;color:var(--tx2);font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+.profile-summary{background:rgba(7,17,31,.56);border:1px solid rgba(148,163,184,.12);border-radius:16px;padding:14px;font-size:12px;line-height:1.7;color:var(--tx2)}
+.ai-base{width:100%;min-height:140px;background:rgba(7,17,31,.70);border:1px solid rgba(148,163,184,.16);border-radius:16px;padding:13px;color:var(--tx2);font-size:12px;line-height:1.55;resize:vertical}
+@media(max-width:860px){.login-shell{grid-template-columns:1fr}.login-title{font-size:32px}.login-features,.profile-grid,.profile-grid-3,.profile-score{grid-template-columns:1fr}.score-circle{margin:0 auto}.login-panel,.login-hero{padding:20px}}
+
 </style>
 </head>
-<body>
+<body class="app-locked">
 <div id="toast">&#10003; Salvo</div>
+
+<div id="login-screen">
+  <div class="login-shell">
+    <section class="login-hero">
+      <div class="login-logo">IR</div>
+      <div class="login-title">InvestRafa<br>Planejamento de Investimentos</div>
+      <div class="login-sub">Entre para acessar sua carteira, importações da B3, fundamentos, dividendos, radar de notícias e planejamento. Seus dados ficam vinculados à sua conta no Supabase.</div>
+      <div class="login-features">
+        <div class="login-feature"><b>Carteira sincronizada</b>Salve ações, renda fixa, movimentações e eventos em uma base por usuário.</div>
+        <div class="login-feature"><b>Fundamentos & B3</b>Acompanhe preço, indicadores, gráficos e proventos com brapi.</div>
+        <div class="login-feature"><b>Perfil do investidor</b>Base estruturada para futuros insights de IA e planejamento.</div>
+        <div class="login-feature"><b>Radar de mercado</b>Notícias e contexto para ativos acompanhados.</div>
+      </div>
+    </section>
+    <section class="login-panel">
+      <div class="ctitle">Acesso obrigatório</div>
+      <div class="field"><label>E-mail</label><input type="email" id="login-email" placeholder="seu@email.com" autocomplete="email"></div>
+      <div class="field"><label>Senha</label><input type="password" id="login-pass" placeholder="mínimo 6 caracteres" autocomplete="current-password" onkeydown="if(event.key==='Enter')authSignIn()"></div>
+      <div class="login-actions">
+        <button class="btn btn-blue" onclick="authSignIn()">Entrar</button>
+        <button class="btn btn-ghost" onclick="authSignUp()">Criar conta</button>
+      </div>
+      <div class="login-note">Após criar a conta, o Supabase pode pedir confirmação por e-mail. Se isso acontecer, confirme o e-mail e depois volte para fazer login.</div>
+      <div id="login-status"></div>
+    </section>
+  </div>
+</div>
+
 
 <!-- ══ PAGE: MERCADO ══ -->
 <div class="page active" id="page-market">
@@ -779,6 +834,68 @@ input[type="color"]{min-height:44px}
   <div class="card"><div class="ctitle">Roadmap profissional</div><div id="roadmap-list"></div></div>
 </div>
 
+
+<!-- ══ PAGE: PERFIL DO INVESTIDOR ══ -->
+<div class="page" id="page-profile">
+  <div class="phdr">
+    <div><div class="ptitle">Perfil do Investidor</div><div class="psub">Questionário, objetivos e base de dados para futuros insights de IA</div></div>
+    <button class="btn btn-green btn-sm" onclick="saveInvestorProfile()">Salvar perfil</button>
+  </div>
+  <div class="card">
+    <div class="ctitle">Dados principais</div>
+    <div class="profile-grid">
+      <div class="field"><label>Nome ou apelido</label><input id="pf-name" placeholder="Ex: Rafael"></div>
+      <div class="field"><label>Data de nascimento</label><input type="date" id="pf-birth"></div>
+      <div class="field"><label>Renda mensal aproximada R$</label><input type="number" id="pf-income" placeholder="5500"></div>
+      <div class="field"><label>Aporte mensal planejado R$</label><input type="number" id="pf-contribution" placeholder="1300"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ctitle">Objetivo e horizonte</div>
+    <div class="profile-grid">
+      <div class="field"><label>Objetivo principal</label><select id="pf-goal"><option value="reserva">Reserva de emergência</option><option value="renda_passiva">Renda passiva</option><option value="crescimento">Crescimento patrimonial</option><option value="aposentadoria">Aposentadoria / independência financeira</option><option value="compra">Compra específica</option><option value="misto">Objetivos mistos</option></select></div>
+      <div class="field"><label>Horizonte de investimento</label><select id="pf-horizon"><option value="curto">Até 1 ano</option><option value="medio_curto">1 a 3 anos</option><option value="medio">3 a 5 anos</option><option value="longo">Acima de 5 anos</option></select></div>
+      <div class="field"><label>Reserva de emergência</label><select id="pf-reserve"><option value="nenhuma">Não tenho reserva</option><option value="parcial">Tenho menos de 6 meses</option><option value="adequada">Tenho 6 a 12 meses</option><option value="forte">Tenho mais de 12 meses</option></select></div>
+      <div class="field"><label>Estabilidade da renda</label><select id="pf-stability"><option value="baixa">Baixa / variável</option><option value="media">Média</option><option value="alta">Alta / CLT ou renda previsível</option></select></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ctitle">Risco, experiência e comportamento</div>
+    <div class="profile-grid-3">
+      <div class="field"><label>Experiência</label><select id="pf-experience"><option value="iniciante">Iniciante</option><option value="intermediario">Intermediário</option><option value="avancado">Avançado</option></select></div>
+      <div class="field"><label>Queda máxima aceitável</label><select id="pf-drawdown"><option value="5">Até 5%</option><option value="10">Até 10%</option><option value="20">Até 20%</option><option value="30">Acima de 30%</option></select></div>
+      <div class="field"><label>Reação em queda forte</label><select id="pf-reaction"><option value="vende">Venderia para evitar perda</option><option value="mantem">Manteria e aguardaria</option><option value="compra">Compraria mais se os fundamentos continuarem bons</option></select></div>
+      <div class="field"><label>Conhecimento em renda variável</label><select id="pf-rv"><option value="baixo">Baixo</option><option value="medio">Médio</option><option value="alto">Alto</option></select></div>
+      <div class="field"><label>Preferência de ativos</label><select id="pf-assets"><option value="rf">Mais renda fixa</option><option value="balanceado">Balanceado</option><option value="dividendos">Ações/FIIs de dividendos</option><option value="crescimento">Ações de crescimento</option><option value="global">Carteira global</option></select></div>
+      <div class="field"><label>Necessidade de liquidez</label><select id="pf-liquidity"><option value="alta">Alta</option><option value="media">Média</option><option value="baixa">Baixa</option></select></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ctitle">Parâmetros de planejamento</div>
+    <div class="profile-grid">
+      <div class="field"><label>Limite máximo por ativo %</label><input type="number" id="pf-max-asset" value="15"></div>
+      <div class="field"><label>Limite máximo por setor %</label><input type="number" id="pf-max-sector" value="35"></div>
+      <div class="field"><label>Meta de renda passiva mensal R$</label><input type="number" id="pf-passive-target" placeholder="1000"></div>
+      <div class="field"><label>Observações / restrições</label><input id="pf-notes" placeholder="Ex: evitar empresas muito alavancadas, foco em dividendos..."></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ctitle">Diagnóstico automático</div>
+    <div class="profile-score">
+      <div class="score-circle" id="pf-score-circle"><strong id="pf-score">—</strong><span id="pf-label">Perfil</span></div>
+      <div>
+        <div class="profile-summary" id="pf-summary">Preencha e salve o questionário para gerar a base do investidor.</div>
+        <div class="tagline" id="pf-tags" style="margin-top:10px"></div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ctitle">Base estruturada para futuro agente de IA</div>
+    <textarea class="ai-base" id="pf-ai-base" readonly></textarea>
+    <div class="notice">Esta base deve ser usada por um agente de IA apenas para educação, organização e planejamento. Recomendações personalizadas de investimento exigem cuidado regulatório e devem evitar linguagem de “compre/venda”.</div>
+  </div>
+</div>
+
 <!-- ══ PAGE: CONFIG ══ -->
 <div class="page" id="page-cfg">
   <div class="phdr"><div><div class="ptitle">Configurações</div><div class="psub">Login, banco de dados, backup e tokens</div></div></div>
@@ -844,6 +961,7 @@ input[type="color"]{min-height:44px}
   <button class="nb" onclick="goPage('dividends',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 000 7H14a3.5 3.5 0 010 7H6"/></svg>Proventos</button>
   <button class="nb" onclick="goPage('fc',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><polyline points="7 16 11 10 15 14 19 8"/></svg>Forecast</button>
   <button class="nb" onclick="goPage('radar',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>Radar</button>
+  <button class="nb" onclick="goPage('profile',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21a8 8 0 10-16 0"/><circle cx="12" cy="7" r="4"/></svg>Perfil</button>
   <button class="nb" onclick="goPage('cfg',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Config</button>
 </nav>
 
@@ -1030,7 +1148,9 @@ function goPage(name,btn){
   if(name==='fc') calcFc();
   if(name==='dividends') renderDividendsPage();
   if(name==='radar') renderRadar();
+  if(name==='profile') renderProfilePage();
 }
+
 
 function openM(id){
   document.getElementById(id).classList.add('open');
@@ -1849,6 +1969,125 @@ function calcFc(){
 }
 
 
+
+// ══════════════════════════════════════════════════════
+// AUTH GATE + PERFIL DO INVESTIDOR
+// ══════════════════════════════════════════════════════
+var appBooted=false;
+function setLoginStatus(msg,ok){ var el=document.getElementById('login-status'); if(el){ el.textContent=msg||''; el.style.color=ok?'var(--green)':'var(--tx2)'; } }
+function getAuthCreds(){
+  var le=document.getElementById('login-email'), lp=document.getElementById('login-pass');
+  var ce=document.getElementById('auth-email'), cp=document.getElementById('auth-pass');
+  var email=(le&&le.value?le.value:(ce&&ce.value?ce.value:''));
+  var password=(lp&&lp.value?lp.value:(cp&&cp.value?cp.value:''));
+  return {email:(email||'').trim(), password:password||''};
+}
+function applyAuthGate(){
+  if(currentUser){ document.body.classList.remove('app-locked'); setLoginStatus('Conectado como '+(currentUser.email||''),true); }
+  else{ document.body.classList.add('app-locked'); }
+}
+function selectNavPage(pageName){
+  var btn=[].slice.call(document.querySelectorAll('.nb')).find(function(b){ return (b.getAttribute('onclick')||'').indexOf("'"+pageName+"'")>=0; });
+  if(btn) goPage(pageName,btn);
+}
+function bootApp(){
+  if(appBooted) return;
+  appBooted=true;
+  updateTickerMenus();
+  updateMarketStatus();
+  loadMarket();
+  setTimeout(calcRF,500);
+  renderPort();
+  renderImportedMovements();
+  renderCal();
+  renderDividendsPage();
+  renderRadar();
+  renderFundamentosHome();
+  renderPortfolioAnalytics();
+  calcFc();
+  renderCfg();
+  renderProfilePage();
+  document.addEventListener('click',function(e){ if(!e.target.closest('.ticker-picker')){ document.querySelectorAll('.ticker-menu').forEach(function(m){m.classList.remove('open');}); document.querySelectorAll('.ticker-choice').forEach(function(c){c.classList.remove('open');}); } });
+  setInterval(updateMarketStatus,30000);
+  setInterval(loadMarket,300000);
+}
+function investorScore(profile){
+  profile=profile||{}; var score=0;
+  var add={curto:4,medio_curto:8,medio:13,longo:20}; score+=add[profile.horizon]||0;
+  score+={iniciante:4,intermediario:11,avancado:17}[profile.experience]||0;
+  score+={5:3,10:8,20:15,30:20}[String(profile.drawdown||'5')]||0;
+  score+={vende:2,mantem:10,compra:16}[profile.reaction]||0;
+  score+={nenhuma:-4,parcial:3,adequada:9,forte:12}[profile.reserve]||0;
+  score+={baixa:2,media:6,alta:10}[profile.stability]||0;
+  score+={alta:2,media:6,baixa:10}[profile.liquidity]||0;
+  score=Math.max(0,Math.min(100,score));
+  var label=score<35?'Conservador':score<68?'Moderado':'Arrojado';
+  return {score:score,label:label};
+}
+function readInvestorProfileForm(){
+  return {
+    completed:true,
+    name:(document.getElementById('pf-name')||{}).value||'',
+    birth:(document.getElementById('pf-birth')||{}).value||'',
+    income:+((document.getElementById('pf-income')||{}).value||0),
+    contribution:+((document.getElementById('pf-contribution')||{}).value||0),
+    goal:(document.getElementById('pf-goal')||{}).value||'misto',
+    horizon:(document.getElementById('pf-horizon')||{}).value||'medio',
+    reserve:(document.getElementById('pf-reserve')||{}).value||'parcial',
+    stability:(document.getElementById('pf-stability')||{}).value||'media',
+    experience:(document.getElementById('pf-experience')||{}).value||'iniciante',
+    drawdown:(document.getElementById('pf-drawdown')||{}).value||'10',
+    reaction:(document.getElementById('pf-reaction')||{}).value||'mantem',
+    rv:(document.getElementById('pf-rv')||{}).value||'baixo',
+    assets:(document.getElementById('pf-assets')||{}).value||'balanceado',
+    liquidity:(document.getElementById('pf-liquidity')||{}).value||'media',
+    maxAsset:+((document.getElementById('pf-max-asset')||{}).value||15),
+    maxSector:+((document.getElementById('pf-max-sector')||{}).value||35),
+    passiveTarget:+((document.getElementById('pf-passive-target')||{}).value||0),
+    notes:(document.getElementById('pf-notes')||{}).value||'',
+    updatedAt:new Date().toISOString()
+  };
+}
+function fillInvestorProfileForm(){
+  var p=D.profile||{};
+  var map={
+    'pf-name':p.name,'pf-birth':p.birth,'pf-income':p.income,'pf-contribution':p.contribution,'pf-goal':p.goal,'pf-horizon':p.horizon,'pf-reserve':p.reserve,'pf-stability':p.stability,'pf-experience':p.experience,'pf-drawdown':p.drawdown,'pf-reaction':p.reaction,'pf-rv':p.rv,'pf-assets':p.assets,'pf-liquidity':p.liquidity,'pf-max-asset':p.maxAsset||15,'pf-max-sector':p.maxSector||35,'pf-passive-target':p.passiveTarget,'pf-notes':p.notes
+  };
+  Object.keys(map).forEach(function(id){ var el=document.getElementById(id); if(el && map[id]!=null) el.value=map[id]; });
+}
+function profileAiBase(profile,res){
+  profile=profile||D.profile||{}; res=res||investorScore(profile);
+  var totalPat=(D.stocks||[]).reduce(function(a,s){return a+(D.prices[s.ticker]||s.pm||0)*(s.qty||0);},0)+(D.fi||[]).reduce(function(a,f){return a+calcFIBalance(f).balance;},0);
+  return 'Perfil do usuário para IA financeira educativa:\n'
+    +'Nome: '+(profile.name||'não informado')+'\n'
+    +'Perfil calculado: '+res.label+' ('+res.score+'/100)\n'
+    +'Objetivo principal: '+(profile.goal||'misto')+'\n'
+    +'Horizonte: '+(profile.horizon||'não informado')+'\n'
+    +'Experiência: '+(profile.experience||'não informado')+' | Queda aceitável: '+(profile.drawdown||'')+'% | Reação: '+(profile.reaction||'')+'\n'
+    +'Renda mensal: '+brl(profile.income||0)+' | Aporte planejado: '+brl(profile.contribution||0)+'\n'
+    +'Reserva: '+(profile.reserve||'não informado')+' | Estabilidade da renda: '+(profile.stability||'não informado')+' | Liquidez: '+(profile.liquidity||'não informado')+'\n'
+    +'Preferência de ativos: '+(profile.assets||'balanceado')+' | Conhecimento RV: '+(profile.rv||'baixo')+'\n'
+    +'Limites definidos: máximo por ativo '+(profile.maxAsset||15)+'%, máximo por setor '+(profile.maxSector||35)+'%\n'
+    +'Meta de renda passiva mensal: '+brl(profile.passiveTarget||0)+'\n'
+    +'Patrimônio cadastrado no app: '+brl(totalPat)+'\n'
+    +'Observações/restrições: '+(profile.notes||'nenhuma')+'\n'
+    +'Regras do agente: não recomendar compra/venda direta; explicar riscos, concentração, cenários, planejamento e próximos passos educativos.';
+}
+function updateInvestorProfileDiagnosis(){
+  var p=readInvestorProfileForm(); var res=investorScore(p);
+  var deg=Math.round(res.score/100*360);
+  var sc=document.getElementById('pf-score-circle'); if(sc) sc.style.setProperty('--score-deg',deg+'deg');
+  var scoreEl=document.getElementById('pf-score'); if(scoreEl) scoreEl.textContent=res.score;
+  var lab=document.getElementById('pf-label'); if(lab) lab.textContent=res.label;
+  var summary=document.getElementById('pf-summary');
+  if(summary) summary.innerHTML='<b style="color:var(--tx)">'+res.label+'</b>: perfil calculado com base em horizonte, reserva, estabilidade da renda, experiência e tolerância a oscilações. Use isso para orientar limites de concentração, necessidade de liquidez e tipo de planejamento.';
+  var tags=document.getElementById('pf-tags');
+  if(tags) tags.innerHTML=['Objetivo: '+p.goal,'Horizonte: '+p.horizon,'Queda: '+p.drawdown+'%','Reserva: '+p.reserve,'Ativos: '+p.assets].map(function(x){return '<span class="pill">'+x+'</span>';}).join('');
+  var base=document.getElementById('pf-ai-base'); if(base) base.value=profileAiBase(p,res);
+}
+function renderProfilePage(){ fillInvestorProfileForm(); updateInvestorProfileDiagnosis(); ['pf-goal','pf-horizon','pf-reserve','pf-stability','pf-experience','pf-drawdown','pf-reaction','pf-rv','pf-assets','pf-liquidity','pf-income','pf-contribution','pf-max-asset','pf-max-sector','pf-passive-target','pf-notes','pf-name','pf-birth'].forEach(function(id){ var el=document.getElementById(id); if(el&&!el.dataset.profileBound){ el.addEventListener('input',updateInvestorProfileDiagnosis); el.addEventListener('change',updateInvestorProfileDiagnosis); el.dataset.profileBound='1'; }}); }
+function saveInvestorProfile(){ D.profile=readInvestorProfileForm(); var r=investorScore(D.profile); D.profile.score=r.score; D.profile.label=r.label; save(); scheduleCloudSave(); renderProfilePage(); toast('Perfil do investidor salvo'); }
+
 // ══════════════════════════════════════════════════════
 // SUPABASE AUTH + CLOUD SYNC
 // ══════════════════════════════════════════════════════
@@ -1861,12 +2100,14 @@ function initSupabase(){
     SB.auth.onAuthStateChange(function(event, session){
       currentUser = session && session.user ? session.user : null;
       renderAuthUI();
-      if(currentUser && (event==='SIGNED_IN' || event==='TOKEN_REFRESHED')) loadCloudData(false);
+      applyAuthGate();
+      if(currentUser){ bootApp(); if(event==='SIGNED_IN' || event==='TOKEN_REFRESHED' || event==='INITIAL_SESSION') loadCloudData(false); }
     });
     SB.auth.getSession().then(function(res){
       currentUser = res && res.data && res.data.session ? res.data.session.user : null;
       renderAuthUI();
-      if(currentUser) loadCloudData(false);
+      applyAuthGate();
+      if(currentUser){ bootApp(); loadCloudData(false); }
     });
   }catch(e){ console.log('supabase init', e); }
 }
@@ -1882,29 +2123,34 @@ function renderAuthUI(){
     st.textContent='Entre ou crie uma conta para salvar sua carteira no banco e sincronizar celular/computador.';
     if(form) form.style.display='block'; if(logged) logged.style.display='none';
   }
+  applyAuthGate();
 }
+
 async function authSignUp(){
   if(!SB) return toast('Supabase não inicializado','#EF4444');
-  var email=(document.getElementById('auth-email')||{}).value||'';
-  var password=(document.getElementById('auth-pass')||{}).value||'';
-  if(!email || password.length<6) return toast('Informe e-mail e senha com 6+ caracteres','#EF4444');
-  var res=await SB.auth.signUp({email:email.trim(), password:password});
-  if(res.error) return toast(res.error.message,'#EF4444');
-  toast('Conta criada. Confirme o e-mail se o Supabase solicitar.');
-  currentUser=res.data && res.data.user ? res.data.user : currentUser;
-  renderAuthUI(); if(currentUser) saveCloudNow();
+  var c=getAuthCreds();
+  if(!c.email || c.password.length<6) return toast('Informe e-mail e senha com 6+ caracteres','#EF4444');
+  setLoginStatus('Criando conta...');
+  var res=await SB.auth.signUp({email:c.email, password:c.password, options:{emailRedirectTo:location.origin+location.pathname}});
+  if(res.error){ setLoginStatus(res.error.message); return toast(res.error.message,'#EF4444'); }
+  if(res.data && res.data.session && res.data.user){
+    currentUser=res.data.user; renderAuthUI(); applyAuthGate(); bootApp(); await saveCloudNow(false); toast('Conta criada e login realizado');
+  }else{
+    setLoginStatus('Conta criada. Confirme seu e-mail e depois entre com a senha.',true);
+    toast('Conta criada. Confirme o e-mail antes de entrar.');
+  }
 }
 async function authSignIn(){
   if(!SB) return toast('Supabase não inicializado','#EF4444');
-  var email=(document.getElementById('auth-email')||{}).value||'';
-  var password=(document.getElementById('auth-pass')||{}).value||'';
-  if(!email || !password) return toast('Informe e-mail e senha','#EF4444');
-  var res=await SB.auth.signInWithPassword({email:email.trim(), password:password});
-  if(res.error) return toast(res.error.message,'#EF4444');
-  currentUser=res.data.user; renderAuthUI(); await loadCloudData(false); toast('Login realizado');
+  var c=getAuthCreds();
+  if(!c.email || !c.password) return toast('Informe e-mail e senha','#EF4444');
+  setLoginStatus('Entrando...');
+  var res=await SB.auth.signInWithPassword({email:c.email, password:c.password});
+  if(res.error){ setLoginStatus(res.error.message); return toast(res.error.message,'#EF4444'); }
+  currentUser=res.data.user; renderAuthUI(); applyAuthGate(); bootApp(); await loadCloudData(false); setLoginStatus('Login realizado',true); toast('Login realizado');
 }
 async function authSignOut(){
-  if(!SB) return; await SB.auth.signOut(); currentUser=null; renderAuthUI(); toast('Você saiu da conta');
+  if(!SB) return; await SB.auth.signOut(); currentUser=null; renderAuthUI(); applyAuthGate(); toast('Você saiu da conta');
 }
 function cloudPayload(){
   var copy=JSON.parse(JSON.stringify(D||{}));
@@ -1940,7 +2186,7 @@ async function loadCloudData(showMsg){
     if(!D.importedMovements) D.importedMovements=[];
     localStorage.setItem(SK,JSON.stringify(D));
     syncingFromCloud=false;
-    migrateData(); updateTickerMenus(); renderPort(); renderImportedMovements(); renderCal(); renderDividendsPage(); renderRadar(); renderFundamentosHome(); renderPortfolioAnalytics(); calcFc(); renderCfg();
+    migrateData(); updateTickerMenus(); renderPort(); renderImportedMovements(); renderCal(); renderDividendsPage(); renderRadar(); renderFundamentosHome(); renderPortfolioAnalytics(); renderProfilePage(); calcFc(); renderCfg();
     if(showMsg) toast('Dados carregados do Supabase');
   }catch(e){ syncingFromCloud=false; console.log('cloud load',e); if(showMsg) toast('Erro ao carregar: '+e.message,'#EF4444'); }
 }
@@ -2860,6 +3106,7 @@ function renderPlanVsReal(currentTotal, rows){
 function migrateData(){
   try{ var urlTok=new URL(location.href).searchParams.get('token'); if(urlTok){ D.token=urlTok.trim(); localStorage.setItem(TOKEN_STORAGE_KEY,D.token); history.replaceState(null,'',location.pathname+location.hash); } }catch(e){}
   if(!D.meta) D.meta={};
+  if(!D.profile) D.profile={completed:false};
   if(!D.importedMovements) D.importedMovements=[];
   (D.stocks||[]).forEach(function(st){ if(!st.buyDate) st.buyDate='2026-01-01'; if(st.ticker&&!TICKER_META[st.ticker]&&st.name) TICKER_META[st.ticker]={name:st.name}; });
   if(!D.token) D.token=localStorage.getItem(TOKEN_STORAGE_KEY)||HARDCODED_TOKEN||'';
@@ -2880,23 +3127,8 @@ function migrateData(){
 // ══════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded',function(){
   migrateData();
+  applyAuthGate();
   initSupabase();
-  updateTickerMenus();
-  updateMarketStatus();
-  loadMarket();
-  setTimeout(calcRF,500);
-  renderPort();
-  renderImportedMovements();
-  renderCal();
-  renderDividendsPage();
-  renderRadar();
-  renderFundamentosHome();
-  renderPortfolioAnalytics();
-  calcFc();
-  renderCfg();
-  document.addEventListener('click',function(e){ if(!e.target.closest('.ticker-picker')){ document.querySelectorAll('.ticker-menu').forEach(function(m){m.classList.remove('open');}); document.querySelectorAll('.ticker-choice').forEach(function(c){c.classList.remove('open');}); } });
-  setInterval(updateMarketStatus,30000);
-  setInterval(loadMarket,300000); // 5 minutos
 });
 </script>
 </body>
