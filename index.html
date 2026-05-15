@@ -533,20 +533,53 @@ input[type="color"]{min-height:44px}
 .div-month-label{font-size:8px;color:var(--tx3)}
 
 /* ══ IA / INSIGHTS ══ */
-.ai-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:14px}
-.ai-actions{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}
-.ai-output{min-height:220px;background:rgba(6,14,26,.58);border:1px solid var(--bd);border-radius:18px;padding:16px;color:var(--tx2);line-height:1.7;font-size:13px;white-space:pre-wrap;overflow:auto}
-.ai-output h3{color:var(--tx);margin:8px 0 6px;font-size:16px}
+#page-ai{max-width:1260px}
+.ai-grid{display:grid;grid-template-columns:minmax(330px,420px) minmax(0,1fr);gap:16px;align-items:start}
+.ai-grid .card{min-width:0}
+.ai-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
+.ai-response-card{padding:22px}
+.ai-output{min-height:430px;background:rgba(6,14,26,.68);border:1px solid rgba(148,163,184,.15);border-radius:20px;padding:20px 22px;color:var(--tx2);line-height:1.78;font-size:14px;white-space:normal;overflow:visible;word-break:break-word}
+.ai-output.loading{display:flex;align-items:center;justify-content:center;min-height:220px;color:var(--gold);font-weight:900}
+.ai-output h2,.ai-output h3{color:var(--tx);margin:18px 0 8px;font-size:17px;letter-spacing:-.02em}
+.ai-output h2:first-child,.ai-output h3:first-child{margin-top:0}
+.ai-output p{margin:0 0 12px}
+.ai-output ul,.ai-output ol{margin:8px 0 14px 20px;padding:0}
+.ai-output li{margin:6px 0}
+.ai-output strong{color:#F8FAFC}
+.ai-output .ai-muted{color:var(--tx3);font-size:12px}
 .ai-pill-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 .ai-pill{border:1px solid rgba(148,163,184,.18);background:rgba(255,255,255,.035);border-radius:999px;padding:6px 10px;font-size:11px;color:var(--tx2);font-weight:800}
 .ai-pill.ok{border-color:rgba(18,163,106,.35);color:#A7F3D0;background:rgba(18,163,106,.10)}
 .ai-pill.warn{border-color:rgba(212,175,55,.38);color:#FDE68A;background:rgba(212,175,55,.10)}
 .ai-guard{border-left:3px solid var(--gold);background:rgba(212,175,55,.09);padding:12px 14px;border-radius:12px;color:#F9EBC0;font-size:12px;line-height:1.65}
-.ai-context-box{background:rgba(255,255,255,.03);border:1px solid var(--bd);border-radius:16px;padding:12px;font-size:12px;color:var(--tx2);line-height:1.7;max-height:310px;overflow:auto}
+.ai-context-box{background:rgba(255,255,255,.03);border:1px solid var(--bd);border-radius:16px;padding:12px;font-size:12px;color:var(--tx2);line-height:1.7;max-height:240px;overflow:auto;word-break:break-word}
+.ai-context-card{position:sticky;top:22px}
 .ai-mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .train-box textarea,.ai-prompt textarea{min-height:150px;resize:vertical}
 .partial-fund-alert{border-left:3px solid var(--gold);background:rgba(212,175,55,.09);padding:10px 12px;border-radius:12px;color:#F9EBC0;font-size:12px;line-height:1.6;margin-top:12px}
-@media(max-width:760px){.ai-grid,.ai-mode-grid,.ai-actions{grid-template-columns:1fr}}
+.action-toolbar{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+/* Floating mini AI */
+body.app-locked #mini-ai-fab,body.app-locked #mini-ai-panel{display:none!important}
+#mini-ai-fab{position:fixed;right:22px;bottom:22px;z-index:180;width:62px;height:62px;border-radius:22px;border:1px solid rgba(212,175,55,.55);background:linear-gradient(135deg,var(--gold),#F5DD85);color:#07111F;font-weight:950;box-shadow:0 18px 44px rgba(0,0,0,.35),0 0 0 6px rgba(212,175,55,.10);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1px}
+#mini-ai-fab span{font-size:10px;letter-spacing:.04em}
+#mini-ai-fab b{font-size:19px;line-height:1}
+#mini-ai-panel{position:fixed;right:22px;bottom:96px;width:min(430px,calc(100vw - 32px));max-height:76vh;z-index:190;display:none;background:linear-gradient(180deg,rgba(18,31,51,.98),rgba(9,20,34,.98));border:1px solid rgba(148,163,184,.20);border-radius:24px;box-shadow:0 28px 90px rgba(0,0,0,.52);overflow:hidden}
+#mini-ai-panel.open{display:flex;flex-direction:column}
+.mini-ai-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;border-bottom:1px solid rgba(148,163,184,.12);background:rgba(255,255,255,.025)}
+.mini-ai-title{display:flex;align-items:center;gap:10px;font-weight:950;color:var(--tx)}
+.mini-ai-title .spark{width:32px;height:32px;border-radius:12px;background:rgba(212,175,55,.16);display:flex;align-items:center;justify-content:center;color:var(--gold)}
+.mini-ai-close{width:34px;height:34px;border-radius:12px;border:1px solid rgba(148,163,184,.18);background:rgba(255,255,255,.035);color:var(--tx2);cursor:pointer;font-size:18px}
+.mini-ai-meta{padding:10px 16px;border-bottom:1px solid rgba(148,163,184,.10);font-size:11px;color:var(--tx3);display:flex;gap:8px;flex-wrap:wrap}
+.mini-ai-meta b{color:var(--gold)}
+.mini-ai-messages{padding:14px 16px;overflow:auto;display:grid;gap:10px;min-height:190px;max-height:38vh}
+.mini-msg{border:1px solid rgba(148,163,184,.12);border-radius:16px;padding:10px 12px;font-size:12px;line-height:1.65;color:var(--tx2);background:rgba(255,255,255,.03)}
+.mini-msg.user{margin-left:36px;background:rgba(47,111,237,.12);border-color:rgba(47,111,237,.24);color:#DCE8FF}
+.mini-msg.ai{margin-right:24px;background:rgba(212,175,55,.07);border-color:rgba(212,175,55,.20)}
+.mini-ai-input{padding:12px 14px;border-top:1px solid rgba(148,163,184,.10);background:rgba(7,17,31,.50)}
+.mini-ai-input textarea{width:100%;min-height:82px;max-height:140px;resize:vertical;background:rgba(6,14,26,.82);border:1px solid rgba(148,163,184,.18);border-radius:16px;color:var(--tx);padding:12px;font-family:inherit;font-size:13px;outline:none}
+.mini-ai-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.mini-ai-actions .btn{padding:11px;font-size:12px}
+@media(max-width:760px){.ai-grid,.ai-mode-grid,.ai-actions{grid-template-columns:1fr}.ai-context-card{position:static}.ai-output{min-height:340px;font-size:13px;padding:16px}#mini-ai-fab{right:16px;bottom:calc(94px + var(--sb));width:58px;height:58px}#mini-ai-panel{right:12px;left:12px;width:auto;bottom:calc(164px + var(--sb));max-height:68vh}}
 
 @media(max-width:760px){.analysis-grid,.port-analytics-grid,.score-wrap,.action-toolbar{grid-template-columns:1fr}.metric-grid{grid-template-columns:1fr 1fr}.bar-line{grid-template-columns:86px 1fr auto}.fund-title{font-size:18px}.fund-logo{width:48px;height:48px}.div-month-grid{gap:3px}}
 
@@ -725,6 +758,7 @@ body.app-locked #login-screen{display:flex}
       <button class="btn btn-blue" onclick="loadFundamentals()">Analisar ação</button>
       <button class="btn btn-ghost" onclick="addFundToPlanning()">Adicionar no planejamento</button>
       <button class="btn btn-ghost" onclick="prefillStockFromFund()">Adicionar à carteira</button>
+      <button class="btn btn-ghost" onclick="openMiniAI((document.getElementById('fund-ticker')||{}).value)">Perguntar à IA</button>
     </div>
     <div class="notice">A V2 usa a brapi para cotações, dividendos e módulos fundamentalistas quando seu plano/token permitir. Não faz scraping direto de Fundamentus, Fundamentei ou Status Invest no navegador, porque esse caminho costuma falhar por CORS/termos de uso e não é ideal para produto.</div>
   </div>
@@ -904,7 +938,7 @@ body.app-locked #login-screen{display:flex}
       </div>
     </div>
 
-    <div class="card">
+    <div class="card ai-context-card">
       <div class="ctitle">Contexto usado pela IA</div>
       <div id="ai-context-tags" class="ai-pill-row"></div>
       <div id="ai-context-preview" class="ai-context-box" style="margin-top:12px">Carregando contexto...</div>
@@ -912,7 +946,7 @@ body.app-locked #login-screen{display:flex}
     </div>
   </div>
 
-  <div class="card">
+  <div class="card ai-response-card">
     <div class="shdr">
       <span class="ctitle" style="margin:0">Resposta do agente</span>
       <span class="chip badge-n">Gemini</span>
@@ -1065,6 +1099,27 @@ body.app-locked #login-screen{display:flex}
   </div>
 </div>
 
+
+<!-- ══ MINI CHAT IA GLOBAL ══ -->
+<button id="mini-ai-fab" onclick="openMiniAI()" title="Abrir mini IA"><b>✦</b><span>IA</span></button>
+<div id="mini-ai-panel" aria-live="polite">
+  <div class="mini-ai-head">
+    <div class="mini-ai-title"><span class="spark">✦</span><div><div>Mini Agente IA</div><small style="display:block;color:var(--tx3);font-size:10px;margin-top:1px">Contextual por página e ativo</small></div></div>
+    <button class="mini-ai-close" onclick="closeMiniAI()">×</button>
+  </div>
+  <div class="mini-ai-meta"><span>Página: <b id="mini-ai-page">—</b></span><span>Ativo: <b id="mini-ai-ticker">—</b></span><span id="mini-ai-key" class="chip badge-n" style="padding:3px 8px">Gemini</span></div>
+  <div id="mini-ai-messages" class="mini-ai-messages">
+    <div class="mini-msg ai">Olá! Posso analisar esta página, sua carteira ou o ativo selecionado. Use linguagem educativa: não recomendo compra/venda direta, mas explico riscos, critérios e cenários.</div>
+  </div>
+  <div class="mini-ai-input">
+    <textarea id="mini-ai-text" placeholder="Ex: explique os principais riscos desta ação dentro da minha carteira"></textarea>
+    <div class="mini-ai-actions">
+      <button class="btn btn-ghost" onclick="miniAIQuick('resumo')">Resumo da página</button>
+      <button class="btn btn-blue" onclick="sendMiniAI()">Enviar</button>
+    </div>
+  </div>
+</div>
+
 <!-- ══ NAV ══ -->
 <nav id="nav">
   <button class="nb active" onclick="goPage('market',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Mercado</button>
@@ -1129,7 +1184,7 @@ body.app-locked #login-screen{display:flex}
 
 <!-- Modal gráfico ação -->
 <div class="moverlay" id="m-stk-chart"><div class="modal">
-  <div class="mhdr"><span class="mtitle" id="sc-title">Gráfico</span><button class="mclose" onclick="closeM('m-stk-chart')">&#215;</button></div>
+  <div class="mhdr"><span class="mtitle" id="sc-title">Gráfico</span><div style="display:flex;align-items:center;gap:8px"><button class="btn btn-ghost btn-sm" onclick="openMiniAI(activeStkTicker)">Perguntar à IA</button><button class="mclose" onclick="closeM('m-stk-chart')">&#215;</button></div></div>
   <div id="sc-info" style="margin-bottom:10px"></div>
   <div class="period-tabs" id="sc-periods">
     <button class="ptab" onclick="loadStkChart(null,'1d',this)">1D</button>
@@ -1255,6 +1310,7 @@ function toast(msg,c){
 // NAVIGATION
 // ══════════════════════════════════════════════════════
 function goPage(name,btn){
+  currentPageName=name;
   var page=document.getElementById('page-'+name);
   if(!page){ console.warn('Página não encontrada:',name); toast('Página ainda não carregada: '+name,'#EF4444'); return; }
   document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
@@ -1270,6 +1326,7 @@ function goPage(name,btn){
   if(name==='radar') renderRadar();
   if(name==='profile') renderProfilePage();
   if(name==='ai') renderAIPage();
+  renderMiniAIContext();
 }
 
 
@@ -1633,7 +1690,7 @@ function setIbovPeriod(p,btn){
 // ══════════════════════════════════════════════════════
 var activeStkTicker=null;
 function openStkChart(ticker){
-  activeStkTicker=ticker;
+  activeStkTicker=ticker; lastAITicker=String(ticker||'').toUpperCase(); renderMiniAIContext();
   document.getElementById('sc-title').textContent=ticker+' — Gráfico';
   document.querySelectorAll('#sc-periods .ptab').forEach(function(b){ b.classList.remove('on'); });
   document.querySelector('#sc-periods .ptab').classList.add('on');
@@ -2963,12 +3020,14 @@ function toggleTickerMenu(target){
   if(m){ m.classList.toggle('open'); if(c) c.classList.toggle('open',m.classList.contains('open')); }
 }
 function selectTicker(target,tk){
+  if(tk) lastAITicker=String(tk).toUpperCase();
   var inp=document.getElementById(tickerInputId(target)); if(inp) inp.value=tk;
   renderTickerLabel(target,tk);
   var m=document.getElementById(target+'-ticker-menu'), c=document.getElementById(target+'-ticker-choice');
   if(m) m.classList.remove('open'); if(c) c.classList.remove('open');
   if(target==='ev') eventTickerChanged();
   if(target==='fund') renderFundamentosHome();
+  renderMiniAIContext();
 }
 function eventTickerChanged(){
   var tk=((document.getElementById('ev-tk')||{}).value||'').toUpperCase();
@@ -3327,7 +3386,7 @@ function renderAIPage(){
   var tags=document.getElementById('ai-context-tags'); var snap=portfolioSnapshotForAI(); var p=D.profile||{}; var score=investorScore(p);
   if(tags) tags.innerHTML=['Perfil: '+score.label,'Patrimônio: '+brl(snap.patrimonioTotal),'Ações: '+snap.acoes.length,'RF: '+snap.rendaFixa.length,'Objetivo: '+(p.goal||'não informado')].map(function(x,i){return '<span class="ai-pill '+(i===0?'ok':'')+'">'+x+'</span>';}).join('');
   var tr=document.getElementById('ai-training'); if(tr && !tr.value) tr.value=(D.ai&&D.ai.training)||defaultAITraining();
-  var out=document.getElementById('ai-output'); if(out && D.ai && D.ai.lastAnswer) out.textContent=D.ai.lastAnswer;
+  var out=document.getElementById('ai-output'); if(out && D.ai && D.ai.lastAnswer) setAIOutput(D.ai.lastAnswer,false);
 }
 function saveAITraining(){ if(!D.ai) D.ai={}; var el=document.getElementById('ai-training'); D.ai.training=(el&&el.value)||defaultAITraining(); save(); toast('Treinamento do agente salvo'); }
 function resetAITraining(){ if(!D.ai) D.ai={}; D.ai.training=defaultAITraining(); var el=document.getElementById('ai-training'); if(el) el.value=D.ai.training; save(); toast('Treinamento padrão restaurado'); }
@@ -3367,15 +3426,103 @@ async function runAI(){
   var q=((document.getElementById('ai-question')||{}).value||'').trim();
   if(!q){ aiModeChanged(); q=((document.getElementById('ai-question')||{}).value||'').trim(); }
   var tk=((document.getElementById('ai-ticker')||{}).value||'').toUpperCase();
-  out.textContent='Gerando análise com Gemini...';
+  setAIOutput('Gerando análise com Gemini...',true);
   try{
     var prompt='Contexto do app InvestRafa:\n'+aiContextText()+'\n\nAtivo opcional selecionado: '+(tk||'nenhum')+'\n\nPergunta do usuário:\n'+q+'\n\nFormato desejado: responda em português, com seções: Resumo executivo, Diagnóstico, Pontos positivos, Pontos de atenção, Plano educativo, Dados que faltam, Aviso de responsabilidade.';
     var ans=await callGemini(prompt);
-    out.textContent=ans;
+    setAIOutput(ans,false);
     if(!D.ai) D.ai={}; D.ai.lastAnswer=ans; save();
-  }catch(e){ out.textContent='Erro ao gerar insight: '+String(e.message||e); toast('Erro no agente IA','#EF4444'); }
+  }catch(e){ setAIOutput('Erro ao gerar insight: '+String(e.message||e),false); toast('Erro no agente IA','#EF4444'); }
 }
 function copyAIAnswer(){ var txt=(document.getElementById('ai-output')||{}).textContent||''; navigator.clipboard&&navigator.clipboard.writeText(txt); toast('Resposta copiada'); }
+
+
+
+// ══════════════════════════════════════════════════════
+// UI DO AGENTE IA — FORMATAÇÃO + MINI CHAT GLOBAL
+// ══════════════════════════════════════════════════════
+var lastAITicker='';
+var currentPageName='market';
+function escHTML(s){ return String(s||'').replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
+function inlineMarkdown(s){ return escHTML(s).replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/`([^`]+)`/g,'<code>$1</code>'); }
+function formatAIText(txt){
+  txt=String(txt||'').replace(/\r/g,'').trim();
+  if(!txt) return '<p class="ai-muted">Sem resposta do modelo.</p>';
+  var lines=txt.split('\n'), html='', inList=false, inNum=false;
+  function closeLists(){ if(inList){ html+='</ul>'; inList=false; } if(inNum){ html+='</ol>'; inNum=false; } }
+  lines.forEach(function(raw){
+    var line=raw.trim();
+    if(!line){ closeLists(); return; }
+    var h=line.match(/^#{1,4}\s+(.+)/);
+    if(h){ closeLists(); html+='<h3>'+inlineMarkdown(h[1])+'</h3>'; return; }
+    var bullet=line.match(/^[-*•]\s+(.+)/);
+    if(bullet){ if(inNum){ html+='</ol>'; inNum=false; } if(!inList){ html+='<ul>'; inList=true; } html+='<li>'+inlineMarkdown(bullet[1])+'</li>'; return; }
+    var num=line.match(/^\d+[\.)]\s+(.+)/);
+    if(num){ if(inList){ html+='</ul>'; inList=false; } if(!inNum){ html+='<ol>'; inNum=true; } html+='<li>'+inlineMarkdown(num[1])+'</li>'; return; }
+    closeLists(); html+='<p>'+inlineMarkdown(line)+'</p>';
+  });
+  closeLists(); return html;
+}
+function setAIOutput(txt,loading){
+  var out=document.getElementById('ai-output'); if(!out) return;
+  out.classList.toggle('loading',!!loading);
+  if(loading) out.textContent=txt||'Gerando análise...'; else out.innerHTML=formatAIText(txt);
+}
+function activeTickerForAI(){
+  var ids=['ai-ticker','fund-ticker','news-ticker'];
+  for(var i=0;i<ids.length;i++){ var el=document.getElementById(ids[i]); if(el&&el.value) return String(el.value).toUpperCase(); }
+  if(activeStkTicker) return String(activeStkTicker).toUpperCase();
+  if(lastAITicker) return String(lastAITicker).toUpperCase();
+  var first=(D.stocks||[])[0]; return first?first.ticker:'';
+}
+function activePageLabel(){
+  var p=document.querySelector('.page.active'); var id=p?p.id.replace('page-',''):currentPageName;
+  var map={market:'Mercado',portfolio:'Carteira',analysis:'Análise',cal:'Agenda',dividends:'Proventos',fc:'Forecast',radar:'Radar',ai:'IA',profile:'Perfil',cfg:'Configurações'};
+  return map[id]||id||'Atual';
+}
+function openMiniAI(ticker){
+  if(ticker) lastAITicker=String(ticker).toUpperCase();
+  var tk=lastAITicker||activeTickerForAI(); if(tk) lastAITicker=tk;
+  renderMiniAIContext();
+  var p=document.getElementById('mini-ai-panel'); if(p) p.classList.add('open');
+  var inp=document.getElementById('mini-ai-text'); if(inp && !inp.value){ inp.value=tk?'Analise '+tk+' de forma educativa considerando minha carteira e meu perfil.':'Analise esta página e traga pontos de atenção.'; }
+  if(inp) setTimeout(function(){inp.focus();},80);
+}
+function closeMiniAI(){ var p=document.getElementById('mini-ai-panel'); if(p) p.classList.remove('open'); }
+function renderMiniAIContext(){
+  var page=activePageLabel(); var tk=lastAITicker||activeTickerForAI();
+  var pg=document.getElementById('mini-ai-page'); if(pg) pg.textContent=page;
+  var te=document.getElementById('mini-ai-ticker'); if(te) te.textContent=tk||'nenhum';
+  var key=document.getElementById('mini-ai-key'); if(key){ var ok=!!getGeminiKey(); key.textContent=ok?'Gemini ok':'sem chave'; key.className='chip '+(ok?'badge-up':'badge-n'); key.style.padding='3px 8px'; }
+}
+function appendMiniMsg(role,txt){
+  var box=document.getElementById('mini-ai-messages'); if(!box) return;
+  var div=document.createElement('div'); div.className='mini-msg '+(role==='user'?'user':'ai');
+  div.innerHTML=role==='ai'?formatAIText(txt):escHTML(txt);
+  box.appendChild(div); box.scrollTop=box.scrollHeight;
+}
+function miniAIQuick(kind){
+  var tk=lastAITicker||activeTickerForAI();
+  var prompts={
+    resumo:'Faça um resumo educativo da página '+activePageLabel()+(tk?' considerando o ativo '+tk:'')+'. Traga principais pontos, riscos e próximos passos práticos.',
+    ativo:'Explique o papel do ativo '+(tk||'selecionado')+' dentro da minha carteira, sem recomendação direta de compra/venda.',
+    riscos:'Liste os principais riscos da minha carteira e possíveis critérios para reduzir concentração.'
+  };
+  var inp=document.getElementById('mini-ai-text'); if(inp) inp.value=prompts[kind]||prompts.resumo;
+  sendMiniAI();
+}
+async function sendMiniAI(){
+  var inp=document.getElementById('mini-ai-text'); var q=(inp&&inp.value||'').trim(); if(!q){ toast('Digite uma pergunta para a IA','#EF4444'); return; }
+  var tk=lastAITicker||activeTickerForAI(); if(tk) lastAITicker=tk;
+  appendMiniMsg('user',q); if(inp) inp.value='';
+  appendMiniMsg('ai','Gerando resposta...');
+  var msgs=document.querySelectorAll('#mini-ai-messages .mini-msg.ai'); var last=msgs[msgs.length-1];
+  try{
+    var prompt='Mini chat contextual do InvestRafa. Página atual: '+activePageLabel()+'. Ativo selecionado: '+(tk||'nenhum')+'.\n\nContexto resumido:\n'+aiContextText().slice(0,6500)+'\n\nPergunta do usuário:\n'+q+'\n\nResponda curto, prático, em português, sem recomendação direta de compra/venda. Use bullets quando possível.';
+    var ans=await callGemini(prompt);
+    if(last) last.innerHTML=formatAIText(ans);
+  }catch(e){ if(last) last.innerHTML=formatAIText('Erro ao gerar resposta: '+String(e.message||e)); toast('Erro no mini agente','#EF4444'); }
+}
 
 // ══════════════════════════════════════════════════════
 // PWA MANIFEST
