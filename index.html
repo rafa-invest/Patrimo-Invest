@@ -531,6 +531,23 @@ input[type="color"]{min-height:44px}
 .div-month{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;min-width:0}
 .div-month-bar{width:100%;border-radius:8px 8px 2px 2px;background:linear-gradient(180deg,rgba(34,197,94,.8),rgba(34,197,94,.22));min-height:3px;border:1px solid rgba(34,197,94,.18)}
 .div-month-label{font-size:8px;color:var(--tx3)}
+
+/* ══ IA / INSIGHTS ══ */
+.ai-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:14px}
+.ai-actions{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}
+.ai-output{min-height:220px;background:rgba(6,14,26,.58);border:1px solid var(--bd);border-radius:18px;padding:16px;color:var(--tx2);line-height:1.7;font-size:13px;white-space:pre-wrap;overflow:auto}
+.ai-output h3{color:var(--tx);margin:8px 0 6px;font-size:16px}
+.ai-pill-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.ai-pill{border:1px solid rgba(148,163,184,.18);background:rgba(255,255,255,.035);border-radius:999px;padding:6px 10px;font-size:11px;color:var(--tx2);font-weight:800}
+.ai-pill.ok{border-color:rgba(18,163,106,.35);color:#A7F3D0;background:rgba(18,163,106,.10)}
+.ai-pill.warn{border-color:rgba(212,175,55,.38);color:#FDE68A;background:rgba(212,175,55,.10)}
+.ai-guard{border-left:3px solid var(--gold);background:rgba(212,175,55,.09);padding:12px 14px;border-radius:12px;color:#F9EBC0;font-size:12px;line-height:1.65}
+.ai-context-box{background:rgba(255,255,255,.03);border:1px solid var(--bd);border-radius:16px;padding:12px;font-size:12px;color:var(--tx2);line-height:1.7;max-height:310px;overflow:auto}
+.ai-mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.train-box textarea,.ai-prompt textarea{min-height:150px;resize:vertical}
+.partial-fund-alert{border-left:3px solid var(--gold);background:rgba(212,175,55,.09);padding:10px 12px;border-radius:12px;color:#F9EBC0;font-size:12px;line-height:1.6;margin-top:12px}
+@media(max-width:760px){.ai-grid,.ai-mode-grid,.ai-actions{grid-template-columns:1fr}}
+
 @media(max-width:760px){.analysis-grid,.port-analytics-grid,.score-wrap,.action-toolbar{grid-template-columns:1fr}.metric-grid{grid-template-columns:1fr 1fr}.bar-line{grid-template-columns:86px 1fr auto}.fund-title{font-size:18px}.fund-logo{width:48px;height:48px}.div-month-grid{gap:3px}}
 
 /* AUTH GATE + INVESTOR PROFILE */
@@ -932,6 +949,18 @@ body.app-locked #login-screen{display:flex}
       Token fixo configurado para o MVP. Em produção, mova esse token para um backend seguro.<br>Com token: cotações e gráficos conforme limites do seu plano.
     </div>
   </div>
+
+  <div class="card"><div class="ctitle">Gemini API / Agente IA</div>
+    <div class="fr2">
+      <div class="field" style="margin:0"><label>Gemini API Key</label>
+        <input type="password" id="cfg-gemini" placeholder="Cole sua chave Gemini aqui" oninput="saveGeminiKey()" style="background:var(--bg3);border:1px solid var(--bd2);border-radius:10px;padding:12px;color:var(--tx);width:100%;font-size:13px;outline:none"></div>
+      <div class="field" style="margin:0"><label>Modelo</label><select id="cfg-gemini-model" onchange="saveGeminiModel()"><option value="gemini-2.5-flash">gemini-2.5-flash</option><option value="gemini-2.0-flash">gemini-2.0-flash</option><option value="gemini-1.5-flash">gemini-1.5-flash</option></select></div>
+    </div>
+    <div style="font-size:11px;color:var(--tx3);background:var(--bg4);border-radius:8px;padding:10px;margin-top:10px;line-height:1.6">
+      Status: <b id="gemini-preview" style="color:var(--blue)">—</b><br>
+      Para MVP, a chave pode ficar salva só no navegador. Para vender, mova a chamada para Supabase Edge Function e guarde a chave como secret.
+    </div>
+  </div>
   <div class="card"><div class="ctitle">Data &amp; Hora do Dispositivo</div>
     <div id="cfg-date" style="font-size:16px;font-weight:600;color:var(--blue)"></div>
     <div style="font-size:11px;color:var(--tx3);margin-top:4px">Usada para calcular rendimento de RF desde a data de aplicação.</div>
@@ -961,6 +990,8 @@ body.app-locked #login-screen{display:flex}
   <button class="nb" onclick="goPage('dividends',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 000 7H14a3.5 3.5 0 010 7H6"/></svg>Proventos</button>
   <button class="nb" onclick="goPage('fc',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><polyline points="7 16 11 10 15 14 19 8"/></svg>Forecast</button>
   <button class="nb" onclick="goPage('radar',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>Radar</button>
+
+  <button class="nb" onclick="goPage('ai',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l1.7 5.1L19 9l-5.3 1.9L12 16l-1.7-5.1L5 9l5.3-1.9L12 2z"/><path d="M19 14l.9 2.7L23 18l-3.1 1.3L19 22l-.9-2.7L15 18l3.1-1.3L19 14z"/></svg>IA</button>
   <button class="nb" onclick="goPage('profile',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21a8 8 0 10-16 0"/><circle cx="12" cy="7" r="4"/></svg>Perfil</button>
   <button class="nb" onclick="goPage('cfg',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Config</button>
 </nav>
@@ -1065,6 +1096,8 @@ body.app-locked #login-screen{display:flex}
 // ══════════════════════════════════════════════════════
 var SK = 'rafa_v4';
 var TOKEN_STORAGE_KEY = 'investrafa_brapi_token';
+var GEMINI_STORAGE_KEY = 'investrafa_gemini_key';
+var GEMINI_MODEL_KEY = 'investrafa_gemini_model';
 var HARDCODED_TOKEN = 'xo3upEvNqVsNQYdM7idyky'; // MVP: token fixo para publicar rápido; em produção, mova para backend
 var SUPABASE_URL = 'https://opnvaobrlljarnwzxgaw.supabase.co';
 var SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_55E9zGDFAmyRX9FlTwyG1w_A03bwB3j';
@@ -1107,7 +1140,8 @@ var D = (function(){
     token:localStorage.getItem(TOKEN_STORAGE_KEY)||HARDCODED_TOKEN||'',
     chartCache:{},
     importedMovements:[],
-    meta:{}
+    meta:{},
+    ai:{training:'',lastAnswer:''}
   };
 })();
 
@@ -1149,6 +1183,7 @@ function goPage(name,btn){
   if(name==='dividends') renderDividendsPage();
   if(name==='radar') renderRadar();
   if(name==='profile') renderProfilePage();
+  if(name==='ai') renderAIPage();
 }
 
 
@@ -2226,6 +2261,7 @@ async function loadMarketNews(){
 function renderCfg(){
   var tok=document.getElementById('cfg-token'); if(tok) tok.value=getToken()||'';
   var tp=document.getElementById('token-preview'); if(tp) tp.textContent=D.token?(D.token.slice(0,8)+'...'):'(sem token salvo neste navegador)';
+  renderGeminiStatus();
   document.getElementById('banks-list').innerHTML=D.banks.map(function(b){
     return '<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--bg3)">'
       +'<div style="width:10px;height:10px;border-radius:50%;background:'+b.color+';flex-shrink:0"></div>'
@@ -2819,7 +2855,7 @@ function renderTickerLabel(target,tk){
   var logo=op.logo?'<span class="ticker-logo"><img src="'+op.logo+'" alt="'+op.ticker+'"></span>':'<span class="ticker-logo">'+op.ticker.slice(0,4)+'</span>';
   lab.innerHTML=logo+'<span style="min-width:0"><span class="ticker-main">'+op.ticker+'</span><span class="ticker-sub">'+op.name+(op.price?' · '+brl(op.price):'')+'</span></span>';
 }
-function tickerInputId(target){ if(target==='ev') return 'ev-tk'; if(target==='news') return 'news-ticker'; if(target==='fund') return 'fund-ticker'; return target+'-ticker'; }
+function tickerInputId(target){ if(target==='ev') return 'ev-tk'; if(target==='news') return 'news-ticker'; if(target==='fund') return 'fund-ticker'; if(target==='ai') return 'ai-ticker'; return target+'-ticker'; }
 function updateTickerMenus(){
   var opts=allTickerOptions();
   ['ev','news','fund'].forEach(function(target){
@@ -2946,10 +2982,33 @@ function arrLast(a){ return Array.isArray(a)&&a.length?a[a.length-1]:null; }
 function fundModulesURL(tk){ var mods='summaryProfile,defaultKeyStatistics,financialData,incomeStatementHistory,incomeStatementHistoryQuarterly,financialDataHistory,balanceSheetHistory,cashflowHistory'; return '/quote/'+encodeURIComponent(tk)+'?range=3mo&interval=1d&fundamental=true&dividends=true&modules='+encodeURIComponent(mods); }
 async function fetchFundamentalData(tk){
   if(!hasToken()) throw new Error('Configure o token brapi na aba Config para puxar os módulos fundamentalistas.');
-  var r=await fetch(apiURL(fundModulesURL(tk)));
-  var j=await r.json();
+  async function fetchPath(path){
+    var r=await fetch(apiURL(path));
+    var j=await r.json();
+    return j;
+  }
+  var j=await fetchPath(fundModulesURL(tk));
+  if(j.error && (j.code==='MODULES_NOT_AVAILABLE' || String(j.message||'').indexOf('Módulos')>=0 || String(j.message||'').indexOf('modules')>=0)){
+    var fallback='/quote/'+encodeURIComponent(tk)+'?range=3mo&interval=1d&dividends=true&modules=summaryProfile';
+    var fj=await fetchPath(fallback);
+    if(fj.error){
+      // Última tentativa: cotação + histórico, sem módulos fundamentais.
+      var quote=await quoteOne(tk,{range:'3mo',interval:'1d',dividends:true});
+      quote.__fundMode='quote';
+      quote.__fundWarning='A brapi não retornou módulos fundamentalistas para este ativo/plano. A análise foi montada com cotação, histórico e dados cadastrados manualmente.';
+      activeFundData=quote;
+      return quote;
+    }
+    if(!fj.results||!fj.results[0]) throw new Error('Sem dados parciais para '+tk);
+    fj.results[0].__fundMode='partial';
+    fj.results[0].__fundWarning='Análise parcial: para este ativo/plano, a brapi liberou apenas perfil/cotação. KPIs fundamentalistas ausentes ficam como “—”.';
+    updateQuoteMeta(fj.results[0]);
+    activeFundData=fj.results[0];
+    return fj.results[0];
+  }
   if(j.error) throw new Error((j.code||'ERRO')+': '+(j.message||'Falha na API'));
   if(!j.results||!j.results[0]) throw new Error('Sem dados para '+tk);
+  j.results[0].__fundMode='complete';
   updateQuoteMeta(j.results[0]);
   activeFundData=j.results[0];
   return j.results[0];
@@ -3018,7 +3077,7 @@ function renderFundamentals(res){
   var tk=res.symbol||((document.getElementById('fund-ticker')||{}).value||''); var meta=tickerMeta(tk); var prof=res.summaryProfile||{}; var m=fundamentalMetrics(res); var ptype=(document.getElementById('fund-profile')||{}).value||'dividendos'; var sc=buildFundScore(m,ptype);
   var logo=meta.logo?'<span class="fund-logo"><img src="'+meta.logo+'" alt="'+tk+'"></span>':'<span class="fund-logo">'+tk.slice(0,4)+'</span>';
   var tags=[]; if(prof.sectorDisp||prof.sector) tags.push(prof.sectorDisp||prof.sector); if(prof.industryDisp||prof.industry) tags.push(prof.industryDisp||prof.industry); if(res.currency) tags.push(res.currency); if(res.regularMarketVolume) tags.push('Vol. '+(res.regularMarketVolume/1e6).toFixed(1)+'M');
-  document.getElementById('fund-summary').innerHTML='<div class="fund-hero">'+logo+'<div style="min-width:0;flex:1"><div class="fund-title">'+tk+' · '+(res.longName||meta.name||tk)+'</div><div class="fund-sub">'+tags.join(' · ')+'</div><div class="tagline"><span class="pill '+(m.price?'ok':'warn')+'">Preço '+(m.price?brl(m.price):'—')+'</span><span class="pill '+(m.dy?'ok':'warn')+'">DY '+fmtPercentSmart(m.dy)+'</span><span class="pill '+(m.pe?'ok':'warn')+'">P/L '+fmtRatio(m.pe)+'</span></div></div></div>';
+  document.getElementById('fund-summary').innerHTML='<div class="fund-hero">'+logo+'<div style="min-width:0;flex:1"><div class="fund-title">'+tk+' · '+(res.longName||meta.name||tk)+'</div><div class="fund-sub">'+tags.join(' · ')+'</div><div class="tagline"><span class="pill '+(m.price?'ok':'warn')+'">Preço '+(m.price?brl(m.price):'—')+'</span><span class="pill '+(m.dy?'ok':'warn')+'">DY '+fmtPercentSmart(m.dy)+'</span><span class="pill '+(m.pe?'ok':'warn')+'">P/L '+fmtRatio(m.pe)+'</span><span class="pill '+(res.__fundMode==='complete'?'ok':'warn')+'">'+(res.__fundMode==='complete'?'Análise completa':'Análise parcial')+'</span></div></div></div>'+(res.__fundWarning?'<div class="partial-fund-alert">'+res.__fundWarning+'</div>':'');
   var kpis=[['Preço atual',m.price?brl(m.price):'—','Cotação mais recente'],['Valor de mercado',fmtBig(m.mcap),'Market cap'],['P/L',fmtRatio(m.pe),'Preço / lucro'],['LPA',fmtRatio(m.eps),'Lucro por ação'],['P/VP',fmtRatio(m.pb),'Preço / valor patrimonial'],['ROE',fmtPercentSmart(m.roe),'Retorno sobre PL'],['DY',fmtPercentSmart(m.dy),'Dividend yield'],['Dív. Líq./EBITDA',fmtRatio(m.debtEbitda,'x'),'Alavancagem'],['Receita TTM',fmtBig(m.revenue),'Receita últimos 12 meses'],['EBITDA TTM',fmtBig(m.ebitda),'Geração operacional'],['Fluxo livre',fmtBig(m.fcf),'Free cash flow'],['Margem líquida',fmtPercentSmart(m.netMargin),'Lucratividade']];
   document.getElementById('fund-kpis').innerHTML=kpis.map(function(x){return '<div class="metric-tile"><div class="ml">'+x[0]+'</div><div class="mv">'+x[1]+'</div><div class="ms">'+x[2]+'</div></div>';}).join('');
   document.getElementById('fund-score-label').textContent=sc.score+'/100';
@@ -3112,6 +3171,119 @@ function migrateData(){
   if(!D.token) D.token=localStorage.getItem(TOKEN_STORAGE_KEY)||HARDCODED_TOKEN||'';
   save();
 }
+
+
+// ══════════════════════════════════════════════════════
+// AGENTE IA — GEMINI (MVP COM CHAVE LOCAL)
+// ══════════════════════════════════════════════════════
+function defaultAITraining(){
+  return 'Você é o Agente InvestRafa, um assistente financeiro educativo em português do Brasil. Regras:\n'
+    +'1) Não diga que o usuário deve comprar, vender ou manter um ativo como recomendação individual. Use linguagem educativa: “pode avaliar”, “ponto de atenção”, “cenário possível”.\n'
+    +'2) Sempre destaque riscos, concentração, horizonte, liquidez, reserva de emergência e perfil do investidor.\n'
+    +'3) Quando falar de ações, separe fundamentos, preço, dividendos, risco e papel dentro da carteira.\n'
+    +'4) Use os dados fornecidos pelo app como fonte principal. Se faltar dado, declare a limitação.\n'
+    +'5) Entregue respostas práticas: diagnóstico, pontos positivos, pontos de atenção, plano de ação e próximos dados que o usuário deveria acompanhar.\n'
+    +'6) Não prometa rentabilidade, não invente dados e não trate a resposta como consultoria CVM.';
+}
+function getGeminiKey(){ return (localStorage.getItem(GEMINI_STORAGE_KEY)||'').trim(); }
+function getGeminiModel(){ return localStorage.getItem(GEMINI_MODEL_KEY)||'gemini-2.5-flash'; }
+function saveGeminiKey(){
+  var el=document.getElementById('cfg-gemini');
+  if(el){ localStorage.setItem(GEMINI_STORAGE_KEY,(el.value||'').trim()); }
+  renderGeminiStatus();
+  toast('Chave Gemini salva neste navegador');
+}
+function saveGeminiModel(){ var el=document.getElementById('cfg-gemini-model'); if(el){ localStorage.setItem(GEMINI_MODEL_KEY,el.value); toast('Modelo Gemini salvo'); } }
+function renderGeminiStatus(){
+  var key=getGeminiKey();
+  var prev=document.getElementById('gemini-preview'); if(prev) prev.textContent=key?(key.slice(0,8)+'... salvo localmente'):'sem chave salva';
+  var inp=document.getElementById('cfg-gemini'); if(inp && key && !inp.value) inp.value=key;
+  var model=document.getElementById('cfg-gemini-model'); if(model) model.value=getGeminiModel();
+  var chip=document.getElementById('ai-key-chip'); if(chip){ chip.textContent=key?'Gemini conectado':'Gemini pendente'; chip.className='chip '+(key?'badge-up':'badge-n'); }
+}
+function maybePersistGeminiFromURL(){
+  try{
+    var u=new URL(location.href);
+    var k=u.searchParams.get('gemini')||u.searchParams.get('gemini_key');
+    if(k && k.length>10){ localStorage.setItem(GEMINI_STORAGE_KEY,k.trim()); u.searchParams.delete('gemini'); u.searchParams.delete('gemini_key'); history.replaceState({},'',u.toString()); }
+  }catch(e){}
+}
+function portfolioSnapshotForAI(){
+  var stocks=(D.stocks||[]).map(function(s){ var price=D.prices[s.ticker]||s.pm||0; return {ticker:s.ticker,nome:tickerMeta(s.ticker).name,quantidade:s.qty||0,precoMedio:s.pm||0,precoAtual:price,total:price*(s.qty||0),setor:s.sector||'Outros',dy:s.dy||0,dataCompra:s.buyDate||s.date||''}; });
+  var totalStocks=stocks.reduce(function(a,s){return a+s.total;},0);
+  var rf=(D.fi||[]).map(function(f){ var c=calcFIBalance(f); return {nome:f.name,banco:((D.banks||[]).find(function(b){return b.id===f.bankId;})||{}).name||'',saldo:c.balance,rendimento:c.earned,taxa:f.rate,indexador:f.index,data:f.date}; });
+  var totalRF=rf.reduce(function(a,f){return a+f.saldo;},0);
+  var sectors={}; stocks.forEach(function(s){ sectors[s.setor]=(sectors[s.setor]||0)+s.total; });
+  var dividends=(D.events||[]).filter(isPortfolioDividendEvent).slice(-30).map(function(e){return {ticker:e.ticker,tipo:e.type,data:e.date,valorPorCota:e.value,observacao:e.notes};});
+  return {patrimonioTotal:totalStocks+totalRF,totalAcoes:totalStocks,totalRendaFixa:totalRF,acoes:stocks,setores:sectors,rendaFixa:rf,proventosRecentes:dividends,precos:D.prices||{}};
+}
+function aiContextText(){
+  var p=D.profile||{}; var r=investorScore(p||{}); var snap=portfolioSnapshotForAI();
+  var top=snap.acoes.slice().sort(function(a,b){return b.total-a.total;}).slice(0,8).map(function(s){ return s.ticker+' '+brl(s.total)+' ('+(snap.patrimonioTotal?((s.total/snap.patrimonioTotal*100).toFixed(1)+'%'):'0%')+')'; }).join('; ');
+  var setores=Object.keys(snap.setores).map(function(k){return k+': '+brl(snap.setores[k]);}).join('; ');
+  return profileAiBase(p,r)+'\n\nCarteira resumida:\n'
+    +'Patrimônio total: '+brl(snap.patrimonioTotal)+' | Ações: '+brl(snap.totalAcoes)+' | Renda fixa: '+brl(snap.totalRendaFixa)+'\n'
+    +'Top posições: '+(top||'sem ações cadastradas')+'\n'
+    +'Setores: '+(setores||'sem setores')+'\n'
+    +'Quantidade de ações cadastradas: '+snap.acoes.length+' | Produtos RF: '+snap.rendaFixa.length+'\n'
+    +'Dados completos em JSON: '+JSON.stringify(snap).slice(0,9000);
+}
+function renderAIPage(){
+  renderGeminiStatus(); updateTickerMenus(); renderTickerLabel('ai',((document.getElementById('ai-ticker')||{}).value||''));
+  var ctx=aiContextText(); var prev=document.getElementById('ai-context-preview'); if(prev) prev.textContent=ctx.slice(0,4500)+(ctx.length>4500?'\n...contexto cortado na prévia, mas resumido no envio.':'');
+  var tags=document.getElementById('ai-context-tags'); var snap=portfolioSnapshotForAI(); var p=D.profile||{}; var score=investorScore(p);
+  if(tags) tags.innerHTML=['Perfil: '+score.label,'Patrimônio: '+brl(snap.patrimonioTotal),'Ações: '+snap.acoes.length,'RF: '+snap.rendaFixa.length,'Objetivo: '+(p.goal||'não informado')].map(function(x,i){return '<span class="ai-pill '+(i===0?'ok':'')+'">'+x+'</span>';}).join('');
+  var tr=document.getElementById('ai-training'); if(tr && !tr.value) tr.value=(D.ai&&D.ai.training)||defaultAITraining();
+  var out=document.getElementById('ai-output'); if(out && D.ai && D.ai.lastAnswer) out.textContent=D.ai.lastAnswer;
+}
+function saveAITraining(){ if(!D.ai) D.ai={}; var el=document.getElementById('ai-training'); D.ai.training=(el&&el.value)||defaultAITraining(); save(); toast('Treinamento do agente salvo'); }
+function resetAITraining(){ if(!D.ai) D.ai={}; D.ai.training=defaultAITraining(); var el=document.getElementById('ai-training'); if(el) el.value=D.ai.training; save(); toast('Treinamento padrão restaurado'); }
+function aiModeChanged(){
+  var m=(document.getElementById('ai-mode')||{}).value||'diagnostico'; var q=document.getElementById('ai-question'); if(!q) return;
+  var prompts={
+    diagnostico:'Analise minha carteira atual. Mostre diagnóstico, pontos fortes, pontos de atenção, concentração por ativo/setor, riscos e próximos passos educativos.',
+    aporte:'Monte um plano de aporte para o próximo mês considerando meu perfil, metas, carteira atual, concentração e necessidade de diversificação. Não recomende compra direta; explique critérios.',
+    riscos:'Identifique os principais riscos da minha carteira: concentração, volatilidade, liquidez, dependência de dividendos, setores e horizonte.',
+    dividendos:'Analise minha renda passiva prevista, dividendos cadastrados e o que acompanhar para melhorar previsibilidade sem aumentar risco de forma excessiva.',
+    comparar:'Compare o ativo selecionado com o papel dele dentro da minha carteira. Traga fundamentos disponíveis, riscos, dividendos e perguntas que eu deveria responder antes de planejar compra.',
+    relatorio:'Gere um relatório mensal da minha carteira com resumo executivo, evolução, dividendos, riscos, próximos acompanhamentos e plano educacional.',
+    livre:''
+  };
+  if(prompts[m]) q.value=prompts[m];
+}
+function aiQuick(mode){ var sel=document.getElementById('ai-mode'); if(sel) sel.value=mode; aiModeChanged(); runAI(); }
+async function callGemini(prompt){
+  var key=getGeminiKey(); if(!key) throw new Error('Configure sua Gemini API Key em Configurações > Gemini API. Por segurança, ela fica salva apenas neste navegador.');
+  var model=getGeminiModel();
+  var url='https://generativelanguage.googleapis.com/v1beta/models/'+encodeURIComponent(model)+':generateContent?key='+encodeURIComponent(key);
+  var system=(D.ai&&D.ai.training)||defaultAITraining();
+  var body={
+    systemInstruction:{parts:[{text:system}]},
+    contents:[{role:'user',parts:[{text:prompt}]}],
+    generationConfig:{temperature:0.35,topP:0.9,maxOutputTokens:1800}
+  };
+  var r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  var j=await r.json();
+  if(!r.ok || j.error){ throw new Error((j.error&&j.error.message)||('Erro Gemini HTTP '+r.status)); }
+  var txt='';
+  try{ txt=j.candidates[0].content.parts.map(function(p){return p.text||'';}).join('\n'); }catch(e){}
+  return txt||'Sem resposta do modelo.';
+}
+async function runAI(){
+  var out=document.getElementById('ai-output'); if(!out) return;
+  var q=((document.getElementById('ai-question')||{}).value||'').trim();
+  if(!q){ aiModeChanged(); q=((document.getElementById('ai-question')||{}).value||'').trim(); }
+  var tk=((document.getElementById('ai-ticker')||{}).value||'').toUpperCase();
+  out.textContent='Gerando análise com Gemini...';
+  try{
+    var prompt='Contexto do app InvestRafa:\n'+aiContextText()+'\n\nAtivo opcional selecionado: '+(tk||'nenhum')+'\n\nPergunta do usuário:\n'+q+'\n\nFormato desejado: responda em português, com seções: Resumo executivo, Diagnóstico, Pontos positivos, Pontos de atenção, Plano educativo, Dados que faltam, Aviso de responsabilidade.';
+    var ans=await callGemini(prompt);
+    out.textContent=ans;
+    if(!D.ai) D.ai={}; D.ai.lastAnswer=ans; save();
+  }catch(e){ out.textContent='Erro ao gerar insight: '+String(e.message||e); toast('Erro no agente IA','#EF4444'); }
+}
+function copyAIAnswer(){ var txt=(document.getElementById('ai-output')||{}).textContent||''; navigator.clipboard&&navigator.clipboard.writeText(txt); toast('Resposta copiada'); }
+
 // ══════════════════════════════════════════════════════
 // PWA MANIFEST
 // ══════════════════════════════════════════════════════
@@ -3126,6 +3298,7 @@ function migrateData(){
 // INIT
 // ══════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded',function(){
+  maybePersistGeminiFromURL();
   migrateData();
   applyAuthGate();
   initSupabase();
