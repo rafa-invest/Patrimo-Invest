@@ -3575,6 +3575,19 @@ async function sendMiniAI(){
   }catch(e){ if(last) last.innerHTML=formatAIText('Erro ao gerar resposta: '+String(e.message||e)); toast('Erro no mini agente','#EF4444'); }
 }
 
+
+// ══════════════════════════════════════════════════════
+// GLOBAL EXPORTS / VERSION
+// Mantém os botões inline funcionando mesmo após minificações/cópias no GitHub.
+// ══════════════════════════════════════════════════════
+window.__INVESTRAFA_VERSION = 'v4-login-fix-2-2026-05-15';
+window.authSignIn = authSignIn;
+window.authSignUp = authSignUp;
+window.authSignOut = authSignOut;
+window.saveCloudNow = saveCloudNow;
+window.loadCloudData = loadCloudData;
+console.log('InvestRafa carregado:', window.__INVESTRAFA_VERSION);
+
 // ══════════════════════════════════════════════════════
 // PWA MANIFEST
 // ══════════════════════════════════════════════════════
