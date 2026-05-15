@@ -852,6 +852,90 @@ body.app-locked #login-screen{display:flex}
 </div>
 
 
+
+<!-- ══ PAGE: IA / INSIGHTS ══ -->
+<div class="page" id="page-ai">
+  <div class="phdr">
+    <div>
+      <div class="ptitle">Agente IA</div>
+      <div class="psub">Insights educativos com base no perfil, carteira, proventos e planejamento</div>
+    </div>
+    <span id="ai-key-chip" class="chip badge-n">Gemini pendente</span>
+  </div>
+
+  <div class="ai-grid">
+    <div class="card">
+      <div class="shdr">
+        <span class="ctitle" style="margin:0">Solicitação para o agente</span>
+        <button class="btn btn-ghost btn-sm" onclick="copyAIAnswer()">Copiar resposta</button>
+      </div>
+      <div class="ai-guard">
+        O agente é educativo e usa os dados salvos no InvestRafa. Ele não deve recomendar compra/venda direta; a função é explicar riscos, cenários, concentração, planejamento e pontos de atenção.
+      </div>
+      <div class="field" style="margin-top:14px">
+        <label>Tipo de análise</label>
+        <select id="ai-mode" onchange="aiModeChanged()">
+          <option value="diagnostico">Diagnóstico da carteira</option>
+          <option value="aporte">Plano de aporte do mês</option>
+          <option value="riscos">Riscos e concentração</option>
+          <option value="dividendos">Dividendos e renda passiva</option>
+          <option value="comparar">Analisar ativo selecionado</option>
+          <option value="relatorio">Relatório mensal</option>
+          <option value="livre">Pergunta livre</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Ativo opcional</label>
+        <div class="ticker-picker">
+          <button type="button" class="ticker-choice" id="ai-ticker-choice" onclick="toggleTickerMenu('ai')"><span class="ticker-selected" id="ai-ticker-label">Selecione uma ação</span><span class="ticker-caret">▼</span></button>
+          <input type="hidden" id="ai-ticker" value="">
+          <div class="ticker-menu" id="ai-ticker-menu"></div>
+        </div>
+      </div>
+      <div class="field ai-prompt">
+        <label>Pergunta / comando</label>
+        <textarea id="ai-question" placeholder="Ex: analise minha carteira e monte um plano educativo de aporte para o próximo mês"></textarea>
+      </div>
+      <div class="ai-actions">
+        <button class="btn btn-blue" onclick="runAI()">Gerar insight</button>
+        <button class="btn btn-ghost" onclick="aiQuick('aporte')">Plano de aporte</button>
+        <button class="btn btn-ghost" onclick="aiQuick('riscos')">Riscos</button>
+        <button class="btn btn-ghost" onclick="aiQuick('dividendos')">Dividendos</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ctitle">Contexto usado pela IA</div>
+      <div id="ai-context-tags" class="ai-pill-row"></div>
+      <div id="ai-context-preview" class="ai-context-box" style="margin-top:12px">Carregando contexto...</div>
+      <div class="notice" style="margin-top:12px">Se a resposta vier fraca, complete a página Perfil do Investidor e importe suas movimentações da B3. Quanto melhor a base, melhores os insights.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="shdr">
+      <span class="ctitle" style="margin:0">Resposta do agente</span>
+      <span class="chip badge-n">Gemini</span>
+    </div>
+    <div id="ai-output" class="ai-output">Escolha uma análise e clique em “Gerar insight”.</div>
+  </div>
+
+  <div class="card train-box">
+    <div class="shdr">
+      <span class="ctitle" style="margin:0">Treinamento / instruções do agente</span>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-ghost btn-sm" onclick="resetAITraining()">Restaurar</button>
+        <button class="btn btn-green btn-sm" onclick="saveAITraining()">Salvar</button>
+      </div>
+    </div>
+    <div class="notice">Este “treinamento” é feito por instruções de sistema + contexto da sua carteira. Para vender o app depois, mova a chamada da IA para uma Supabase Edge Function e guarde a chave Gemini como secret.</div>
+    <div class="field" style="margin-top:12px">
+      <label>Base de comportamento do agente</label>
+      <textarea id="ai-training"></textarea>
+    </div>
+  </div>
+</div>
+
 <!-- ══ PAGE: PERFIL DO INVESTIDOR ══ -->
 <div class="page" id="page-profile">
   <div class="phdr">
@@ -1171,10 +1255,12 @@ function toast(msg,c){
 // NAVIGATION
 // ══════════════════════════════════════════════════════
 function goPage(name,btn){
+  var page=document.getElementById('page-'+name);
+  if(!page){ console.warn('Página não encontrada:',name); toast('Página ainda não carregada: '+name,'#EF4444'); return; }
   document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
   document.querySelectorAll('.nb').forEach(function(b){ b.classList.remove('active'); });
-  document.getElementById('page-'+name).classList.add('active');
-  btn.classList.add('active');
+  page.classList.add('active');
+  if(btn) btn.classList.add('active');
   if(name==='portfolio'){ renderPort(); renderImportedMovements(); }
   if(name==='analysis'){ renderFundamentosHome(); updateTickerMenus(); }
   if(name==='cal') renderCal();
@@ -2299,12 +2385,19 @@ function resetAll(){ if(confirm('Apagar TODOS os dados? Nao pode ser desfeito.')
 // RF SIMULATOR COM TABELA REGRESSIVA IR
 // ══════════════════════════════════════════════════════
 function calcRF(){
-  var cap=+document.getElementById('rf-cap').value||0;
-  var taxaAA=+document.getElementById('rf-taxa').value||0;
-  var meses=+document.getElementById('rf-meses').value||1;
-  var apm=+document.getElementById('rf-apm').value||0;
-  var idx=document.getElementById('rf-idx').value;
-  var isento=document.getElementById('rf-isento').value==='1';
+  var capEl=document.getElementById('rf-cap');
+  var taxaEl=document.getElementById('rf-taxa');
+  var mesesEl=document.getElementById('rf-meses');
+  var apmEl=document.getElementById('rf-apm');
+  var idxEl=document.getElementById('rf-idx');
+  var isentoEl=document.getElementById('rf-isento');
+  if(!capEl||!taxaEl||!mesesEl||!apmEl||!idxEl||!isentoEl){ if(typeof renderFcDivs==='function') renderFcDivs(); return; }
+  var cap=+capEl.value||0;
+  var taxaAA=+taxaEl.value||0;
+  var meses=+mesesEl.value||1;
+  var apm=+apmEl.value||0;
+  var idx=idxEl.value;
+  var isento=isentoEl.value==='1';
 
   // Adjust rate by indexer
   var rateAA=taxaAA/100;
@@ -2858,7 +2951,7 @@ function renderTickerLabel(target,tk){
 function tickerInputId(target){ if(target==='ev') return 'ev-tk'; if(target==='news') return 'news-ticker'; if(target==='fund') return 'fund-ticker'; if(target==='ai') return 'ai-ticker'; return target+'-ticker'; }
 function updateTickerMenus(){
   var opts=allTickerOptions();
-  ['ev','news','fund'].forEach(function(target){
+  ['ev','news','fund','ai'].forEach(function(target){
     var menu=document.getElementById(target+'-ticker-menu'); if(menu) menu.innerHTML=opts.map(function(op){return tickerOptionHTML(op,target);}).join('');
     var inp=document.getElementById(tickerInputId(target)); if(inp) renderTickerLabel(target,inp.value||'');
   });
