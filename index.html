@@ -478,6 +478,61 @@ input[type="color"]{min-height:44px}
 .import-status .stat span{font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:.05em}
 @media(max-width:760px){.import-grid,.import-status{grid-template-columns:1fr}.import-preview{max-height:220px}.card div[style*="grid-template-columns:1.2fr 1fr 1fr"]{grid-template-columns:1fr!important}}
 
+
+
+/* ══════════════════════════════════════════════════════
+   V2 — FUNDAMENTOS, CARTEIRA ANALÍTICA E PROVENTOS
+   ══════════════════════════════════════════════════════ */
+.analysis-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:12px}
+.fund-hero{display:flex;align-items:center;gap:14px;min-width:0}
+.fund-logo{width:56px;height:56px;border-radius:18px;background:linear-gradient(135deg,rgba(212,175,55,.22),rgba(47,111,237,.14));border:1px solid rgba(255,255,255,.10);display:flex;align-items:center;justify-content:center;overflow:hidden;color:var(--gold);font-weight:900;letter-spacing:.02em;flex-shrink:0}
+.fund-logo img{width:100%;height:100%;object-fit:contain;background:#fff;padding:5px}
+.fund-title{font-size:22px;font-weight:950;letter-spacing:-.04em;line-height:1}
+.fund-sub{font-size:12px;color:var(--tx3);margin-top:6px;line-height:1.4}
+.metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.metric-tile{background:rgba(7,17,31,.72);border:1px solid rgba(148,163,184,.14);border-radius:14px;padding:12px;min-height:84px}
+.metric-tile .ml{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--tx3);font-weight:900;margin-bottom:8px}
+.metric-tile .mv{font-size:18px;font-weight:950;color:var(--tx);line-height:1.1}
+.metric-tile .ms{font-size:10px;color:var(--tx3);margin-top:5px;line-height:1.35}
+.score-wrap{display:grid;grid-template-columns:150px 1fr;gap:16px;align-items:center}
+.score-ring{width:132px;height:132px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--green) 0deg, var(--green) var(--score-deg,180deg), rgba(148,163,184,.16) var(--score-deg,180deg));position:relative;margin:auto}
+.score-ring:before{content:'';position:absolute;inset:12px;border-radius:50%;background:#0B1422;border:1px solid rgba(148,163,184,.12)}
+.score-ring span{position:relative;font-size:30px;font-weight:950;color:var(--tx)}
+.score-ring small{position:relative;display:block;font-size:9px;color:var(--tx3);text-transform:uppercase;letter-spacing:.08em;margin-top:2px;text-align:center}
+.check-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(148,163,184,.10)}
+.check-row:last-child{border-bottom:none}
+.check-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;background:var(--tx3)}
+.check-title{font-size:13px;font-weight:800;color:var(--tx)}
+.check-note{font-size:11px;color:var(--tx3);margin-top:2px;line-height:1.35}
+.bar-list{display:grid;gap:9px}
+.bar-line{display:grid;grid-template-columns:120px 1fr auto;gap:10px;align-items:center;font-size:12px}
+.bar-name{color:var(--tx2);font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-bg{height:10px;border-radius:99px;background:rgba(148,163,184,.12);overflow:hidden;border:1px solid rgba(148,163,184,.08)}
+.bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--blue),var(--gold))}
+.bar-val{font-weight:900;color:var(--tx);font-size:11px;min-width:64px;text-align:right}
+.fund-bars{display:flex;align-items:flex-end;gap:8px;height:150px;border:1px solid var(--bd);border-radius:14px;background:rgba(6,14,26,.46);padding:16px 14px 24px;position:relative;overflow:hidden}
+.fund-bar{flex:1;min-width:34px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:6px;height:100%}
+.fund-bar-fill{width:100%;border-radius:8px 8px 2px 2px;background:linear-gradient(180deg,rgba(212,175,55,.90),rgba(47,111,237,.55));min-height:3px}
+.fund-bar-label{position:absolute;bottom:6px;font-size:9px;color:var(--tx3);transform:translateX(-50%)}
+.compare-table{width:100%;border-collapse:collapse;font-size:12px}
+.compare-table th{padding:8px 6px;text-align:left;color:var(--tx3);font-size:10px;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--bd)}
+.compare-table td{padding:9px 6px;border-bottom:1px solid rgba(148,163,184,.10);color:var(--tx2)}
+.compare-table td:last-child,.compare-table th:last-child{text-align:right}
+.tagline{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.pill{border-radius:999px;border:1px solid rgba(148,163,184,.18);background:rgba(148,163,184,.08);padding:6px 10px;font-size:11px;font-weight:800;color:var(--tx2)}
+.pill.ok{border-color:rgba(34,197,94,.32);background:rgba(34,197,94,.10);color:var(--green)}
+.pill.warn{border-color:rgba(212,175,55,.32);background:rgba(212,175,55,.10);color:var(--gold)}
+.pill.bad{border-color:rgba(239,68,68,.32);background:rgba(239,68,68,.10);color:var(--red)}
+.port-analytics-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.insight-card{background:rgba(7,17,31,.72);border:1px solid rgba(148,163,184,.12);border-radius:14px;padding:13px}
+.insight-title{font-size:10px;color:var(--gold);text-transform:uppercase;letter-spacing:.07em;font-weight:950;margin-bottom:10px}
+.action-toolbar{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:12px}
+.div-month-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:5px;align-items:end;height:118px;margin-top:10px}
+.div-month{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;min-width:0}
+.div-month-bar{width:100%;border-radius:8px 8px 2px 2px;background:linear-gradient(180deg,rgba(34,197,94,.8),rgba(34,197,94,.22));min-height:3px;border:1px solid rgba(34,197,94,.18)}
+.div-month-label{font-size:8px;color:var(--tx3)}
+@media(max-width:760px){.analysis-grid,.port-analytics-grid,.score-wrap,.action-toolbar{grid-template-columns:1fr}.metric-grid{grid-template-columns:1fr 1fr}.bar-line{grid-template-columns:86px 1fr auto}.fund-title{font-size:18px}.fund-logo{width:48px;height:48px}.div-month-grid{gap:3px}}
+
 </style>
 </head>
 <body>
@@ -539,6 +594,7 @@ input[type="color"]{min-height:44px}
   </div>
   <div class="kgrid" id="port-kpis"></div>
   <div class="card"><div class="ctitle">Por Banco / Corretora</div><div id="bank-list"></div></div>
+  <div class="card"><div class="shdr"><span class="ctitle" style="margin:0">Análise da carteira</span><span class="chip badge-n">diversificação</span></div><div id="portfolio-analytics"></div></div>
   <div class="card">
     <div class="shdr"><span class="ctitle" style="margin:0">Posições em Ações</span><button class="btn btn-ghost btn-sm" onclick="openM('m-add-stk')">+</button></div>
     <div id="pos-list"><div style="text-align:center;padding:20px;color:var(--tx3);font-size:13px">Nenhuma posição</div></div>
@@ -577,6 +633,44 @@ input[type="color"]{min-height:44px}
     </div>
     <div id="mov-import-preview" class="import-preview" style="display:none"></div>
   </div>
+</div>
+
+
+<!-- ══ PAGE: ANÁLISE FUNDAMENTALISTA ══ -->
+<div class="page" id="page-analysis">
+  <div class="phdr">
+    <div><div class="ptitle">Análise Fundamentalista</div><div class="psub">Indicadores, fundamentos, valuation e planejamento de compra</div></div>
+    <button class="btn btn-ghost btn-sm" onclick="loadFundamentals()">Atualizar</button>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">Selecionar ação</div>
+    <div class="analysis-grid">
+      <div class="field" style="margin:0"><label>Ativo B3</label><div class="ticker-picker"><button type="button" class="ticker-choice" id="fund-ticker-choice" onclick="toggleTickerMenu('fund')"><span class="ticker-selected" id="fund-ticker-label">Selecione uma ação</span><span class="ticker-caret">▼</span></button><input type="hidden" id="fund-ticker" value="PETR4"><div class="ticker-menu" id="fund-ticker-menu"></div></div></div>
+      <div class="field" style="margin:0"><label>Modelo de análise</label><select id="fund-profile"><option value="dividendos">Dividendos e renda passiva</option><option value="valor">Valor / desconto</option><option value="crescimento">Crescimento</option><option value="qualidade">Qualidade e estabilidade</option></select></div>
+    </div>
+    <div class="action-toolbar">
+      <button class="btn btn-blue" onclick="loadFundamentals()">Analisar ação</button>
+      <button class="btn btn-ghost" onclick="addFundToPlanning()">Adicionar no planejamento</button>
+      <button class="btn btn-ghost" onclick="prefillStockFromFund()">Adicionar à carteira</button>
+    </div>
+    <div class="notice">A V2 usa a brapi para cotações, dividendos e módulos fundamentalistas quando seu plano/token permitir. Não faz scraping direto de Fundamentus, Fundamentei ou Status Invest no navegador, porque esse caminho costuma falhar por CORS/termos de uso e não é ideal para produto.</div>
+  </div>
+
+  <div class="card"><div id="fund-summary"><div style="text-align:center;color:var(--tx3);padding:20px">Selecione uma ação e clique em analisar.</div></div></div>
+  <div class="metric-grid" id="fund-kpis"></div>
+
+  <div class="card">
+    <div class="shdr"><span class="ctitle" style="margin:0">Score e checklist de fundamentos</span><span id="fund-score-label" class="chip badge-n">—</span></div>
+    <div id="fund-score"></div>
+  </div>
+
+  <div class="analysis-grid">
+    <div class="card"><div class="ctitle">Receita, lucro e geração de caixa</div><div id="fund-fin-bars"></div></div>
+    <div class="card"><div class="ctitle">Preço e valuation</div><div class="chart-wrap"><svg id="fund-price-svg" class="chart-svg"></svg></div><div id="fund-range" style="display:flex;justify-content:space-between;font-size:10px;color:var(--tx3)"><span id="fund-d1"></span><span id="fund-d2"></span></div></div>
+  </div>
+
+  <div class="card"><div class="ctitle">Perfil da empresa e RI</div><div id="fund-profile-box"></div></div>
 </div>
 
 <!-- ══ PAGE: CALENDÁRIO ══ -->
@@ -661,6 +755,7 @@ input[type="color"]{min-height:44px}
 <div class="page" id="page-dividends">
   <div class="phdr"><div><div class="ptitle">Dividendos</div><div class="psub">Proventos previstos, realizados e estimados</div></div><button class="btn btn-ghost btn-sm" onclick="syncDividends()">Sincronizar</button></div>
   <div class="kgrid" id="div-kpis"></div>
+  <div class="card"><div class="ctitle">Proventos por mês</div><div id="div-month-analytics"></div></div>
   <div class="card"><div class="ctitle">Forecast por ação</div><div id="div-stock-list"></div></div>
   <div class="card"><div class="ctitle">Agenda de proventos / data-com</div><div id="div-event-list"></div><div class="notice">A sincronização tenta usar os dados de dividendos retornados pela brapi. Se o plano/token não liberar o módulo, o app mantém a previsão estimada por DY e eventos manuais.</div></div>
 </div>
@@ -670,11 +765,15 @@ input[type="color"]{min-height:44px}
   <div class="phdr"><div><div class="ptitle">Radar</div><div class="psub">Ações, notícias e roadmap profissional</div></div></div>
   <div class="card"><div class="ctitle">Pesquisar notícias por ativo</div>
     <div class="fr2"><div class="field" style="margin:0"><label>Ativo</label><div class="ticker-picker"><button type="button" class="ticker-choice" id="news-ticker-choice" onclick="toggleTickerMenu('news')"><span class="ticker-selected" id="news-ticker-label">Selecione uma ação</span><span class="ticker-caret">▼</span></button><input type="hidden" id="news-ticker" value="PETR4"><div class="ticker-menu" id="news-ticker-menu"></div></div></div><div class="field" style="margin:0"><label>Fonte</label><select id="news-source"><option value="infomoney">InfoMoney</option><option value="statusinvest">Status Invest</option><option value="ri">RI / Google</option></select></div></div>
-    <button class="btn btn-blue" onclick="openNewsSearch()" style="margin-top:12px">Abrir notícias do ativo</button>
-    <div class="notice">Para notícias automáticas dentro de um app comercial, o ideal é usar backend ou API de notícias licenciada. Em site estático, muitos portais bloqueiam leitura direta por CORS.</div>
     <div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
-      <button class="btn btn-ghost" onclick="openMarketauxDocs()">API sugerida: Marketaux</button>
-      <button class="btn btn-ghost" onclick="openSupabaseDocs()">Backend grátis: Supabase</button>
+      <button class="btn btn-blue" onclick="loadMarketNews()">Carregar notícias no app</button>
+      <button class="btn btn-ghost" onclick="openNewsSearch()">Abrir busca externa</button>
+    </div>
+    <div id="news-list" style="margin-top:12px"></div>
+    <div class="notice">Notícias via Marketaux. Se algum navegador bloquear por CORS, o próximo passo é mover esta chamada para uma Supabase Edge Function.</div>
+    <div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <button class="btn btn-ghost" onclick="openMarketauxDocs()">API Marketaux</button>
+      <button class="btn btn-ghost" onclick="openSupabaseDocs()">Backend Supabase</button>
     </div>
   </div>
   <div class="card"><div class="ctitle">Roadmap profissional</div><div id="roadmap-list"></div></div>
@@ -682,7 +781,28 @@ input[type="color"]{min-height:44px}
 
 <!-- ══ PAGE: CONFIG ══ -->
 <div class="page" id="page-cfg">
-  <div class="phdr"><div><div class="ptitle">Configurações</div><div class="psub">Bancos, backup, token</div></div></div>
+  <div class="phdr"><div><div class="ptitle">Configurações</div><div class="psub">Login, banco de dados, backup e tokens</div></div></div>
+  <div class="card" id="auth-card">
+    <div class="shdr"><span class="ctitle" style="margin:0">Conta InvestRafa / Supabase</span><span id="auth-chip" class="chip badge-n">desconectado</span></div>
+    <div id="auth-status" class="notice">Entre ou crie uma conta para salvar sua carteira no banco e sincronizar celular/computador.</div>
+    <div id="auth-form">
+      <div class="fr2">
+        <div class="field" style="margin:0"><label>E-mail</label><input type="email" id="auth-email" placeholder="seu@email.com" autocomplete="email"></div>
+        <div class="field" style="margin:0"><label>Senha</label><input type="password" id="auth-pass" placeholder="mínimo 6 caracteres" autocomplete="current-password"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px">
+        <button class="btn btn-blue" onclick="authSignIn()">Entrar</button>
+        <button class="btn btn-ghost" onclick="authSignUp()">Criar conta</button>
+      </div>
+    </div>
+    <div id="auth-logged" style="display:none">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px">
+        <button class="btn btn-green" onclick="saveCloudNow()">Salvar no banco</button>
+        <button class="btn btn-ghost" onclick="loadCloudData(true)">Carregar do banco</button>
+      </div>
+      <button class="btn btn-red" onclick="authSignOut()" style="margin-top:10px">Sair da conta</button>
+    </div>
+  </div>
   <div class="card">
     <div class="shdr"><span class="ctitle" style="margin:0">Bancos &amp; Corretoras</span><button class="btn btn-ghost btn-sm" onclick="openM('m-add-bank')">+</button></div>
     <div id="banks-list"></div>
@@ -719,6 +839,7 @@ input[type="color"]{min-height:44px}
 <nav id="nav">
   <button class="nb active" onclick="goPage('market',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Mercado</button>
   <button class="nb" onclick="goPage('portfolio',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>Carteira</button>
+  <button class="nb" onclick="goPage('analysis',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 15l3-4 3 2 4-7"/><circle cx="18" cy="6" r="2"/></svg>Análise</button>
   <button class="nb" onclick="goPage('cal',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Agenda</button>
   <button class="nb" onclick="goPage('dividends',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 000 7H14a3.5 3.5 0 010 7H6"/></svg>Proventos</button>
   <button class="nb" onclick="goPage('fc',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><polyline points="7 16 11 10 15 14 19 8"/></svg>Forecast</button>
@@ -819,6 +940,7 @@ input[type="color"]{min-height:44px}
 </div></div>
 
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 // ══════════════════════════════════════════════════════
 // STORE
@@ -826,6 +948,10 @@ input[type="color"]{min-height:44px}
 var SK = 'rafa_v4';
 var TOKEN_STORAGE_KEY = 'investrafa_brapi_token';
 var HARDCODED_TOKEN = 'xo3upEvNqVsNQYdM7idyky'; // MVP: token fixo para publicar rápido; em produção, mova para backend
+var SUPABASE_URL = 'https://opnvaobrlljarnwzxgaw.supabase.co';
+var SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_55E9zGDFAmyRX9FlTwyG1w_A03bwB3j';
+var MARKETAUX_API_KEY = 'C1tEt4ImsLtpAnVPtWcim34bcYdZNMiJ0ssfXHKZ';
+var SB = null, currentUser = null, syncingFromCloud = false, cloudSaveTimer = null;
 var D = (function(){
   try{ 
     var r=localStorage.getItem(SK); 
@@ -867,7 +993,10 @@ var D = (function(){
   };
 })();
 
-function save(){ try{ localStorage.setItem(SK,JSON.stringify(D)); }catch(e){} }
+function save(){
+  try{ localStorage.setItem(SK,JSON.stringify(D)); }catch(e){}
+  if(!syncingFromCloud && currentUser) scheduleCloudSave();
+}
 
 // ══════════════════════════════════════════════════════
 // UTILS
@@ -895,6 +1024,7 @@ function goPage(name,btn){
   document.getElementById('page-'+name).classList.add('active');
   btn.classList.add('active');
   if(name==='portfolio'){ renderPort(); renderImportedMovements(); }
+  if(name==='analysis'){ renderFundamentosHome(); updateTickerMenus(); }
   if(name==='cal') renderCal();
   if(name==='cfg') renderCfg();
   if(name==='fc') calcFc();
@@ -1460,6 +1590,7 @@ function renderPort(){
         +'</div>';
     }).join('');
   }
+  renderPortfolioAnalytics();
 }
 
 function addStk(){
@@ -1715,6 +1846,132 @@ function calcFc(){
       +'<td style="padding:7px 4px;text-align:right;color:#22C55E;font-weight:600">'+K(r.divMonth)+'</td>'
       +'</tr>';
   }).join('');
+}
+
+
+// ══════════════════════════════════════════════════════
+// SUPABASE AUTH + CLOUD SYNC
+// ══════════════════════════════════════════════════════
+function initSupabase(){
+  try{
+    if(!window.supabase || !SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) return;
+    SB = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+      auth:{ persistSession:true, autoRefreshToken:true, detectSessionInUrl:true }
+    });
+    SB.auth.onAuthStateChange(function(event, session){
+      currentUser = session && session.user ? session.user : null;
+      renderAuthUI();
+      if(currentUser && (event==='SIGNED_IN' || event==='TOKEN_REFRESHED')) loadCloudData(false);
+    });
+    SB.auth.getSession().then(function(res){
+      currentUser = res && res.data && res.data.session ? res.data.session.user : null;
+      renderAuthUI();
+      if(currentUser) loadCloudData(false);
+    });
+  }catch(e){ console.log('supabase init', e); }
+}
+function renderAuthUI(){
+  var chip=document.getElementById('auth-chip'), st=document.getElementById('auth-status'), form=document.getElementById('auth-form'), logged=document.getElementById('auth-logged');
+  if(!chip||!st) return;
+  if(currentUser){
+    chip.textContent='conectado'; chip.className='chip badge-up';
+    st.innerHTML='Logado como <b>'+currentUser.email+'</b>. Os dados são salvos localmente e sincronizados no Supabase.';
+    if(form) form.style.display='none'; if(logged) logged.style.display='block';
+  }else{
+    chip.textContent='desconectado'; chip.className='chip badge-n';
+    st.textContent='Entre ou crie uma conta para salvar sua carteira no banco e sincronizar celular/computador.';
+    if(form) form.style.display='block'; if(logged) logged.style.display='none';
+  }
+}
+async function authSignUp(){
+  if(!SB) return toast('Supabase não inicializado','#EF4444');
+  var email=(document.getElementById('auth-email')||{}).value||'';
+  var password=(document.getElementById('auth-pass')||{}).value||'';
+  if(!email || password.length<6) return toast('Informe e-mail e senha com 6+ caracteres','#EF4444');
+  var res=await SB.auth.signUp({email:email.trim(), password:password});
+  if(res.error) return toast(res.error.message,'#EF4444');
+  toast('Conta criada. Confirme o e-mail se o Supabase solicitar.');
+  currentUser=res.data && res.data.user ? res.data.user : currentUser;
+  renderAuthUI(); if(currentUser) saveCloudNow();
+}
+async function authSignIn(){
+  if(!SB) return toast('Supabase não inicializado','#EF4444');
+  var email=(document.getElementById('auth-email')||{}).value||'';
+  var password=(document.getElementById('auth-pass')||{}).value||'';
+  if(!email || !password) return toast('Informe e-mail e senha','#EF4444');
+  var res=await SB.auth.signInWithPassword({email:email.trim(), password:password});
+  if(res.error) return toast(res.error.message,'#EF4444');
+  currentUser=res.data.user; renderAuthUI(); await loadCloudData(false); toast('Login realizado');
+}
+async function authSignOut(){
+  if(!SB) return; await SB.auth.signOut(); currentUser=null; renderAuthUI(); toast('Você saiu da conta');
+}
+function cloudPayload(){
+  var copy=JSON.parse(JSON.stringify(D||{}));
+  delete copy.chartCache; // cache pesa e pode ser recriado
+  delete copy.token;      // token fica local/backend, não precisa salvar no estado da carteira
+  return copy;
+}
+function scheduleCloudSave(){
+  clearTimeout(cloudSaveTimer);
+  cloudSaveTimer=setTimeout(function(){ saveCloudNow(false); }, 1200);
+}
+async function saveCloudNow(showMsg){
+  if(!SB || !currentUser) { if(showMsg!==false) toast('Faça login para salvar no banco','#EF4444'); return; }
+  try{
+    var row={user_id:currentUser.id, data:cloudPayload(), updated_at:new Date().toISOString()};
+    var res=await SB.from('app_state').upsert(row,{onConflict:'user_id'});
+    if(res.error) throw res.error;
+    if(showMsg!==false) toast('Carteira salva no Supabase');
+  }catch(e){ console.log('cloud save',e); if(showMsg!==false) toast('Erro ao salvar no Supabase: '+e.message,'#EF4444'); }
+}
+async function loadCloudData(showMsg){
+  if(!SB || !currentUser) { if(showMsg) toast('Faça login para carregar do banco','#EF4444'); return; }
+  try{
+    var res=await SB.from('app_state').select('data,updated_at').eq('user_id',currentUser.id).maybeSingle();
+    if(res.error) throw res.error;
+    if(!res.data || !res.data.data){ await saveCloudNow(false); if(showMsg) toast('Nenhum dado no banco. Estado atual salvo.'); return; }
+    var localToken=getToken();
+    var cache=D.chartCache||{};
+    syncingFromCloud=true;
+    D=Object.assign({}, D, res.data.data);
+    D.token=localToken || HARDCODED_TOKEN || '';
+    D.chartCache=cache;
+    if(!D.importedMovements) D.importedMovements=[];
+    localStorage.setItem(SK,JSON.stringify(D));
+    syncingFromCloud=false;
+    migrateData(); updateTickerMenus(); renderPort(); renderImportedMovements(); renderCal(); renderDividendsPage(); renderRadar(); renderFundamentosHome(); renderPortfolioAnalytics(); calcFc(); renderCfg();
+    if(showMsg) toast('Dados carregados do Supabase');
+  }catch(e){ syncingFromCloud=false; console.log('cloud load',e); if(showMsg) toast('Erro ao carregar: '+e.message,'#EF4444'); }
+}
+
+// ══════════════════════════════════════════════════════
+// MARKET NEWS — MARKETAUX
+// ══════════════════════════════════════════════════════
+function marketauxSymbol(tk){ tk=(tk||'').toUpperCase().replace(/[^A-Z0-9]/g,''); return tk ? tk+'.SA' : ''; }
+async function loadMarketNews(){
+  var box=document.getElementById('news-list'); if(!box) return;
+  var tk=((document.getElementById('news-ticker')||{}).value||'PETR4').toUpperCase().trim();
+  box.innerHTML='<div style="padding:18px;text-align:center;color:var(--tx3)"><span class="spin"></span><br><br>Carregando notícias...</div>';
+  try{
+    var q='Brazil stocks market '+tk;
+    var url='https://api.marketaux.com/v1/news/all?api_token='+encodeURIComponent(MARKETAUX_API_KEY)
+      +'&language=pt,en&limit=6&filter_entities=true&search='+encodeURIComponent(q);
+    var sym=marketauxSymbol(tk); if(sym) url+='&symbols='+encodeURIComponent(sym);
+    var r=await fetch(url);
+    var j=await r.json();
+    if(j.error) throw new Error(j.error.message||'Erro Marketaux');
+    var arr=j.data||[];
+    if(!arr.length){ box.innerHTML='<div class="notice">Nenhuma notícia encontrada para '+tk+'. Tente outro ativo ou use a busca externa.</div>'; return; }
+    box.innerHTML=arr.map(function(n){
+      var dt=n.published_at?new Date(n.published_at).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'';
+      var img=n.image_url?'<img src="'+n.image_url+'" style="width:54px;height:54px;border-radius:12px;object-fit:cover;border:1px solid var(--bd);flex-shrink:0" onerror="this.style.display=\'none\'">':'';
+      return '<div class="prow">'+img+'<div style="flex:1"><div style="font-weight:800;font-size:13px;line-height:1.35">'+(n.title||'Notícia')+'</div>'+
+        '<div style="font-size:11px;color:var(--tx3);margin-top:4px">'+(n.source||'')+' · '+dt+'</div>'+
+        '<div style="font-size:11px;color:var(--tx2);margin-top:5px;line-height:1.45">'+((n.description||'').slice(0,180))+'</div></div>'+
+        '<button class="btn btn-ghost btn-sm" onclick="window.open(\''+(n.url||'#')+'\',\'_blank\')">Abrir</button></div>';
+    }).join('');
+  }catch(e){ console.log('marketaux',e); box.innerHTML='<div class="notice">Não foi possível carregar pelo navegador: '+e.message+'. Se isso ocorrer por CORS, moveremos para Supabase Edge Function.</div>'; }
 }
 
 // ══════════════════════════════════════════════════════
@@ -2316,11 +2573,12 @@ function renderTickerLabel(target,tk){
   var logo=op.logo?'<span class="ticker-logo"><img src="'+op.logo+'" alt="'+op.ticker+'"></span>':'<span class="ticker-logo">'+op.ticker.slice(0,4)+'</span>';
   lab.innerHTML=logo+'<span style="min-width:0"><span class="ticker-main">'+op.ticker+'</span><span class="ticker-sub">'+op.name+(op.price?' · '+brl(op.price):'')+'</span></span>';
 }
+function tickerInputId(target){ if(target==='ev') return 'ev-tk'; if(target==='news') return 'news-ticker'; if(target==='fund') return 'fund-ticker'; return target+'-ticker'; }
 function updateTickerMenus(){
   var opts=allTickerOptions();
-  ['ev','news'].forEach(function(target){
+  ['ev','news','fund'].forEach(function(target){
     var menu=document.getElementById(target+'-ticker-menu'); if(menu) menu.innerHTML=opts.map(function(op){return tickerOptionHTML(op,target);}).join('');
-    var inp=document.getElementById(target==='ev'?'ev-tk':'news-ticker'); if(inp) renderTickerLabel(target,inp.value||'');
+    var inp=document.getElementById(tickerInputId(target)); if(inp) renderTickerLabel(target,inp.value||'');
   });
 }
 function toggleTickerMenu(target){
@@ -2330,11 +2588,12 @@ function toggleTickerMenu(target){
   if(m){ m.classList.toggle('open'); if(c) c.classList.toggle('open',m.classList.contains('open')); }
 }
 function selectTicker(target,tk){
-  var inp=document.getElementById(target==='ev'?'ev-tk':'news-ticker'); if(inp) inp.value=tk;
+  var inp=document.getElementById(tickerInputId(target)); if(inp) inp.value=tk;
   renderTickerLabel(target,tk);
   var m=document.getElementById(target+'-ticker-menu'), c=document.getElementById(target+'-ticker-choice');
   if(m) m.classList.remove('open'); if(c) c.classList.remove('open');
   if(target==='ev') eventTickerChanged();
+  if(target==='fund') renderFundamentosHome();
 }
 function eventTickerChanged(){
   var tk=((document.getElementById('ev-tk')||{}).value||'').toUpperCase();
@@ -2404,7 +2663,9 @@ function renderDividendsPage(){
   var evs=(D.events||[]).filter(isPortfolioDividendEvent).sort(function(a,b){return new Date(a.date)-new Date(b.date);});
   var evList=document.getElementById('div-event-list');
   evList.innerHTML=evs.length?evs.map(function(ev){ var st=stocks.find(function(x){return x.ticker===ev.ticker;}); var qty=ev.qty||(st?st.qty:0); var total=(ev.value||0)*qty; return '<div class="prow"><span class="pdot" style="background:'+(ev.type==='div'?'#22C55E':'#EF4444')+'"></span><div style="flex:1"><div style="font-weight:700;font-size:13px">'+ev.ticker+' · '+(ev.type==='div'?'Pagamento':'Data-com')+'</div><div style="font-size:11px;color:var(--tx3)">'+new Date(ev.date+'T12:00:00').toLocaleDateString('pt-BR')+' · R$ '+(ev.value||0)+' por cota · '+qty+' cotas</div></div><div style="text-align:right"><div style="font-weight:800;color:#22C55E">'+(total?brl(total):'—')+'</div><button onclick="rmEv(\''+ev.id+'\')" style="background:none;border:none;color:#EF4444;font-size:11px">remover</button></div></div>'; }).join(''):'<div style="color:var(--tx3);font-size:13px;text-align:center;padding:18px">Nenhum evento de provento cadastrado.</div>';
+  renderDividendAnalytics();
 }
+
 
 function renderRadar(){
   updateTickerMenus();
@@ -2422,6 +2683,156 @@ function openNewsSearch(){
   if(src==='statusinvest'&&tk) url='https://statusinvest.com.br/acoes/'+encodeURIComponent(tk.toLowerCase());
   if(src==='ri'&&tk) url='https://www.google.com/search?q='+encodeURIComponent(tk+' relações com investidores calendário resultados dividendos');
   window.open(url,'_blank');
+}
+
+
+
+// ══════════════════════════════════════════════════════
+// V2 — FUNDAMENTOS, CARTEIRA ANALÍTICA E DIVERSIFICAÇÃO
+// ══════════════════════════════════════════════════════
+var activeFundData=null;
+function safeNum(v){ if(v===null||v===undefined||v==='') return null; var n=Number(v); return isFinite(n)?n:null; }
+function fmtBig(v){ v=safeNum(v); if(v===null) return '—'; var a=Math.abs(v); if(a>=1e12) return 'R$'+(v/1e12).toFixed(2)+' tri'; if(a>=1e9) return 'R$'+(v/1e9).toFixed(2)+' bi'; if(a>=1e6) return 'R$'+(v/1e6).toFixed(1)+' mi'; return brl(v); }
+function fmtRatio(v,suf){ v=safeNum(v); return v===null?'—':v.toLocaleString('pt-BR',{maximumFractionDigits:2,minimumFractionDigits:2})+(suf||''); }
+function fmtPercentSmart(v){ v=safeNum(v); if(v===null) return '—'; if(Math.abs(v)<1) v=v*100; return (v>=0?'+':'')+v.toFixed(2)+'%'; }
+function firstNum(obj, keys){ if(!obj) return null; for(var i=0;i<keys.length;i++){ var k=keys[i]; if(obj[k]!==undefined&&obj[k]!==null&&obj[k]!=='') return safeNum(obj[k]); } return null; }
+function arrLast(a){ return Array.isArray(a)&&a.length?a[a.length-1]:null; }
+function fundModulesURL(tk){ var mods='summaryProfile,defaultKeyStatistics,financialData,incomeStatementHistory,incomeStatementHistoryQuarterly,financialDataHistory,balanceSheetHistory,cashflowHistory'; return '/quote/'+encodeURIComponent(tk)+'?range=3mo&interval=1d&fundamental=true&dividends=true&modules='+encodeURIComponent(mods); }
+async function fetchFundamentalData(tk){
+  if(!hasToken()) throw new Error('Configure o token brapi na aba Config para puxar os módulos fundamentalistas.');
+  var r=await fetch(apiURL(fundModulesURL(tk)));
+  var j=await r.json();
+  if(j.error) throw new Error((j.code||'ERRO')+': '+(j.message||'Falha na API'));
+  if(!j.results||!j.results[0]) throw new Error('Sem dados para '+tk);
+  updateQuoteMeta(j.results[0]);
+  activeFundData=j.results[0];
+  return j.results[0];
+}
+function fundamentalMetrics(res){
+  res=res||{}; var ks=res.defaultKeyStatistics||{}; var fd=res.financialData||{}; var bs=arrLast(res.balanceSheetHistory)||{};
+  var price=safeNum(res.regularMarketPrice);
+  var eps=firstNum(res,['earningsPerShare'])||firstNum(ks,['trailingEps','forwardEps']);
+  var pe=firstNum(res,['priceEarnings'])||firstNum(ks,['trailingPE','forwardPE']);
+  if(!pe&&price&&eps) pe=price/eps;
+  var pb=firstNum(ks,['priceToBook']);
+  var roe=firstNum(ks,['returnOnEquity'])||firstNum(fd,['returnOnEquity']);
+  var dy=firstNum(ks,['dividendYield','trailingAnnualDividendYield'])||firstNum(res,['dividendYield']);
+  var beta=firstNum(ks,['beta']);
+  var mcap=firstNum(res,['marketCap'])||firstNum(ks,['marketCap','enterpriseValue']);
+  var revenue=firstNum(fd,['totalRevenue','revenue']);
+  var ebitda=firstNum(fd,['ebitda']);
+  var fcf=firstNum(fd,['freeCashflow','freeCashFlow']);
+  var opcf=firstNum(fd,['operatingCashflow','operatingCashFlow']);
+  var debt=firstNum(fd,['totalDebt'])||firstNum(bs,['shortLongTermDebt','longTermDebt']);
+  var cash=firstNum(fd,['totalCash'])||firstNum(bs,['cash','cashAndCashEquivalents']);
+  var netDebt=(debt!==null||cash!==null)?(debt||0)-(cash||0):null;
+  var debtEbitda=(netDebt!==null&&ebitda)?netDebt/ebitda:null;
+  var netMargin=firstNum(fd,['profitMargins','netMargins','netMargin']);
+  var ebitdaMargin=firstNum(fd,['ebitdaMargins','ebitdaMargin']);
+  var revenueGrowth=firstNum(fd,['revenueGrowth']);
+  var debtToEquity=firstNum(fd,['debtToEquity'])||firstNum(ks,['debtToEquity']);
+  return {price:price,eps:eps,pe:pe,pb:pb,roe:roe,dy:dy,beta:beta,mcap:mcap,revenue:revenue,ebitda:ebitda,fcf:fcf,opcf:opcf,debt:debt,cash:cash,netDebt:netDebt,debtEbitda:debtEbitda,netMargin:netMargin,ebitdaMargin:ebitdaMargin,revenueGrowth:revenueGrowth,debtToEquity:debtToEquity};
+}
+function scoreItem(title, ok, warn, note){ return {title:title, status:ok?'ok':(warn?'warn':'bad'), note:note}; }
+function buildFundScore(m, profile){
+  var items=[];
+  items.push(scoreItem('Valuation', m.pe&&m.pe>0&&m.pe<=15, m.pe&&m.pe>15&&m.pe<=25, 'P/L '+fmtRatio(m.pe)+' e P/VP '+fmtRatio(m.pb)+'. Menor pode indicar preço mais descontado, mas exige análise do negócio.'));
+  items.push(scoreItem('Rentabilidade', m.roe!==null&&((Math.abs(m.roe)<1?m.roe*100:m.roe)>=12), m.roe!==null&&((Math.abs(m.roe)<1?m.roe*100:m.roe)>=7), 'ROE '+fmtPercentSmart(m.roe)+'. Mede geração de lucro sobre patrimônio.'));
+  items.push(scoreItem('Endividamento', m.debtEbitda!==null&&m.debtEbitda<=2, m.debtEbitda!==null&&m.debtEbitda<=3.5, 'Dívida líquida/EBITDA '+fmtRatio(m.debtEbitda)+'x. Quanto menor, menor pressão financeira.'));
+  items.push(scoreItem('Dividendos', m.dy!==null&&((Math.abs(m.dy)<1?m.dy*100:m.dy)>=6), m.dy!==null&&((Math.abs(m.dy)<1?m.dy*100:m.dy)>=3), 'Dividend Yield '+fmtPercentSmart(m.dy)+'. Bom para renda, mas precisa recorrência.'));
+  items.push(scoreItem('Margens', m.netMargin!==null&&((Math.abs(m.netMargin)<1?m.netMargin*100:m.netMargin)>=12), m.netMargin!==null&&((Math.abs(m.netMargin)<1?m.netMargin*100:m.netMargin)>=6), 'Margem líquida '+fmtPercentSmart(m.netMargin)+' e margem EBITDA '+fmtPercentSmart(m.ebitdaMargin)+'.'));
+  items.push(scoreItem('Crescimento', m.revenueGrowth!==null&&((Math.abs(m.revenueGrowth)<1?m.revenueGrowth*100:m.revenueGrowth)>=5), m.revenueGrowth!==null&&((Math.abs(m.revenueGrowth)<1?m.revenueGrowth*100:m.revenueGrowth)>=0), 'Crescimento de receita '+fmtPercentSmart(m.revenueGrowth)+'.'));
+  var pts=items.reduce(function(a,it){ return a+(it.status==='ok'?2:(it.status==='warn'?1:0)); },0);
+  var max=items.length*2; var score=Math.round(pts/max*100);
+  if(profile==='dividendos'&&m.dy!==null){ score=Math.round(score*0.75+Math.min(100,Math.max(0,(Math.abs(m.dy)<1?m.dy*100:m.dy)*10))*0.25); }
+  return {score:score,items:items};
+}
+function renderFundamentosHome(){
+  updateTickerMenus();
+  var tk=((document.getElementById('fund-ticker')||{}).value||'PETR4').toUpperCase();
+  renderTickerLabel('fund',tk);
+  var box=document.getElementById('fund-summary');
+  if(box&&!activeFundData){ box.innerHTML='<div style="text-align:center;color:var(--tx3);padding:20px">Use esta tela para consultar fundamentos como P/L, LPA, valor de mercado, ROE, dívida, margens, dividendos e histórico de resultados.</div>'; }
+}
+async function loadFundamentals(){
+  var tk=((document.getElementById('fund-ticker')||{}).value||'PETR4').toUpperCase().trim();
+  if(!tk){ toast('Selecione uma ação','#EF4444'); return; }
+  document.getElementById('fund-summary').innerHTML='<div style="text-align:center;padding:24px;color:var(--tx3)"><div class="spin"></div><br><br>Carregando fundamentos de '+tk+'...</div>';
+  document.getElementById('fund-kpis').innerHTML='';
+  try{
+    var res=await fetchFundamentalData(tk);
+    renderFundamentals(res);
+    save(); updateTickerMenus();
+  }catch(e){
+    document.getElementById('fund-summary').innerHTML='<div class="notice">Não consegui carregar os módulos fundamentalistas de '+tk+'. Motivo: '+String(e.message||e)+'. Se o plano atual não liberar módulos, o app ainda usa cotações, carteira e dados manuais.</div>';
+    try{ var q=await quoteOne(tk,{range:'3mo',interval:'1d',dividends:true}); renderFundamentals(q); }catch(e2){}
+  }
+}
+function renderFundamentals(res){
+  var tk=res.symbol||((document.getElementById('fund-ticker')||{}).value||''); var meta=tickerMeta(tk); var prof=res.summaryProfile||{}; var m=fundamentalMetrics(res); var ptype=(document.getElementById('fund-profile')||{}).value||'dividendos'; var sc=buildFundScore(m,ptype);
+  var logo=meta.logo?'<span class="fund-logo"><img src="'+meta.logo+'" alt="'+tk+'"></span>':'<span class="fund-logo">'+tk.slice(0,4)+'</span>';
+  var tags=[]; if(prof.sectorDisp||prof.sector) tags.push(prof.sectorDisp||prof.sector); if(prof.industryDisp||prof.industry) tags.push(prof.industryDisp||prof.industry); if(res.currency) tags.push(res.currency); if(res.regularMarketVolume) tags.push('Vol. '+(res.regularMarketVolume/1e6).toFixed(1)+'M');
+  document.getElementById('fund-summary').innerHTML='<div class="fund-hero">'+logo+'<div style="min-width:0;flex:1"><div class="fund-title">'+tk+' · '+(res.longName||meta.name||tk)+'</div><div class="fund-sub">'+tags.join(' · ')+'</div><div class="tagline"><span class="pill '+(m.price?'ok':'warn')+'">Preço '+(m.price?brl(m.price):'—')+'</span><span class="pill '+(m.dy?'ok':'warn')+'">DY '+fmtPercentSmart(m.dy)+'</span><span class="pill '+(m.pe?'ok':'warn')+'">P/L '+fmtRatio(m.pe)+'</span></div></div></div>';
+  var kpis=[['Preço atual',m.price?brl(m.price):'—','Cotação mais recente'],['Valor de mercado',fmtBig(m.mcap),'Market cap'],['P/L',fmtRatio(m.pe),'Preço / lucro'],['LPA',fmtRatio(m.eps),'Lucro por ação'],['P/VP',fmtRatio(m.pb),'Preço / valor patrimonial'],['ROE',fmtPercentSmart(m.roe),'Retorno sobre PL'],['DY',fmtPercentSmart(m.dy),'Dividend yield'],['Dív. Líq./EBITDA',fmtRatio(m.debtEbitda,'x'),'Alavancagem'],['Receita TTM',fmtBig(m.revenue),'Receita últimos 12 meses'],['EBITDA TTM',fmtBig(m.ebitda),'Geração operacional'],['Fluxo livre',fmtBig(m.fcf),'Free cash flow'],['Margem líquida',fmtPercentSmart(m.netMargin),'Lucratividade']];
+  document.getElementById('fund-kpis').innerHTML=kpis.map(function(x){return '<div class="metric-tile"><div class="ml">'+x[0]+'</div><div class="mv">'+x[1]+'</div><div class="ms">'+x[2]+'</div></div>';}).join('');
+  document.getElementById('fund-score-label').textContent=sc.score+'/100';
+  document.getElementById('fund-score-label').className='chip '+(sc.score>=70?'badge-up':(sc.score>=45?'badge-n':'badge-dn'));
+  document.getElementById('fund-score').innerHTML='<div class="score-wrap"><div class="score-ring" style="--score-deg:'+(sc.score*3.6)+'deg"><div><span>'+sc.score+'</span><small>score</small></div></div><div>'+sc.items.map(function(it){var color=it.status==='ok'?'#22C55E':(it.status==='warn'?'#D4AF37':'#EF4444');return '<div class="check-row"><span class="check-dot" style="background:'+color+'"></span><div><div class="check-title">'+it.title+'</div><div class="check-note">'+it.note+'</div></div></div>';}).join('')+'</div></div><div class="notice">Score meramente informativo para organizar a análise. Não é recomendação de compra ou venda.</div>';
+  renderFundFinancialBars(res);
+  if(res.historicalDataPrice&&res.historicalDataPrice.length>1) drawChart('fund-price-svg',res.historicalDataPrice,null,['fund-d1','fund-d2']);
+  else document.getElementById('fund-price-svg').innerHTML='<text x="50%" y="50%" fill="#64748B" text-anchor="middle" font-size="12">Sem histórico de preço suficiente</text>';
+  var summary=(prof.longBusinessSummary||'Resumo não disponível no plano/resposta atual.');
+  if(summary.length>750) summary=summary.slice(0,750)+'...';
+  document.getElementById('fund-profile-box').innerHTML='<div style="font-size:13px;color:var(--tx2);line-height:1.75">'+summary+'</div><div class="tagline"><span class="pill">Setor: '+(prof.sectorDisp||prof.sector||'—')+'</span><span class="pill">Indústria: '+(prof.industryDisp||prof.industry||'—')+'</span>'+(prof.website?'<a class="pill ok" href="'+prof.website+'" target="_blank" style="text-decoration:none">Site / RI</a>':'')+'</div>';
+}
+function renderFundFinancialBars(res){
+  var hist=res.incomeStatementHistory||res.incomeStatementHistoryQuarterly||res.financialDataHistory||[];
+  var box=document.getElementById('fund-fin-bars');
+  if(!Array.isArray(hist)||!hist.length){ box.innerHTML='<div style="text-align:center;color:var(--tx3);padding:38px">Histórico contábil não disponível no plano atual.</div>'; return; }
+  var rows=hist.slice(-5).map(function(x){ return {year:String(x.endDate||x.date||x.updatedAt||'').slice(0,4)||'—', revenue:firstNum(x,['totalRevenue','revenue','netRevenue'])||0, net:firstNum(x,['netIncome','netIncomeFromContinuingOps','netIncomeApplicableToCommonShares'])||0, ebitda:firstNum(x,['ebitda'])||0}; });
+  var max=Math.max(1,...rows.map(function(r){return Math.max(Math.abs(r.revenue),Math.abs(r.net),Math.abs(r.ebitda));}));
+  box.innerHTML='<div class="fund-bars">'+rows.map(function(r,i){var h=Math.max(3,Math.abs((r.net||r.ebitda||r.revenue)/max)*112);return '<div class="fund-bar"><div style="font-size:9px;color:var(--tx3);font-weight:800">'+fmtBig(r.net||r.ebitda||r.revenue)+'</div><div class="fund-bar-fill" style="height:'+h+'px"></div><span class="fund-bar-label" style="left:'+((i+.5)/rows.length*100)+'%">'+r.year+'</span></div>';}).join('')+'</div><table class="compare-table" style="margin-top:12px"><thead><tr><th>Ano</th><th>Receita</th><th>Lucro líquido</th><th>EBITDA</th></tr></thead><tbody>'+rows.map(function(r){return '<tr><td>'+r.year+'</td><td>'+fmtBig(r.revenue)+'</td><td>'+fmtBig(r.net)+'</td><td>'+fmtBig(r.ebitda)+'</td></tr>';}).join('')+'</tbody></table>';
+}
+function addFundToPlanning(){
+  var tk=((document.getElementById('fund-ticker')||{}).value||'').toUpperCase(); if(!tk){ toast('Selecione uma ação','#EF4444'); return; }
+  var px=(activeFundData&&activeFundData.symbol===tk&&activeFundData.regularMarketPrice)||D.prices[tk]||0;
+  openM('m-add-ev');
+  var tp=document.getElementById('ev-tp'); if(tp) tp.value='buy';
+  var t=document.getElementById('ev-tk'); if(t) t.value=tk;
+  var dt=document.getElementById('ev-dt'); if(dt) dt.value=today();
+  var v=document.getElementById('ev-vl'); if(v) v.value=px?px.toFixed(2):'';
+  var q=document.getElementById('ev-qt'); if(q) q.value=1;
+  var nt=document.getElementById('ev-nt'); if(nt) nt.value='Planejado via análise fundamentalista V2';
+  renderTickerLabel('ev',tk); eventTickerChanged();
+  toast('Planejamento de compra aberto para '+tk,'var(--blue)');
+}
+function prefillStockFromFund(){
+  var tk=((document.getElementById('fund-ticker')||{}).value||'').toUpperCase(); if(!tk){ toast('Selecione uma ação','#EF4444'); return; }
+  var res=(activeFundData&&activeFundData.symbol===tk)?activeFundData:null; var m=res?fundamentalMetrics(res):{}; var meta=tickerMeta(tk); var px=(res&&res.regularMarketPrice)||D.prices[tk]||0;
+  openM('m-add-stk');
+  var map={'stk-tk':tk,'stk-nm':(res&&res.longName)||meta.name||tk,'stk-qt':1,'stk-pm':px?px.toFixed(2):'','stk-dy':m.dy?((Math.abs(m.dy)<1?m.dy*100:m.dy).toFixed(2)):8,'stk-date':today()};
+  Object.keys(map).forEach(function(id){ var el=document.getElementById(id); if(el) el.value=map[id]; });
+  var sec=document.getElementById('stk-sec'); if(sec&&res&&res.summaryProfile){ sec.value=(res.summaryProfile.sectorDisp||res.summaryProfile.sector||'Outros'); }
+}
+function renderPortfolioAnalytics(){
+  var el=document.getElementById('portfolio-analytics'); if(!el) return;
+  var stocks=(D.stocks||[]).map(function(s){ var price=D.prices[s.ticker]||s.pm||0; return Object.assign({},s,{price:price,total:price*(s.qty||0)}); });
+  if(!stocks.length){ el.innerHTML='<div style="text-align:center;color:var(--tx3);padding:18px">Importe movimentações B3 ou cadastre ações para analisar diversificação.</div>'; return; }
+  var total=stocks.reduce(function(a,s){return a+s.total;},0)||1;
+  function groupBy(fn){ var m={}; stocks.forEach(function(s){ var k=fn(s)||'Outros'; m[k]=(m[k]||0)+s.total; }); return Object.keys(m).map(function(k){return {name:k,value:m[k],pct:m[k]/total*100};}).sort(function(a,b){return b.value-a.value;}); }
+  var sector=groupBy(function(s){return s.sector;}); var broker=groupBy(function(s){ var b=(D.banks||[]).find(function(x){return x.id===s.bankId;}); return b?b.name:'Sem corretora'; }); var top=stocks.slice().sort(function(a,b){return b.total-a.total;}).slice(0,5).map(function(s){return {name:s.ticker,value:s.total,pct:s.total/total*100};});
+  var maxSector=sector[0]?sector[0].pct:0; var maxAsset=top[0]?top[0].pct:0; var divMonth=stocks.reduce(function(a,s){return a+s.total*((s.dy||0)/100)/12;},0);
+  function bars(rows){ return '<div class="bar-list">'+rows.map(function(r){return '<div class="bar-line"><div class="bar-name">'+r.name+'</div><div class="bar-bg"><div class="bar-fill" style="width:'+Math.max(3,r.pct).toFixed(1)+'%"></div></div><div class="bar-val">'+r.pct.toFixed(1)+'%</div></div>';}).join('')+'</div>'; }
+  el.innerHTML='<div class="kgrid" style="margin-bottom:12px"><div class="kpi"><div class="kl">Maior ativo</div><div class="kv" style="color:'+(maxAsset>35?'var(--red)':'var(--gold)')+'">'+maxAsset.toFixed(1)+'%</div><div class="ks">'+(top[0]?top[0].name:'—')+'</div></div><div class="kpi"><div class="kl">Maior setor</div><div class="kv" style="color:'+(maxSector>45?'var(--red)':'var(--blue)')+'">'+maxSector.toFixed(1)+'%</div><div class="ks">'+(sector[0]?sector[0].name:'—')+'</div></div><div class="kpi"><div class="kl">Ativos</div><div class="kv">'+stocks.length+'</div><div class="ks">renda variável</div></div><div class="kpi"><div class="kl">Dividendos/mês</div><div class="kv up">'+brl(divMonth)+'</div><div class="ks">estimado por DY</div></div></div><div class="port-analytics-grid"><div class="insight-card"><div class="insight-title">Setores</div>'+bars(sector)+'</div><div class="insight-card"><div class="insight-title">Top posições</div>'+bars(top)+'</div><div class="insight-card"><div class="insight-title">Corretoras</div>'+bars(broker)+'</div><div class="insight-card"><div class="insight-title">Leitura rápida</div><div style="font-size:12px;color:var(--tx2);line-height:1.75">'+(maxAsset>35?'A carteira está concentrada em poucos ativos. ':'Concentração por ativo controlada. ')+(maxSector>45?'Existe concentração setorial relevante. ':'Diversificação setorial mais equilibrada. ')+'Use esta leitura para planejar novos aportes sem depender apenas de feeling.</div></div></div>';
+}
+function renderDividendAnalytics(){
+  var el=document.getElementById('div-month-analytics'); if(!el) return;
+  var stocks=D.stocks||[]; var monthly=new Array(12).fill(0);
+  (D.events||[]).filter(isPortfolioDividendEvent).forEach(function(ev){ var d=new Date(ev.date+'T12:00:00'); if(isNaN(d)) return; var st=stocks.find(function(s){return s.ticker===ev.ticker;}); var qty=ev.qty||(st?st.qty:0); monthly[d.getMonth()]+=Math.max(0,(ev.value||0)*qty); });
+  var estMonth=stocks.reduce(function(a,s){ var p=D.prices[s.ticker]||s.pm||0; return a+(p*(s.qty||0))*((s.dy||0)/100)/12; },0);
+  for(var i=0;i<12;i++){ if(monthly[i]===0) monthly[i]=estMonth; }
+  var max=Math.max(1,...monthly); var labs=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  el.innerHTML='<div class="div-month-grid">'+monthly.map(function(v,i){return '<div class="div-month" title="'+labs[i]+': '+brl(v)+'"><div class="div-month-bar" style="height:'+Math.max(4,v/max*94)+'%"></div><div class="div-month-label">'+labs[i]+'</div></div>';}).join('')+'</div><div class="notice">Quando não há evento confirmado no mês, o app usa estimativa proporcional baseada no DY cadastrado da carteira.</div>';
 }
 
 function openMarketauxDocs(){ window.open('https://www.marketaux.com/','_blank'); }
@@ -2469,6 +2880,7 @@ function migrateData(){
 // ══════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded',function(){
   migrateData();
+  initSupabase();
   updateTickerMenus();
   updateMarketStatus();
   loadMarket();
@@ -2478,6 +2890,8 @@ document.addEventListener('DOMContentLoaded',function(){
   renderCal();
   renderDividendsPage();
   renderRadar();
+  renderFundamentosHome();
+  renderPortfolioAnalytics();
   calcFc();
   renderCfg();
   document.addEventListener('click',function(e){ if(!e.target.closest('.ticker-picker')){ document.querySelectorAll('.ticker-menu').forEach(function(m){m.classList.remove('open');}); document.querySelectorAll('.ticker-choice').forEach(function(c){c.classList.remove('open');}); } });
