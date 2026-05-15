@@ -527,9 +527,10 @@ input[type="color"]{min-height:44px}
 .insight-card{background:rgba(7,17,31,.72);border:1px solid rgba(148,163,184,.12);border-radius:14px;padding:13px}
 .insight-title{font-size:10px;color:var(--gold);text-transform:uppercase;letter-spacing:.07em;font-weight:950;margin-bottom:10px}
 .action-toolbar{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:12px}
-.div-month-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:5px;align-items:end;height:118px;margin-top:10px}
+.div-month-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:6px;align-items:end;height:145px;margin-top:10px}
 .div-month{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;min-width:0}
-.div-month-bar{width:100%;border-radius:8px 8px 2px 2px;background:linear-gradient(180deg,rgba(34,197,94,.8),rgba(34,197,94,.22));min-height:3px;border:1px solid rgba(34,197,94,.18)}
+.div-month-bar{width:100%;border-radius:10px 10px 3px 3px;background:linear-gradient(180deg,rgba(34,197,94,.88),rgba(34,197,94,.25));min-height:18px;border:1px solid rgba(34,197,94,.20);position:relative;display:flex;align-items:flex-start;justify-content:center;padding-top:5px;overflow:hidden}
+.div-month-value{font-size:9px;font-weight:900;color:#D9FFE9;text-shadow:0 1px 7px rgba(0,0,0,.55);white-space:nowrap;line-height:1}
 .div-month-label{font-size:8px;color:var(--tx3)}
 
 /* ══ IA / INSIGHTS ══ */
@@ -538,7 +539,7 @@ input[type="color"]{min-height:44px}
 .ai-grid .card{min-width:0}
 .ai-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
 .ai-response-card{padding:22px}
-.ai-output{min-height:430px;background:rgba(6,14,26,.68);border:1px solid rgba(148,163,184,.15);border-radius:20px;padding:20px 22px;color:var(--tx2);line-height:1.78;font-size:14px;white-space:normal;overflow:visible;word-break:break-word}
+.ai-output{min-height:430px;height:auto;max-height:none;background:rgba(6,14,26,.68);border:1px solid rgba(148,163,184,.15);border-radius:20px;padding:20px 22px;color:var(--tx2);line-height:1.78;font-size:14px;white-space:normal;overflow:visible;word-break:break-word}
 .ai-output.loading{display:flex;align-items:center;justify-content:center;min-height:220px;color:var(--gold);font-weight:900}
 .ai-output h2,.ai-output h3{color:var(--tx);margin:18px 0 8px;font-size:17px;letter-spacing:-.02em}
 .ai-output h2:first-child,.ai-output h3:first-child{margin-top:0}
@@ -546,6 +547,8 @@ input[type="color"]{min-height:44px}
 .ai-output ul,.ai-output ol{margin:8px 0 14px 20px;padding:0}
 .ai-output li{margin:6px 0}
 .ai-output strong{color:#F8FAFC}
+#ai-output-card{overflow:visible}
+#page-ai .card{overflow:visible}
 .ai-output .ai-muted{color:var(--tx3);font-size:12px}
 .ai-pill-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 .ai-pill{border:1px solid rgba(148,163,184,.18);background:rgba(255,255,255,.035);border-radius:999px;padding:6px 10px;font-size:11px;color:var(--tx2);font-weight:800}
@@ -672,6 +675,7 @@ body.app-locked #login-screen{display:flex}
     <div class="notice">Plano atual: gráficos limitados a 1D, 5D, 1M e 3M para evitar INVALID_RANGE no token atual. 6M, 1A e YTD exigem plano com histórico maior.</div>
     <div class="chart-wrap"><svg id="ibov-svg" class="chart-svg"></svg></div>
     <div id="ibov-range" style="display:flex;justify-content:space-between;font-size:10px;color:var(--tx3)"><span id="ibov-d1"></span><span id="ibov-d2"></span></div>
+    <div id="ibov-intraday-note" style="font-size:10px;color:var(--tx3);margin-top:6px"></div>
   </div>
 
   <!-- Search -->
@@ -1387,7 +1391,7 @@ async function quoteOne(ticker, opts){
 
 var PLAN_RANGES=['1d','5d','1mo','3mo'];
 var PERIOD_LABEL={'1d':'1 dia','5d':'5 dias','1mo':'1 mês','3mo':'3 meses'};
-function intervalForPeriod(p){ return '1d'; }
+function intervalForPeriod(p){ if(p==='1d') return '5m'; if(p==='5d') return '1h'; return '1d'; }
 function isRangeAllowed(p){ return PLAN_RANGES.indexOf(p)>=0; }
 
 function spNowParts(){
@@ -1416,18 +1420,40 @@ function synthesizeIntraday(res,period){
   var hist=res.historicalDataPrice||[];
   if(hist.length>1) return hist;
   if(period==='1d'&&res.regularMarketOpen&&res.regularMarketPrice){
+    var n=spNowParts();
+    var todayKey=(new Intl.DateTimeFormat('sv-SE',{timeZone:'America/Sao_Paulo',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date()));
+    var mkTs=function(h,m){ return Math.floor(new Date(todayKey+'T'+String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':00-03:00').getTime()/1000); };
     var now=Math.floor(Date.now()/1000);
-    return [{date:now-21600,close:res.regularMarketOpen},{date:now,close:res.regularMarketPrice}];
+    return [{date:mkTs(10,0),close:res.regularMarketOpen},{date:now,close:res.regularMarketPrice}];
   }
   return hist;
 }
+function compactIntradayHourly(data){
+  data=(data||[]).filter(function(d){ return d && (d.close||d.price); }).sort(function(a,b){ return (a.date||a.timestamp||0)-(b.date||b.timestamp||0); });
+  if(data.length<=2) return data;
+  var buckets={}, order=[];
+  data.forEach(function(d){
+    var ts=d.date||d.timestamp; if(!ts) return;
+    var dd=ts.toString().length<=10?new Date(ts*1000):new Date(ts);
+    var key=dd.toISOString().slice(0,13);
+    if(!buckets[key]) order.push(key);
+    buckets[key]=d; // mantém o último ponto da hora
+  });
+  var out=order.map(function(k){ return buckets[k]; });
+  return out.length>=2?out:data;
+}
 async function quoteWithHistory(tk,period){
-  try{
-    return await quoteOne(tk,{range:period,interval:(period==='1d'?'5m':intervalForPeriod(period))});
-  }catch(e){
-    if(period==='1d') return await quoteOne(tk,{range:'1d',interval:'1d'});
-    throw e;
+  if(period==='1d'){
+    var intervals=['5m','15m','30m','1h','1d'];
+    var lastErr=null;
+    for(var i=0;i<intervals.length;i++){
+      try{ return await quoteOne(tk,{range:'1d',interval:intervals[i]}); }
+      catch(e){ lastErr=e; }
+    }
+    throw lastErr||new Error('Não foi possível carregar 1D');
   }
+  try{ return await quoteOne(tk,{range:period,interval:intervalForPeriod(period)}); }
+  catch(e){ throw e; }
 }
 
 async function loadMarket(){
@@ -1552,11 +1578,14 @@ function drawChart(svgId,data,color,rangeIds){
   var W=rect.width>10?rect.width:(svg.parentElement?svg.parentElement.getBoundingClientRect().width||320:320);
   var H=rect.height>10?rect.height:150;
   var prices=data.map(function(d){ return typeof d==='object'?(d.close||d.price||0):d; });
+  var timestamps=data.map(function(d){ return typeof d==='object'?(d.date||d.timestamp):null; }).filter(Boolean).map(function(ts){ return ts.toString().length<=10?ts*1000:+ts; });
+  var isIntraday=false;
+  if(timestamps.length>1){ isIntraday=(Math.max.apply(null,timestamps)-Math.min.apply(null,timestamps))<=36*60*60*1000; }
   var dates=data.map(function(d){
     var ts=typeof d==='object'?(d.date||d.timestamp):null;
     if(!ts) return '';
     var dd=ts.toString().length<=10?new Date(ts*1000):new Date(ts);
-    return dd.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit'});
+    return isIntraday?dd.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}):dd.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit'});
   });
   var min=Math.min.apply(null,prices), max=Math.max.apply(null,prices);
   var rng=max-min||1;
@@ -1658,6 +1687,9 @@ async function loadIbovChart(period){
     var price=res.regularMarketPrice||0;
     document.getElementById('ibov-price').textContent=price?Math.round(price).toLocaleString('pt-BR'):' — ';
     var hist=synthesizeIntraday(res,period);
+    if(period==='1d') hist=compactIntradayHourly(hist);
+    var note=document.getElementById('ibov-intraday-note');
+    if(note){ note.textContent=period==='1d'?(hist.length>2?'1D agrupado por hora com base nos pontos intradiários retornados pela brapi.':'1D com fallback abertura → cotação atual quando a API não retorna pontos intradiários suficientes.'):' '; }
     var pChgPct=res.regularMarketChangePercent||0, pChgAbs=res.regularMarketChange||0;
     if(hist.length>1){
       var fc=hist[0].close||price, lc=hist[hist.length-1].close||price;
@@ -3289,7 +3321,10 @@ function renderDividendAnalytics(){
   var estMonth=stocks.reduce(function(a,s){ var p=D.prices[s.ticker]||s.pm||0; return a+(p*(s.qty||0))*((s.dy||0)/100)/12; },0);
   for(var i=0;i<12;i++){ if(monthly[i]===0) monthly[i]=estMonth; }
   var max=Math.max(1,...monthly); var labs=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-  el.innerHTML='<div class="div-month-grid">'+monthly.map(function(v,i){return '<div class="div-month" title="'+labs[i]+': '+brl(v)+'"><div class="div-month-bar" style="height:'+Math.max(4,v/max*94)+'%"></div><div class="div-month-label">'+labs[i]+'</div></div>';}).join('')+'</div><div class="notice">Quando não há evento confirmado no mês, o app usa estimativa proporcional baseada no DY cadastrado da carteira.</div>';
+  el.innerHTML='<div class="div-month-grid">'+monthly.map(function(v,i){
+    var short=v>=1000?'R$'+(v/1000).toFixed(1)+'k':brl(v).replace('R$','R$ ');
+    return '<div class="div-month" title="'+labs[i]+': '+brl(v)+'"><div class="div-month-bar" style="height:'+Math.max(18,v/max*94)+'%"><span class="div-month-value">'+short+'</span></div><div class="div-month-label">'+labs[i]+'</div></div>';
+  }).join('')+'</div><div class="notice">Quando não há evento confirmado no mês, o app usa estimativa proporcional baseada no DY cadastrado da carteira.</div>';
 }
 
 function openMarketauxDocs(){ window.open('https://www.marketaux.com/','_blank'); }
@@ -3409,17 +3444,38 @@ async function callGemini(prompt){
   var model=getGeminiModel();
   var url='https://generativelanguage.googleapis.com/v1beta/models/'+encodeURIComponent(model)+':generateContent?key='+encodeURIComponent(key);
   var system=(D.ai&&D.ai.training)||defaultAITraining();
-  var body={
-    systemInstruction:{parts:[{text:system}]},
-    contents:[{role:'user',parts:[{text:prompt}]}],
-    generationConfig:{temperature:0.35,topP:0.9,maxOutputTokens:1800}
-  };
-  var r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-  var j=await r.json();
-  if(!r.ok || j.error){ throw new Error((j.error&&j.error.message)||('Erro Gemini HTTP '+r.status)); }
-  var txt='';
-  try{ txt=j.candidates[0].content.parts.map(function(p){return p.text||'';}).join('\n'); }catch(e){}
-  return txt||'Sem resposta do modelo.';
+  async function ask(contents,maxTokens){
+    var body={
+      systemInstruction:{parts:[{text:system}]},
+      contents:contents,
+      generationConfig:{temperature:0.32,topP:0.9,maxOutputTokens:maxTokens||4096}
+    };
+    var r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    var j=await r.json();
+    if(!r.ok || j.error){ throw new Error((j.error&&j.error.message)||('Erro Gemini HTTP '+r.status)); }
+    var cand=(j.candidates&&j.candidates[0])||{};
+    var txt='';
+    try{ txt=(cand.content.parts||[]).map(function(p){return p.text||'';}).join('
+'); }catch(e){}
+    return {text:txt||'',finishReason:cand.finishReason||''};
+  }
+  var basePrompt=prompt+'
+
+Responda de forma completa, mas objetiva. Não corte seções pela metade.';
+  var first=await ask([{role:'user',parts:[{text:basePrompt}]}],4096);
+  var txt=first.text||'';
+  var looksCut=(first.finishReason==='MAX_TOKENS'||/\*\*$/.test(txt.trim())||/\d+\.\s*\*\*?$/.test(txt.trim())||/[:;,-]$/.test(txt.trim()));
+  if(looksCut){
+    var cont=await ask([
+      {role:'user',parts:[{text:basePrompt}]},
+      {role:'model',parts:[{text:txt}]},
+      {role:'user',parts:[{text:'Continue exatamente de onde parou e conclua as seções restantes. Não repita o início.'}]}
+    ],3072);
+    txt+='
+
+'+(cont.text||'');
+  }
+  return txt.trim()||'Sem resposta do modelo.';
 }
 async function runAI(){
   var out=document.getElementById('ai-output'); if(!out) return;
@@ -3428,7 +3484,7 @@ async function runAI(){
   var tk=((document.getElementById('ai-ticker')||{}).value||'').toUpperCase();
   setAIOutput('Gerando análise com Gemini...',true);
   try{
-    var prompt='Contexto do app InvestRafa:\n'+aiContextText()+'\n\nAtivo opcional selecionado: '+(tk||'nenhum')+'\n\nPergunta do usuário:\n'+q+'\n\nFormato desejado: responda em português, com seções: Resumo executivo, Diagnóstico, Pontos positivos, Pontos de atenção, Plano educativo, Dados que faltam, Aviso de responsabilidade.';
+    var prompt='Contexto do app InvestRafa:\n'+aiContextText()+'\n\nAtivo opcional selecionado: '+(tk||'nenhum')+'\n\nPergunta do usuário:\n'+q+'\n\nFormato desejado: responda em português, com seções bem completas e objetivas: Resumo executivo, Diagnóstico, Pontos positivos, Pontos de atenção, Plano educativo, Dados que faltam, Aviso de responsabilidade. Evite encerrar no meio de uma lista.';
     var ans=await callGemini(prompt);
     setAIOutput(ans,false);
     if(!D.ai) D.ai={}; D.ai.lastAnswer=ans; save();
