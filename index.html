@@ -3455,13 +3455,10 @@ async function callGemini(prompt){
     if(!r.ok || j.error){ throw new Error((j.error&&j.error.message)||('Erro Gemini HTTP '+r.status)); }
     var cand=(j.candidates&&j.candidates[0])||{};
     var txt='';
-    try{ txt=(cand.content.parts||[]).map(function(p){return p.text||'';}).join('
-'); }catch(e){}
+    try{ txt=(cand.content.parts||[]).map(function(p){return p.text||'';}).join('\n'); }catch(e){}
     return {text:txt||'',finishReason:cand.finishReason||''};
   }
-  var basePrompt=prompt+'
-
-Responda de forma completa, mas objetiva. Não corte seções pela metade.';
+  var basePrompt=prompt+'\n\nResponda de forma completa, mas objetiva. Não corte seções pela metade.';
   var first=await ask([{role:'user',parts:[{text:basePrompt}]}],4096);
   var txt=first.text||'';
   var looksCut=(first.finishReason==='MAX_TOKENS'||/\*\*$/.test(txt.trim())||/\d+\.\s*\*\*?$/.test(txt.trim())||/[:;,-]$/.test(txt.trim()));
@@ -3471,9 +3468,7 @@ Responda de forma completa, mas objetiva. Não corte seções pela metade.';
       {role:'model',parts:[{text:txt}]},
       {role:'user',parts:[{text:'Continue exatamente de onde parou e conclua as seções restantes. Não repita o início.'}]}
     ],3072);
-    txt+='
-
-'+(cont.text||'');
+    txt+='\n\n'+(cont.text||'');
   }
   return txt.trim()||'Sem resposta do modelo.';
 }
