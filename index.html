@@ -602,7 +602,11 @@ button,input,select,textarea{font-family:var(--font)}button{cursor:pointer}
       </div>
     </div>
   </div>
-  <div class="card"><div class="ctitle" style="margin-bottom:10px">Sessão</div><button class="btn btn-ghost btn-sm" onclick="doLogout()">Sair</button></div>
+  <div class="card"><div class="ctitle" style="margin-bottom:10px">Sessão & Sincronização</div>
+    <div id="sync-status" style="margin-bottom:12px"></div>
+    <button class="btn btn-ghost btn-sm" onclick="forceSyncFromCloud()">↻ Recarregar dados da nuvem</button>
+    <button class="btn btn-red btn-sm" style="margin-left:8px" onclick="doLogout()">Sair</button>
+  </div>
 </div>
 
 </main>
@@ -696,8 +700,26 @@ button,input,select,textarea{font-family:var(--font)}button{cursor:pointer}
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
 'use strict';
+// ════════════════════════════════════════
+// SUPABASE CONFIG — substitua pelos seus valores
+// Dashboard > Project Settings > API
+// ════════════════════════════════════════
+const SUPABASE_URL = 'https://cwiyjtldoknpjfowufob.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN3aXlqdGxkb2tucGpmb3d1Zm9iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxNDczOTIsImV4cCI6MjA5NDcyMzM5Mn0.cfFiINB0PN4lnn78sa1sXKn-GjTSijm9_Cjibt4rd3o';
+
+let sb = null;
+let currentUser = null;
+try {
+  // UMD bundle expõe window.supabase = { createClient, ... }
+  const _sb = window.supabase || window.Supabase;
+  if (_sb && SUPABASE_URL.includes('supabase.co') && SUPABASE_KEY.length > 20) {
+    sb = _sb.createClient(SUPABASE_URL, SUPABASE_KEY);
+  }
+} catch(e) { console.warn('Supabase não inicializado:', e); }
+
 // ════════════════════════════════════════
 // CONSTANTS
 // ════════════════════════════════════════
@@ -793,22 +815,188 @@ const today = ()=>new Date().toISOString().slice(0,10);
 function toast(msg,c=''){const t=document.getElementById('toast');t.textContent=msg;t.style.borderColor=c||'var(--emerald)';t.classList.add('show');setTimeout(()=>{t.classList.remove('show');t.style.borderColor='';},2700);}
 
 // ════════════════════════════════════════
-// AUTH
+// AUTH — Supabase real + fallback local
 // ════════════════════════════════════════
-function doLogin(){
-  const em=document.getElementById('auth-email').value.trim(), pw=document.getElementById('auth-pass').value;
-  if(!em||pw.length<6){document.getElementById('auth-msg').textContent='⚠ E-mail e senha obrigatórios (min 6 chars)';return;}
-  D.loggedIn=true;D.userEmail=em;CDI=D.cdi||0.1375;SELIC=D.selic||0.1475;save();
-  document.body.classList.add('authed');initApp();toast('Bem-vindo, '+em.split('@')[0]+' 👋');
+function setMsg(txt, color=''){const el=document.getElementById('auth-msg');if(el){el.textContent=txt;el.style.color=color||'var(--tx2)';}}
+function setAuthLoading(loading){
+  const btns=document.querySelectorAll('#login-gate .btn');
+  btns.forEach(b=>{b.disabled=loading;b.style.opacity=loading?'.5':'1';});
 }
-function doSignup(){
+
+async function doLogin(){
   const em=document.getElementById('auth-email').value.trim(), pw=document.getElementById('auth-pass').value;
-  if(!em||pw.length<6){document.getElementById('auth-msg').textContent='⚠ Preencha e-mail e senha (min 6 chars)';return;}
-  D.loggedIn=true;D.userEmail=em;save();document.body.classList.add('authed');initApp();toast('Conta criada! 🎉');
+  if(!em||pw.length<6){setMsg('⚠ Preencha e-mail e senha (mín. 6 chars)','var(--crimson)');return;}
+  setAuthLoading(true);setMsg('Entrando…');
+  if(sb){
+    const {data,error}=await sb.auth.signInWithPassword({email:em,password:pw});
+    if(error){setMsg('❌ '+error.message,'var(--crimson)');setAuthLoading(false);return;}
+    currentUser=data.user;
+    await loadCloudData();
+    D.loggedIn=true;D.userEmail=em;CDI=D.cdi||0.1375;SELIC=D.selic||0.1475;save();
+    document.body.classList.add('authed');initApp();toast('Bem-vindo de volta, '+em.split('@')[0]+' 👋');
+  }else{
+    // fallback local
+    D.loggedIn=true;D.userEmail=em;CDI=D.cdi||0.1375;SELIC=D.selic||0.1475;save();
+    document.body.classList.add('authed');initApp();toast('Bem-vindo (modo local) 👋');
+  }
+  setAuthLoading(false);
 }
-function demoLogin(){D=defaultState();D.loggedIn=true;D.userEmail='demo@patrimo.app';save();document.body.classList.add('authed');initApp();toast('Modo demo 🚀');}
-function doLogout(){D.loggedIn=false;save();document.body.classList.remove('authed');}
-function checkSession(){if(D.loggedIn){CDI=D.cdi||0.1375;SELIC=D.selic||0.1475;document.body.classList.add('authed');initApp();}}
+
+async function doSignup(){
+  const em=document.getElementById('auth-email').value.trim(), pw=document.getElementById('auth-pass').value;
+  if(!em||pw.length<6){setMsg('⚠ Preencha e-mail e senha (mín. 6 chars)','var(--crimson)');return;}
+  setAuthLoading(true);setMsg('Criando conta…');
+  if(sb){
+    const {data,error}=await sb.auth.signUp({
+  email: em,
+  password: pw,
+  options: {
+    data: { full_name: em.split('@')[0] },
+    emailRedirectTo: window.location.origin
+  }
+});
+    if(error){setMsg('❌ '+error.message,'var(--crimson)');setAuthLoading(false);return;}
+    if(data.user?.identities?.length===0){setMsg('⚠ Este e-mail já tem conta. Use "Entrar".','var(--amber)');setAuthLoading(false);return;}
+    currentUser=data.user;
+    await seedDefaultData();
+    D.loggedIn=true;D.userEmail=em;save();
+    document.body.classList.add('authed');initApp();toast('Conta criada! Bem-vindo(a) 🎉');
+  }else{
+    D.loggedIn=true;D.userEmail=em;save();document.body.classList.add('authed');initApp();toast('Conta criada (modo local) 🎉');
+  }
+  setAuthLoading(false);
+}
+
+function demoLogin(){D=defaultState();D.loggedIn=true;D.userEmail='demo@patrimo.app';save();document.body.classList.add('authed');initApp();toast('Modo demonstração 🚀');}
+
+async function doLogout(){
+  if(sb)await sb.auth.signOut();
+  D.loggedIn=false;currentUser=null;save();
+  document.body.classList.remove('authed');
+  toast('Sessão encerrada');
+}
+
+async function checkSession(){
+  if(sb){
+    const {data:{session}}=await sb.auth.getSession();
+    if(session?.user){
+      currentUser=session.user;
+      await loadCloudData();
+      D.loggedIn=true;D.userEmail=session.user.email;
+      CDI=D.cdi||0.1375;SELIC=D.selic||0.1475;save();
+      document.body.classList.add('authed');initApp();
+      return;
+    }
+  }
+  // fallback localStorage
+  if(D.loggedIn){CDI=D.cdi||0.1375;SELIC=D.selic||0.1475;document.body.classList.add('authed');initApp();}
+}
+
+// ════════════════════════════════════════
+// CLOUD SYNC — Supabase read/write
+// ════════════════════════════════════════
+async function loadCloudData(){
+  if(!sb||!currentUser)return;
+  const uid=currentUser.id;
+  try{
+    // profile
+    const {data:prof}=await sb.from('profiles').select('*').eq('id',uid).single();
+    if(prof){D.cdi=prof.cdi||0.1375;D.selic=prof.selic||0.1475;D.brapiToken=prof.brapi_token||HARDCODED_TOKEN;}
+    // plan_rows
+    const {data:rows}=await sb.from('plan_rows').select('*').eq('user_id',uid).order('sort_order');
+    if(rows?.length){D.plans=rows.map(r=>({id:r.id,section:r.section,name:r.name,values:r.values||Array(12).fill(0),special:r.special}));}
+    // stocks
+    const {data:stocks}=await sb.from('stocks').select('*').eq('user_id',uid);
+    if(stocks?.length){D.stocks=stocks.map(s=>({id:s.id,ticker:s.ticker,name:s.name||s.ticker,sector:s.sector||'Outros',qty:+s.qty,pm:+s.pm,dy:+s.dy}));}
+    // investments
+    const {data:invs}=await sb.from('investments').select('*').eq('user_id',uid);
+    if(invs?.length){D.investments=invs.map(i=>({id:i.id,productIndex:i.product_index||0,bank:i.bank,product:i.product,amount:+i.amount,rate:+i.rate,ref:i.ref||'CDI',date:i.applied_date,eligible:i.eligible,goal:i.goal||'Reserva',notes:i.notes||''}));}
+    // cards
+    const {data:cards}=await sb.from('cards').select('*').eq('user_id',uid);
+    if(cards?.length){D.cards=cards.map(c=>({id:c.id,bank:c.bank,name:c.name,limit:+c.credit_limit,closeDay:c.close_day,dueDay:c.due_day,color:c.color||'#3d7fff'}));}
+    // purchases
+    const {data:purch}=await sb.from('purchases').select('*').eq('user_id',uid);
+    if(purch?.length){D.purchases=purch.map(p=>({id:p.id,cardId:p.card_id,date:p.purchase_date,desc:p.description,cat:p.category||'Outros',value:+p.value,installments:p.installments||1}));}
+    // events
+    const {data:evts}=await sb.from('events').select('*').eq('user_id',uid);
+    if(evts?.length){D.events=evts.map(e=>({id:e.id,type:e.type,ticker:e.ticker||'',date:e.event_date,value:+e.value,qty:+e.qty,notes:e.notes||''}));}
+    save();
+  }catch(e){console.warn('loadCloudData erro:',e);}
+}
+
+async function seedDefaultData(){
+  if(!sb||!currentUser)return;
+  const uid=currentUser.id;
+  try{
+    const def=defaultState();
+    // Inserir plan_rows padrão
+    const planRows=def.plans.map((r,i)=>({user_id:uid,section:r.section,name:r.name,values:r.values,special:r.special||null,sort_order:i}));
+    await sb.from('plan_rows').insert(planRows);
+    // Inserir stocks padrão
+    const stockRows=def.stocks.map(s=>({user_id:uid,ticker:s.ticker,name:s.name,sector:s.sector,qty:s.qty,pm:s.pm,dy:s.dy}));
+    await sb.from('stocks').insert(stockRows);
+    // Inserir investments padrão
+    const invRows=def.investments.map(i=>({user_id:uid,product_index:i.productIndex,bank:i.bank,product:i.product,amount:i.amount,rate:i.rate,ref:i.ref,applied_date:i.date,eligible:i.eligible,goal:i.goal,notes:i.notes}));
+    await sb.from('investments').insert(invRows);
+    // Inserir cards padrão
+    for(const c of def.cards){
+      await sb.from('cards').insert({id:c.id,user_id:uid,bank:c.bank,name:c.name,credit_limit:c.limit,close_day:c.closeDay,due_day:c.dueDay,color:c.color});
+    }
+    // Inserir purchases padrão
+    const purchRows=def.purchases.map(p=>({user_id:uid,card_id:p.cardId,purchase_date:p.date,description:p.desc,category:p.cat||'Outros',value:p.value,installments:p.installments||1}));
+    await sb.from('purchases').insert(purchRows);
+    // Inserir events padrão
+    const evtRows=def.events.map(e=>({user_id:uid,type:e.type,ticker:e.ticker,event_date:e.date,value:e.value,qty:e.qty,notes:e.notes}));
+    await sb.from('events').insert(evtRows);
+    await loadCloudData();
+  }catch(e){console.warn('seedDefaultData erro:',e);}
+}
+
+// ── Helpers de sync por entidade ──
+async function dbUpsertPlan(row){
+  if(!sb||!currentUser)return;
+  await sb.from('plan_rows').upsert({id:row.id,user_id:currentUser.id,section:row.section,name:row.name,values:row.values,special:row.special||null});
+}
+async function dbDeletePlan(id){
+  if(!sb||!currentUser)return;
+  await sb.from('plan_rows').delete().eq('id',id).eq('user_id',currentUser.id);
+}
+async function dbUpsertStock(s){
+  if(!sb||!currentUser)return;
+  await sb.from('stocks').upsert({id:s.id,user_id:currentUser.id,ticker:s.ticker,name:s.name,sector:s.sector,qty:s.qty,pm:s.pm,dy:s.dy});
+}
+async function dbDeleteStock(id){
+  if(!sb||!currentUser)return;
+  await sb.from('stocks').delete().eq('id',id).eq('user_id',currentUser.id);
+}
+async function dbUpsertInv(i){
+  if(!sb||!currentUser)return;
+  await sb.from('investments').upsert({id:i.id,user_id:currentUser.id,product_index:i.productIndex,bank:i.bank,product:i.product,amount:i.amount,rate:i.rate,ref:i.ref,applied_date:i.date,eligible:i.eligible,goal:i.goal,notes:i.notes});
+}
+async function dbDeleteInv(id){
+  if(!sb||!currentUser)return;
+  await sb.from('investments').delete().eq('id',id).eq('user_id',currentUser.id);
+}
+async function dbUpsertCard(c){
+  if(!sb||!currentUser)return;
+  await sb.from('cards').upsert({id:c.id,user_id:currentUser.id,bank:c.bank,name:c.name,credit_limit:c.limit,close_day:c.closeDay,due_day:c.dueDay,color:c.color});
+}
+async function dbUpsertPurchase(p){
+  if(!sb||!currentUser)return;
+  await sb.from('purchases').upsert({id:p.id,user_id:currentUser.id,card_id:p.cardId,purchase_date:p.date,description:p.desc,category:p.cat||'Outros',value:p.value,installments:p.installments});
+}
+async function dbDeletePurchase(id){
+  if(!sb||!currentUser)return;
+  await sb.from('purchases').delete().eq('id',id).eq('user_id',currentUser.id);
+}
+async function dbUpsertEvent(e){
+  if(!sb||!currentUser)return;
+  await sb.from('events').upsert({id:e.id,user_id:currentUser.id,type:e.type,ticker:e.ticker,event_date:e.date,value:e.value,qty:e.qty,notes:e.notes});
+}
+async function dbDeleteEvent(id){
+  if(!sb||!currentUser)return;
+  await sb.from('events').delete().eq('id',id).eq('user_id',currentUser.id);
+}
 
 // ════════════════════════════════════════
 // INIT
@@ -955,12 +1143,13 @@ function renderPlan(){
   html+='</tbody>';
   document.getElementById('plan-table').innerHTML=html;
 }
-function editCell(id,idx,text){const r=D.plans.find(x=>x.id===id);if(!r)return;r.values[idx]=n(text);save();renderHome();renderPlan();}
-function rmPlanRow(id){if(confirm('Remover?')){D.plans=D.plans.filter(r=>r.id!==id);save();renderPlan();}}
+function editCell(id,idx,text){const r=D.plans.find(x=>x.id===id);if(!r)return;r.values[idx]=n(text);save();dbUpsertPlan(r);renderHome();renderPlan();}
+function rmPlanRow(id){if(confirm('Remover?')){const r=D.plans.find(x=>x.id===id);D.plans=D.plans.filter(r=>r.id!==id);save();dbDeletePlan(id);renderPlan();}}
 function addPlanRow(){
   const name=prompt('Nome:');if(!name)return;
   const sec=prompt('Seção (Entradas/Custos/Despesas/Aplicações):','Despesas')||'Despesas';
-  D.plans.push({id:uid(),section:sec,name,values:Array(12).fill(0)});save();renderPlan();
+  D.plans.push({id:uid(),section:sec,name,values:Array(12).fill(0)});
+  const newRow=D.plans[D.plans.length-1];save();dbUpsertPlan(newRow);renderPlan();
 }
 function saveQuickAdd(){
   const sec=document.getElementById('q-sec').value,month=n(document.getElementById('q-mon').value),name=document.getElementById('q-name').value.trim(),amount=n(document.getElementById('q-val').value),rep=document.getElementById('q-rep').value;
@@ -970,7 +1159,7 @@ function saveQuickAdd(){
   if(rep==='one')row.values[month]+=amount;
   else if(rep==='all')for(let i=month;i<12;i++)row.values[i]+=amount;
   else for(let i=0;i<12;i++)row.values[i]+=amount;
-  save();closeModal('quick-modal');renderHome();renderPlan();toast('Lançamento adicionado ✓');
+  save();closeModal('quick-modal');dbUpsertPlan(row);renderHome();renderPlan();toast('Lançamento adicionado ✓');
 }
 function exportPlanCsv(){
   const rows=[['Seção','Categoria',...MONTHS_FULL,'Total']];
@@ -1412,11 +1601,11 @@ function saveStock(){
   const ticker=document.getElementById('s-ticker').value.trim().toUpperCase(),qty=n(document.getElementById('s-qty').value),pm=n(document.getElementById('s-pm').value),sector=document.getElementById('s-sec').value,dy=n(document.getElementById('s-dy').value);
   if(!ticker||!qty||!pm){toast('Preencha ticker, quantidade e PM','var(--crimson)');return;}
   const ex=D.stocks.find(s=>s.ticker===ticker);
-  if(ex){const tq=ex.qty+qty;ex.pm=(ex.pm*ex.qty+pm*qty)/tq;ex.qty=tq;}
-  else D.stocks.push({id:uid(),ticker,name:ticker,sector,qty,pm,dy});
-  save();closeModal('stock-modal');loadMarket();toast('Ativo adicionado ✓');
+  if(ex){const tq=ex.qty+qty;ex.pm=(ex.pm*ex.qty+pm*qty)/tq;ex.qty=tq;save();dbUpsertStock(ex);}
+  else{const ns={id:uid(),ticker,name:ticker,sector,qty,pm,dy};D.stocks.push(ns);save();dbUpsertStock(ns);}
+  closeModal('stock-modal');loadMarket();toast('Ativo adicionado ✓');
 }
-function rmStock(id){D.stocks=D.stocks.filter(s=>s.id!==id);save();renderPort();}
+function rmStock(id){D.stocks=D.stocks.filter(s=>s.id!==id);save();dbDeleteStock(id);renderPort();}
 
 // ════════════════════════════════════════
 // RENDA FIXA
@@ -1463,9 +1652,9 @@ function saveInv(){
   if(!p){toast('Selecione produto','var(--crimson)');return;}
   const inv={id:uid(),productIndex:idx,bank:p.bank,product:p.product,amount:n(document.getElementById('inv-amt').value),rate:n(document.getElementById('inv-rate').value),ref:p.ref,date:document.getElementById('inv-date').value,eligible:document.getElementById('inv-elig').value==='sim',goal:document.getElementById('inv-goal').value,notes:document.getElementById('inv-notes').value};
   if(!inv.amount){toast('Informe o valor','var(--crimson)');return;}
-  D.investments.push(inv);save();closeModal('inv-modal');renderRF();toast('Investimento registrado ✓');
+  D.investments.push(inv);save();closeModal('inv-modal');dbUpsertInv(inv);renderRF();toast('Investimento registrado ✓');
 }
-function rmInv(id){D.investments=D.investments.filter(i=>i.id!==id);save();renderRF();}
+function rmInv(id){D.investments=D.investments.filter(i=>i.id!==id);save();dbDeleteInv(id);renderRF();}
 
 // RF SIMULATOR
 function calcRF(){
@@ -1474,7 +1663,7 @@ function calcRF(){
   if(idx==='cdi')rateAA=CDI*taxaAA/100;
   if(idx==='selic')rateAA=SELIC*taxaAA/100;
   const rateM=Math.pow(1+rateAA,1/12)-1;
-  const irAliq=d=>d<=180?.225:d<=360?.20:d<=720:.175:.15;
+  const irAliq=d=>{if(d<=180)return 0.225;if(d<=360)return 0.20;if(d<=720)return 0.175;return 0.15;};
   let balance=cap,totalAp=cap;
   const milestones=[3,6,12,18,24,36,48,60,meses].filter((m,i,a)=>m<=meses&&a.indexOf(m)===i).sort((a,b)=>a-b);
   const rows=[];
@@ -1542,14 +1731,14 @@ function renderCardDetail(m){
   document.getElementById('purchases-table').innerHTML=rows.length?`<div class="ctitle" style="margin-bottom:9px">Compras</div><div class="table-wrap"><table class="fin-table" style="min-width:550px"><thead><tr><th>Descrição</th><th>Data</th><th>Cat.</th><th>Valor</th><th>Parcelas</th><th>Parcela atual</th><th></th></tr></thead><tbody>${rows.map(p=>`<tr><td>${p.desc}</td><td style="font-size:10px">${p.date}</td><td>${p.cat||'—'}</td><td class="num">${brl(p.value)}</td><td class="num">${p.installments}x</td><td class="num">${brl(n(p.value)/Math.max(1,n(p.installments)))}</td><td><button class="link-btn" style="color:var(--crimson)" onclick="rmPurchase('${p.id}')">×</button></td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">Nenhuma compra</div>';
 }
 function fillPurchaseCard(){const sel=document.getElementById('p-card');sel.innerHTML=D.cards.map(c=>`<option value="${c.id}">${c.bank} — ${c.name}</option>`).join('');if(D.selectedCard)sel.value=D.selectedCard;document.getElementById('p-date').value=today();}
-function saveCard(){const bank=document.getElementById('cm-bank').value.trim(),name=document.getElementById('cm-name').value.trim();if(!bank||!name){toast('Preencha banco e nome','var(--crimson)');return;}D.cards.push({id:uid(),bank,name,limit:n(document.getElementById('cm-limit').value),closeDay:n(document.getElementById('cm-close').value),dueDay:n(document.getElementById('cm-due').value),color:document.getElementById('cm-color').value});save();closeModal('card-modal');renderCards();toast('Cartão adicionado ✓');}
+function saveCard(){const bank=document.getElementById('cm-bank').value.trim(),name=document.getElementById('cm-name').value.trim();if(!bank||!name){toast('Preencha banco e nome','var(--crimson)');return;}const nc={id:uid(),bank,name,limit:n(document.getElementById('cm-limit').value),closeDay:n(document.getElementById('cm-close').value),dueDay:n(document.getElementById('cm-due').value),color:document.getElementById('cm-color').value};D.cards.push(nc);save();closeModal('card-modal');dbUpsertCard(nc);renderCards();toast('Cartão adicionado ✓');}
 function savePurchase(){
   const cardId=document.getElementById('p-card').value,desc=document.getElementById('p-desc').value.trim(),value=n(document.getElementById('p-val').value);
   if(!cardId||!desc||!value){toast('Preencha todos os campos','var(--crimson)');return;}
-  D.purchases.push({id:uid(),cardId,date:document.getElementById('p-date').value,desc,cat:document.getElementById('p-cat').value,value,installments:Math.max(1,n(document.getElementById('p-inst').value))});
-  save();closeModal('purchase-modal');renderCards();toast('Compra registrada ✓');
+  const np={id:uid(),cardId,date:document.getElementById('p-date').value,desc,cat:document.getElementById('p-cat').value,value,installments:Math.max(1,n(document.getElementById('p-inst').value))};
+  D.purchases.push(np);save();closeModal('purchase-modal');dbUpsertPurchase(np);renderCards();toast('Compra registrada ✓');
 }
-function rmPurchase(id){D.purchases=D.purchases.filter(p=>p.id!==id);save();renderCards();}
+function rmPurchase(id){D.purchases=D.purchases.filter(p=>p.id!==id);save();dbDeletePurchase(id);renderCards();}
 
 // ════════════════════════════════════════
 // CALENDAR
@@ -1594,8 +1783,8 @@ function renderCalendar(){
   renderDivPrev();
 }
 function calDayClick(d){document.getElementById('ev-dt').value=calY+'-'+String(calM+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');openModal('event-modal');}
-function saveEvent(){const ev={id:uid(),type:document.getElementById('ev-tp').value,ticker:document.getElementById('ev-tk').value.toUpperCase(),date:document.getElementById('ev-dt').value,value:n(document.getElementById('ev-vl').value)||0,qty:n(document.getElementById('ev-qt').value)||0,notes:document.getElementById('ev-nt').value};if(!ev.date){toast('Informe a data','var(--crimson)');return;}D.events.push(ev);save();closeModal('event-modal');renderCalendar();toast('Evento salvo ✓');}
-function rmEvent(id){D.events=D.events.filter(e=>e.id!==id);save();renderCalendar();}
+function saveEvent(){const ev={id:uid(),type:document.getElementById('ev-tp').value,ticker:document.getElementById('ev-tk').value.toUpperCase(),date:document.getElementById('ev-dt').value,value:n(document.getElementById('ev-vl').value)||0,qty:n(document.getElementById('ev-qt').value)||0,notes:document.getElementById('ev-nt').value};if(!ev.date){toast('Informe a data','var(--crimson)');return;}D.events.push(ev);save();closeModal('event-modal');dbUpsertEvent(ev);renderCalendar();toast('Evento salvo ✓');}
+function rmEvent(id){D.events=D.events.filter(e=>e.id!==id);save();dbDeleteEvent(id);renderCalendar();}
 function renderDivPrev(){
   if(!D.stocks.length){document.getElementById('div-prev').innerHTML='<div class="empty">Cadastre ações na carteira</div>';return;}
   let total=0,html='';
@@ -1654,12 +1843,19 @@ function renderCfg(){
   const t=document.getElementById('cfg-token');if(t)t.value=D.brapiToken||HARDCODED_TOKEN||'';
   const c=document.getElementById('cfg-cdi');if(c)c.value=((D.cdi||0.1375)*100).toFixed(2);
   const s=document.getElementById('cfg-selic');if(s)s.value=((D.selic||0.1475)*100).toFixed(2);
+  const ss=document.getElementById('sync-status');if(ss){
+    if(sb&&currentUser){ss.innerHTML=`<div class="alert-green">✅ Sincronizado com Supabase · Usuário: <b>${currentUser.email}</b></div>`;}
+    else if(D.userEmail){ss.innerHTML=`<div class="alert-gold">⚠️ Modo local · ${D.userEmail} · Configure Supabase para sincronização na nuvem</div>`;}
+  }
 }
+async function forceSyncFromCloud(){toast('Recarregando dados…');await loadCloudData();renderHome();renderPlan();renderPort();renderRF();renderCalendar();calcFc();toast('Dados sincronizados ✓');}
 function saveConfig(){
   D.brapiToken=document.getElementById('cfg-token').value.trim()||HARDCODED_TOKEN;
   D.cdi=n(document.getElementById('cfg-cdi').value)/100||0.1375;
   D.selic=n(document.getElementById('cfg-selic').value)/100||0.1475;
-  CDI=D.cdi;SELIC=D.selic;save();toast('Configurações salvas ✓');
+  CDI=D.cdi;SELIC=D.selic;save();
+  if(sb&&currentUser){sb.from('profiles').update({brapi_token:D.brapiToken,cdi:D.cdi,selic:D.selic}).eq('id',currentUser.id);}
+  toast('Configurações salvas ✓');
 }
 function exportJson(){dlFile('patrimo_backup.json',JSON.stringify(D,null,2),'application/json');}
 function importJson(ev){const f=ev.target.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{try{D=Object.assign(defaultState(),JSON.parse(e.target.result));save();renderHome();renderPlan();toast('Importado ✓');}catch(err){toast('Arquivo inválido','var(--crimson)');}};r.readAsText(f);}
