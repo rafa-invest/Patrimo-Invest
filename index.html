@@ -819,6 +819,26 @@ body.app-locked #login-screen{display:flex}
 .purchase-remove-btn:hover{background:rgba(217,74,74,.18);border-color:rgba(217,74,74,.42)}
 @media(max-width:860px){.plan-filterbar,.plan-extra-grid{grid-template-columns:1fr}.plan-chart-bars{height:190px}.plan-month-cluster{min-width:46px}.plan-ranking-row{grid-template-columns:1fr 90px 58px}}
 
+
+
+/* ══════════════════════════════════════════════════════
+   PATRIMO 1.4.9 — GRÁFICOS BI, MACRO BCB, DÓLAR E GOOGLE SEARCH
+   ══════════════════════════════════════════════════════ */
+.bi-filter-bar{display:none;align-items:center;justify-content:space-between;gap:12px;margin:-6px 0 14px;padding:12px 14px;border:1px solid rgba(212,175,55,.28);border-left:3px solid var(--gold);background:rgba(212,175,55,.075);border-radius:16px;color:#F8E9B7;font-size:12px;line-height:1.45;box-shadow:var(--shadow2)}
+.bi-filter-bar.on{display:flex}
+.bi-filter-bar b{color:#fff}.bi-filter-bar button{border:1px solid rgba(212,175,55,.28);background:rgba(7,17,31,.55);color:#F8E9B7;border-radius:11px;padding:7px 10px;font-size:11px;font-weight:900;cursor:pointer}
+.market-pro-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:12px;margin-bottom:14px}
+.market-pro-kpi{background:linear-gradient(145deg,rgba(18,31,51,.98),rgba(7,17,31,.80));border:1px solid rgba(148,163,184,.15);border-radius:20px;padding:15px;min-height:112px;position:relative;overflow:hidden;cursor:pointer;transition:all .18s ease}
+.market-pro-kpi:hover{transform:translateY(-1px);border-color:rgba(212,175,55,.36);box-shadow:0 14px 32px rgba(0,0,0,.24)}
+.market-pro-kpi:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 100% 0%,rgba(212,175,55,.12),transparent 42%);pointer-events:none}
+.market-pro-kpi .mk-l{position:relative;font-size:9px;text-transform:uppercase;letter-spacing:.10em;color:var(--tx3);font-weight:950;margin-bottom:8px}.market-pro-kpi .mk-v{position:relative;font-size:22px;font-weight:950;letter-spacing:-.04em;color:#fff}.market-pro-kpi .mk-s{position:relative;font-size:11px;color:var(--tx2);margin-top:6px;line-height:1.4}.market-pro-kpi .mk-tag{position:relative;display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:4px 8px;background:rgba(212,175,55,.10);border:1px solid rgba(212,175,55,.24);color:#F8E9B7;font-size:9px;font-weight:950;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.market-macro-grid{display:grid;grid-template-columns:1.35fr .85fr;gap:14px;margin-bottom:14px}.market-macro-grid.two{grid-template-columns:1fr 1fr}.market-wide-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:14px;margin-bottom:14px}.pro-chart-card{position:relative;overflow:hidden}.pro-chart-card .chart-wrap{height:245px;background:linear-gradient(180deg,rgba(7,17,31,.58),rgba(7,17,31,.20));border-color:rgba(148,163,184,.13)}
+.pro-mini-label{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:8px;border:1px solid rgba(212,175,55,.24);background:rgba(212,175,55,.10);color:var(--gold);font-size:9px;font-weight:950;text-transform:uppercase;letter-spacing:.07em}.pro-stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin:10px 0 6px}.pro-stat{border:1px solid rgba(148,163,184,.12);background:rgba(7,17,31,.48);border-radius:13px;padding:10px}.pro-stat span{display:block;font-size:9px;color:var(--tx3);font-weight:900;text-transform:uppercase;letter-spacing:.07em}.pro-stat b{display:block;font-size:14px;margin-top:4px;color:var(--tx)}
+.decision-list{display:grid;gap:10px}.decision-card{border:1px solid rgba(148,163,184,.13);background:rgba(7,17,31,.48);border-radius:16px;padding:12px;cursor:pointer;transition:all .18s ease}.decision-card:hover{border-color:rgba(212,175,55,.34);background:rgba(212,175,55,.075)}.decision-card .dt{font-size:10px;color:var(--gold);font-weight:950;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}.decision-card .dv{font-size:13px;color:var(--tx);font-weight:850;line-height:1.35}.decision-card .ds{font-size:11px;color:var(--tx2);line-height:1.45;margin-top:5px}
+.news-toolbar{display:grid;grid-template-columns:minmax(180px,1fr) 150px auto;gap:10px;align-items:end}.news-list-pro{display:grid;gap:10px;margin-top:12px}.news-card-pro{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start;border:1px solid rgba(148,163,184,.13);background:rgba(7,17,31,.52);border-radius:16px;padding:13px;transition:all .18s ease}.news-card-pro:hover{border-color:rgba(47,111,237,.30);background:rgba(47,111,237,.08)}.news-card-pro .nt{font-size:13px;font-weight:900;color:var(--tx);line-height:1.35}.news-card-pro .nm{font-size:10px;color:var(--tx3);margin-top:5px}.news-card-pro .nd{font-size:11px;color:var(--tx2);line-height:1.45;margin-top:7px}.news-card-pro a{color:#A9C5FF;text-decoration:none;font-size:11px;font-weight:900}.bi-clickable{cursor:pointer}.bi-selected{outline:2px solid rgba(212,175,55,.72)!important;outline-offset:2px}.chart-svg{touch-action:none}.bi-chart-tooltip{filter:drop-shadow(0 12px 24px rgba(0,0,0,.32))}
+@media(max-width:980px){.market-macro-grid,.market-macro-grid.two,.market-wide-grid{grid-template-columns:1fr}.news-toolbar{grid-template-columns:1fr}.pro-chart-card .chart-wrap{height:225px}}
+@media(max-width:560px){.market-pro-kpis{grid-template-columns:1fr}.pro-stat-row{grid-template-columns:1fr 1fr}.bi-filter-bar{align-items:flex-start;flex-direction:column}.bi-filter-bar button{width:100%}}
+
 </style>
 </head>
 <body class="app-locked">
@@ -894,6 +914,56 @@ body.app-locked #login-screen{display:flex}
     </div>
     <button class="btn btn-ghost btn-sm" onclick="loadMarket()">&#8635;</button>
   </div>
+
+
+  <div id="bi-filter-bar" class="bi-filter-bar"><span id="bi-filter-text"></span><button onclick="clearBIFilter()">Limpar filtro</button></div>
+
+  <!-- Painel Macro / BI -->
+  <div class="market-pro-kpis" id="market-pro-kpis"></div>
+
+  <div class="market-macro-grid">
+    <div class="card pro-chart-card" id="market-dollar-card">
+      <div class="shdr">
+        <div><span class="pro-mini-label">SGS série 10813</span><div class="ctitle" style="margin:10px 0 2px;color:var(--tx)">Trajetória e taxa do dólar comercial</div><div style="font-size:12px;color:var(--tx2)">Histórico USD/BRL desde 2025 — clique no gráfico para filtrar o radar</div></div>
+        <div style="text-align:right"><div style="font-size:10px;color:var(--tx3);font-weight:800">Cotação atual</div><div id="usdbrl-current" style="font-size:18px;font-weight:950;color:#00F0A8;margin-top:4px">—</div></div>
+      </div>
+      <div class="chart-wrap"><svg id="usdbrl-svg" class="chart-svg"></svg></div>
+      <div id="usdbrl-stats" class="pro-stat-row"></div>
+    </div>
+    <div class="card pro-chart-card">
+      <div class="shdr"><span class="ctitle" style="margin:0">Painel de decisão macro</span><span class="chip badge-n">educativo</span></div>
+      <div id="market-decision-list" class="decision-list"></div>
+      <div class="notice" style="margin-top:12px">Leitura educativa: use como apoio para cenário, não como recomendação direta de compra ou venda.</div>
+    </div>
+  </div>
+
+  <div class="market-macro-grid two">
+    <div class="card pro-chart-card">
+      <div class="shdr"><div><span class="pro-mini-label">SGS série 432</span><div class="ctitle" style="margin:10px 0 2px;color:var(--tx)">Histórico de decisões da Selic</div><div style="font-size:12px;color:var(--tx2)">Taxa básica definida pelo Copom</div></div><span id="selic-current-chip" class="chip badge-n">—</span></div>
+      <div class="chart-wrap"><svg id="selic-step-svg" class="chart-svg"></svg></div>
+    </div>
+    <div class="card pro-chart-card">
+      <div class="shdr"><div><span class="pro-mini-label" style="border-color:rgba(217,74,74,.30);background:rgba(217,74,74,.10);color:#FFB4B4">SGS série 433</span><div class="ctitle" style="margin:10px 0 2px;color:var(--tx)">IPCA — variação mensal</div><div style="font-size:12px;color:var(--tx2)">Inflação brasileira para calibrar rendimento real</div></div><span id="ipca-12m-chip" class="chip badge-n">—</span></div>
+      <div class="chart-wrap"><svg id="ipca-bar-svg" class="chart-svg"></svg></div>
+    </div>
+  </div>
+
+  <div class="market-wide-grid">
+    <div class="card" id="market-google-news-card">
+      <div class="shdr"><span class="ctitle" style="margin:0">Notícias do Google Search API</span><span id="google-news-chip" class="chip badge-n">configurável</span></div>
+      <div class="news-toolbar">
+        <div class="field" style="margin:0"><label>Busca</label><input id="market-news-query" placeholder="Ex: bolsa brasileira selic dólar hoje" onkeydown="if(event.key==='Enter')loadGoogleNews()"></div>
+        <div class="field" style="margin:0"><label>Tema rápido</label><select id="market-news-theme" onchange="setNewsTheme(this.value)"><option value="mercado">Mercado BR</option><option value="dolar">Dólar</option><option value="selic">Selic/CDI</option><option value="ipca">Inflação</option><option value="carteira">Minha carteira</option></select></div>
+        <button class="btn btn-blue" onclick="loadGoogleNews()">Buscar notícias</button>
+      </div>
+      <div id="market-news-list" class="news-list-pro"><div class="notice">Configure a Google Custom Search API em Configurações para carregar notícias dentro do app. Sem chave, o app abre busca externa.</div></div>
+    </div>
+    <div class="card">
+      <div class="shdr"><span class="ctitle" style="margin:0">Resumo para análise</span><span class="chip badge-n">dashboard</span></div>
+      <div id="market-analysis-summary" class="score-formula-box">Carregando cenário macro...</div>
+    </div>
+  </div>
+
 
   <!-- IBOV Chart -->
   <div class="card" id="ibov-card">
@@ -1447,6 +1517,21 @@ body.app-locked #login-screen{display:flex}
       Para MVP, a chave pode ficar salva só no navegador. Para vender, mova a chamada para Supabase Edge Function e guarde a chave como secret.
     </div>
   </div>
+
+
+  <div class="card"><div class="ctitle">Google Search API / Notícias</div>
+    <div class="fr2">
+      <div class="field" style="margin:0"><label>Google API Key</label>
+        <input type="password" id="cfg-google-key" placeholder="Cole sua API key do Google Custom Search" oninput="saveGoogleSearchConfig()" style="background:var(--bg3);border:1px solid var(--bd2);border-radius:10px;padding:12px;color:var(--tx);width:100%;font-size:13px;outline:none"></div>
+      <div class="field" style="margin:0"><label>Search Engine ID / CX</label>
+        <input type="text" id="cfg-google-cx" placeholder="Cole o CX da Programmable Search Engine" oninput="saveGoogleSearchConfig()" style="background:var(--bg3);border:1px solid var(--bd2);border-radius:10px;padding:12px;color:var(--tx);width:100%;font-size:13px;outline:none"></div>
+    </div>
+    <div style="font-size:11px;color:var(--tx3);background:var(--bg4);border-radius:8px;padding:10px;margin-top:10px;line-height:1.6">
+      Status: <b id="google-preview" style="color:var(--blue)">—</b><br>
+      Para MVP, a chave fica salva no navegador. Para vender o app, mova a chamada para Supabase Edge Function e guarde a chave como secret.
+    </div>
+  </div>
+
   <div class="card"><div class="ctitle">Data &amp; Hora do Dispositivo</div>
     <div id="cfg-date" style="font-size:16px;font-weight:600;color:var(--blue)"></div>
     <div style="font-size:11px;color:var(--tx3);margin-top:4px">Usada para calcular rendimento de RF desde a data de aplicação.</div>
@@ -6291,6 +6376,185 @@ console.log('Patrimo Invest carregado:', window.__PATRIMO_VERSION);
   window.openCardPopup=openCardPopup=function(cardId){ if(_origOpenCardPopup145) _origOpenCardPopup145(cardId); appendPurchaseManager(cardId,'cpopup-body',true); };
 
   document.addEventListener('DOMContentLoaded',function(){ ensurePortfolioHeaderButton(); });
+})();
+
+
+
+
+// ══════════════════════════════════════════════════════
+// PATRIMO 1.4.9 — BI CHARTS, MACRO BCB, DÓLAR E GOOGLE SEARCH
+// ══════════════════════════════════════════════════════
+(function(){
+  var _origLoadMarketBI=typeof loadMarket==='function'?loadMarket:null;
+  var _origRenderCfgBI=typeof renderCfg==='function'?renderCfg:null;
+  var _origGoPageBI=typeof goPage==='function'?goPage:null;
+  var _origLoadMarketNewsBI=typeof loadMarketNews==='function'?loadMarketNews:null;
+
+  window.PATRIMO_BI_FILTER={active:false,source:'',label:'',value:null,meta:{}};
+  function biEsc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  function biNum(v){return +(String(v==null?'0':v).replace(',','.'))||0;}
+  function biPad(n){return String(n).padStart(2,'0');}
+  function biBRDate(d){d=d instanceof Date?d:new Date(d);return biPad(d.getDate())+'/'+biPad(d.getMonth()+1)+'/'+d.getFullYear();}
+  function biParseBRDate(s){var p=String(s||'').split('/');return p.length===3?new Date(+p[2],+p[1]-1,+p[0],12):new Date(s);}
+  function biDateISO(d){return new Intl.DateTimeFormat('sv-SE',{timeZone:'America/Sao_Paulo',year:'numeric',month:'2-digit',day:'2-digit'}).format(d instanceof Date?d:new Date(d));}
+  function biFmtDate(ts,short){var d=ts instanceof Date?ts:new Date(ts);return short?d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}):d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'});}
+  function ensureGoogleSearch(){D.googleSearch=D.googleSearch||{};return D.googleSearch;}
+  function ensureMacroCache(){D.macroCache=D.macroCache||{};return D.macroCache;}
+  function themeQuery(v){
+    var port=(D.stocks||[]).slice(0,6).map(function(s){return s.ticker;}).filter(Boolean).join(' OR ');
+    return ({mercado:'bolsa brasileira Ibovespa juros Selic dólar hoje',dolar:'dólar comercial real mercado financeiro Brasil hoje',selic:'Selic CDI renda fixa Banco Central Copom hoje',ipca:'IPCA inflação Brasil mercado financeiro hoje',carteira:(port?port+' ações dividendos resultados Brasil':'ações brasileiras dividendos resultados')})[v]||'mercado financeiro Brasil hoje';
+  }
+
+  window.setBIFilter=function(source,value,label,meta){
+    window.PATRIMO_BI_FILTER={active:true,source:source||'dashboard',value:value,label:label||String(value||''),meta:meta||{}};
+    renderBIFilterIndicator();
+    if(meta&&meta.newsQuery){var q=document.getElementById('market-news-query'); if(q) q.value=meta.newsQuery; if((document.getElementById('page-market')||{}).classList&&document.getElementById('page-market').classList.contains('active')) loadGoogleNews(meta.newsQuery,true);}
+  };
+  window.clearBIFilter=function(){window.PATRIMO_BI_FILTER={active:false,source:'',label:'',value:null,meta:{}};renderBIFilterIndicator();document.querySelectorAll('.bi-selected').forEach(function(el){el.classList.remove('bi-selected');});};
+  function renderBIFilterIndicator(){
+    var bar=document.getElementById('bi-filter-bar'), txt=document.getElementById('bi-filter-text'); if(!bar||!txt) return;
+    var f=window.PATRIMO_BI_FILTER||{};
+    if(!f.active){bar.classList.remove('on');txt.innerHTML='';return;}
+    bar.classList.add('on');txt.innerHTML='<b>Filtro BI ativo:</b> '+biEsc(f.label)+' <span style="color:var(--tx2)">· origem: '+biEsc(f.source)+'</span>';
+  }
+
+  // Substitui o motor SVG padrão por um gráfico interativo, com hover, clique e seleção.
+  window.drawChart=drawChart=function(svgId,data,color,rangeIds){
+    var svg=document.getElementById(svgId);
+    if(!svg||!data||data.length<2){ if(svg) svg.innerHTML='<text x="50%" y="50%" fill="#64748B" text-anchor="middle" font-size="12">Sem dados</text>'; return; }
+    var rect=svg.getBoundingClientRect();
+    var W=rect.width>20?rect.width:(svg.parentElement?svg.parentElement.getBoundingClientRect().width||360:360);
+    var H=rect.height>20?rect.height:190;
+    var rows=(data||[]).map(function(d,i){
+      var y=typeof d==='object'?(d.close!=null?d.close:(d.price!=null?d.price:(d.value!=null?d.value:0))):d;
+      var ts=typeof d==='object'?(d.date||d.timestamp||d.time):null;
+      var date=ts?(String(ts).length<=10?new Date(+ts*1000):new Date(ts)):null;
+      return {i:i,y:+y||0,date:date,raw:d};
+    }).filter(function(d){return isFinite(d.y);});
+    if(rows.length<2){svg.innerHTML='<text x="50%" y="50%" fill="#64748B" text-anchor="middle" font-size="12">Sem dados</text>';return;}
+    var min=Math.min.apply(null,rows.map(function(d){return d.y;})), max=Math.max.apply(null,rows.map(function(d){return d.y;}));
+    var pad=(max-min)*0.08||1; min-=pad; max+=pad; var rng=max-min||1;
+    var pL=46,pR=14,pT=16,pB=31,cW=W-pL-pR,cH=H-pT-pB;
+    function x(i){return pL+(i/(rows.length-1||1))*cW;} function y(v){return pT+((max-v)/rng)*cH;}
+    var pts=rows.map(function(d,i){return x(i).toFixed(1)+','+y(d.y).toFixed(1);}).join(' ');
+    var base=rows[0].y, last=rows[rows.length-1].y, isUp=last>=base, lc=color||(isUp?'#12A36A':'#D94A4A');
+    var gid='biGrad_'+svgId.replace(/[^a-zA-Z0-9]/g,'_'), hid='bi_'+svgId.replace(/[^a-zA-Z0-9]/g,'_');
+    var grid='', ylabs='', xlabs='';
+    for(var g=0;g<5;g++){var gy=pT+(g/4)*cH;var val=max-(g/4)*rng;grid+='<line x1="'+pL+'" y1="'+gy.toFixed(1)+'" x2="'+(pL+cW)+'" y2="'+gy.toFixed(1)+'" stroke="rgba(148,163,184,.10)" stroke-dasharray="3 4"/>';ylabs+='<text x="'+(pL-9)+'" y="'+(gy+3).toFixed(1)+'" text-anchor="end" fill="#7890B1" font-size="9">'+(Math.abs(val)>=1000?val.toLocaleString('pt-BR',{maximumFractionDigits:0}):val.toLocaleString('pt-BR',{maximumFractionDigits:2}))+'</text>';}
+    var labelCount=Math.min(5,rows.length); for(var l=0;l<labelCount;l++){var idx=Math.round(l/(labelCount-1||1)*(rows.length-1));var dx=x(idx);var dd=rows[idx].date;xlabs+='<line x1="'+dx.toFixed(1)+'" y1="'+pT+'" x2="'+dx.toFixed(1)+'" y2="'+(pT+cH)+'" stroke="rgba(148,163,184,.06)" stroke-dasharray="3 4"/><text x="'+dx.toFixed(1)+'" y="'+(H-8)+'" text-anchor="middle" fill="#7890B1" font-size="9">'+(dd?biFmtDate(dd,true):idx)+'</text>';}
+    svg.innerHTML='<defs><linearGradient id="'+gid+'" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="'+lc+'" stop-opacity=".32"/><stop offset="100%" stop-color="'+lc+'" stop-opacity=".025"/></linearGradient></defs>'+grid+ylabs+xlabs+'<polyline points="'+pts+' '+(pL+cW).toFixed(1)+','+(pT+cH).toFixed(1)+' '+pL+','+(pT+cH).toFixed(1)+'" fill="url(#'+gid+')" stroke="none"/><polyline points="'+pts+'" fill="none" stroke="'+lc+'" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="'+x(rows.length-1).toFixed(1)+'" cy="'+y(last).toFixed(1)+'" r="4.5" fill="'+lc+'" stroke="#07111F" stroke-width="2"/><line id="'+hid+'_vl" x1="0" y1="'+pT+'" x2="0" y2="'+(pT+cH)+'" stroke="#D8E2F0" stroke-width="1" opacity="0"/><circle id="'+hid+'_dot" r="5" fill="'+lc+'" stroke="#fff" stroke-width="2" opacity="0"/><g id="'+hid+'_tip" class="bi-chart-tooltip" opacity="0"><rect width="156" height="58" rx="9" fill="#0B1423" stroke="rgba(148,163,184,.30)"/><text id="'+hid+'_t1" x="10" y="18" fill="#F8FAFC" font-size="12" font-weight="900"></text><text id="'+hid+'_t2" x="10" y="34" fill="#8EA4C3" font-size="10"></text><text id="'+hid+'_t3" x="10" y="49" fill="'+lc+'" font-size="10" font-weight="900"></text></g><rect id="'+hid+'_hit" x="'+pL+'" y="'+pT+'" width="'+cW+'" height="'+cH+'" fill="transparent" cursor="crosshair"/>';
+    var hit=document.getElementById(hid+'_hit'), vl=document.getElementById(hid+'_vl'), dot=document.getElementById(hid+'_dot'), tip=document.getElementById(hid+'_tip'), t1=document.getElementById(hid+'_t1'), t2=document.getElementById(hid+'_t2'), t3=document.getElementById(hid+'_t3');
+    function idxFromEvent(e){var sr=svg.getBoundingClientRect();var cx=(e.touches?e.touches[0].clientX:e.clientX)-sr.left;var rx=Math.max(0,Math.min(cW,cx-pL));return Math.max(0,Math.min(rows.length-1,Math.round(rx/cW*(rows.length-1))));}
+    function show(e){var idx=idxFromEvent(e), d=rows[idx], px=x(idx), py=y(d.y);vl.setAttribute('x1',px);vl.setAttribute('x2',px);vl.setAttribute('opacity','1');dot.setAttribute('cx',px);dot.setAttribute('cy',py);dot.setAttribute('opacity','1');var tx=px+12,ty=py-68;if(tx+156>W-pR)tx=px-168;if(ty<pT)ty=pT+4;tip.setAttribute('transform','translate('+tx+','+ty+')');tip.setAttribute('opacity','.98');var val=d.y.toLocaleString('pt-BR',{minimumFractionDigits:Math.abs(d.y)<100?2:0,maximumFractionDigits:Math.abs(d.y)<100?4:2});t1.textContent=(String(svgId).indexOf('ibov')>=0?'Pts ':String(svgId).indexOf('usd')>=0?'R$ ':'')+val;t2.textContent=d.date?biFmtDate(d.date,false):('Ponto '+(idx+1));var chg=base?((d.y-base)/base*100):0;t3.setAttribute('fill',chg>=0?'#12A36A':'#D94A4A');t3.textContent=(chg>=0?'+':'')+chg.toFixed(2)+'% desde início';return {idx:idx,d:d};}
+    function hide(){vl.setAttribute('opacity','0');dot.setAttribute('opacity','0');tip.setAttribute('opacity','0');}
+    if(hit){hit.addEventListener('mousemove',show);hit.addEventListener('mouseleave',hide);hit.addEventListener('touchmove',function(e){e.preventDefault();show(e);},{passive:false});hit.addEventListener('click',function(e){var r=show(e);svg.classList.add('bi-selected');setTimeout(function(){svg.classList.remove('bi-selected');},1700);setBIFilter('gráfico '+svgId,r.d.y,(r.d.date?biFmtDate(r.d.date,false):'Ponto '+(r.idx+1))+' · '+r.d.y.toLocaleString('pt-BR',{maximumFractionDigits:4}),{chart:svgId,index:r.idx,newsQuery:String(svgId).indexOf('usd')>=0?'dólar comercial real mercado financeiro Brasil':String(svgId).indexOf('selic')>=0?'Selic Copom CDI renda fixa hoje':String(svgId).indexOf('ipca')>=0?'IPCA inflação Brasil mercado financeiro':'mercado financeiro Brasil hoje'});});}
+    if(rangeIds&&rows.length){var r1=document.getElementById(rangeIds[0]),r2=document.getElementById(rangeIds[1]);if(r1)r1.textContent=rows[0].date?biFmtDate(rows[0].date,true):'';if(r2)r2.textContent=rows[rows.length-1].date?biFmtDate(rows[rows.length-1].date,true):'';}
+  };
+
+  function drawBIBarChart(svgId,data,opts){
+    opts=opts||{};var svg=document.getElementById(svgId);if(!svg) return;var rows=(data||[]).map(function(d,i){return {i:i,y:+(d.value!=null?d.value:d.close)||0,date:d.date?new Date(d.date):null,label:d.label||''};});
+    if(!rows.length){svg.innerHTML='<text x="50%" y="50%" fill="#64748B" text-anchor="middle" font-size="12">Sem dados</text>';return;}
+    var rect=svg.getBoundingClientRect(),W=rect.width>20?rect.width:(svg.parentElement?svg.parentElement.getBoundingClientRect().width||360:360),H=rect.height>20?rect.height:190;
+    var min=Math.min(0,Math.min.apply(null,rows.map(function(d){return d.y;}))),max=Math.max(0,Math.max.apply(null,rows.map(function(d){return d.y;})));var rng=max-min||1,pL=46,pR=14,pT=18,pB=30,cW=W-pL-pR,cH=H-pT-pB;
+    function x(i){return pL+(i+.5)/rows.length*cW;}function y(v){return pT+((max-v)/rng)*cH;}var zero=y(0);var grid='',ylabs='',bars='',labs='';
+    for(var g=0;g<5;g++){var gy=pT+g/4*cH,val=max-g/4*rng;grid+='<line x1="'+pL+'" y1="'+gy.toFixed(1)+'" x2="'+(pL+cW)+'" y2="'+gy.toFixed(1)+'" stroke="rgba(148,163,184,.10)" stroke-dasharray="3 4"/>';ylabs+='<text x="'+(pL-8)+'" y="'+(gy+3).toFixed(1)+'" text-anchor="end" fill="#7890B1" font-size="9">'+val.toLocaleString('pt-BR',{maximumFractionDigits:2})+'</text>';}
+    var bw=Math.max(6,Math.min(28,cW/rows.length*.62));rows.forEach(function(d,i){var bx=x(i)-bw/2,by=d.y>=0?y(d.y):zero,bh=Math.max(2,Math.abs(y(d.y)-zero));var c=d.y>=0?(opts.color||'#D4AF37'):'#D94A4A';bars+='<rect class="bi-bar" data-idx="'+i+'" x="'+bx.toFixed(1)+'" y="'+by.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+bh.toFixed(1)+'" rx="5" fill="'+c+'" opacity=".92" cursor="pointer"/>'; if(i%Math.ceil(rows.length/6)===0){labs+='<text x="'+x(i).toFixed(1)+'" y="'+(H-8)+'" text-anchor="middle" fill="#7890B1" font-size="9">'+(d.date?biFmtDate(d.date,true):d.label)+'</text>';}});
+    svg.innerHTML=grid+ylabs+'<line x1="'+pL+'" y1="'+zero.toFixed(1)+'" x2="'+(pL+cW)+'" y2="'+zero.toFixed(1)+'" stroke="rgba(216,226,240,.24)"/>'+bars+labs+'<g id="bar_tip_'+svgId+'" class="bi-chart-tooltip" opacity="0"><rect width="150" height="50" rx="9" fill="#0B1423" stroke="rgba(148,163,184,.30)"/><text id="bar_t1_'+svgId+'" x="10" y="18" fill="#F8FAFC" font-size="12" font-weight="900"></text><text id="bar_t2_'+svgId+'" x="10" y="35" fill="#8EA4C3" font-size="10"></text></g>';
+    var tip=document.getElementById('bar_tip_'+svgId),t1=document.getElementById('bar_t1_'+svgId),t2=document.getElementById('bar_t2_'+svgId);
+    svg.querySelectorAll('.bi-bar').forEach(function(b){function show(){var idx=+b.getAttribute('data-idx'),d=rows[idx];b.setAttribute('opacity','1');b.setAttribute('stroke','#fff');b.setAttribute('stroke-width','1.5');var bx=+b.getAttribute('x'),by=+b.getAttribute('y');var tx=bx+12,ty=by-56;if(tx+150>W-pR)tx=bx-150;if(ty<pT)ty=pT+3;tip.setAttribute('transform','translate('+tx+','+ty+')');tip.setAttribute('opacity','.98');t1.textContent=d.y.toLocaleString('pt-BR',{maximumFractionDigits:2})+'%';t2.textContent=d.date?biFmtDate(d.date,false):d.label;}function out(){b.setAttribute('opacity','.92');b.removeAttribute('stroke');tip.setAttribute('opacity','0');}b.addEventListener('mousemove',show);b.addEventListener('mouseleave',out);b.addEventListener('click',function(){show();setBIFilter('gráfico '+svgId,rows[+b.getAttribute('data-idx')].y,(opts.label||'Indicador')+' · '+(rows[+b.getAttribute('data-idx')].date?biFmtDate(rows[+b.getAttribute('data-idx')].date,false):''),{chart:svgId,newsQuery:opts.newsQuery||'IPCA inflação Brasil'});});});
+  }
+
+  async function fetchBCBSeries(id,start,end){
+    var url='https://api.bcb.gov.br/dados/serie/bcdata.sgs.'+id+'/dados?formato=json&dataInicial='+encodeURIComponent(biBRDate(start))+'&dataFinal='+encodeURIComponent(biBRDate(end));
+    var r=await fetch(url); if(!r.ok) throw new Error('BCB SGS '+id+' indisponível');
+    var j=await r.json(); return (j||[]).map(function(x){return {date:biParseBRDate(x.data),value:biNum(x.valor),close:biNum(x.valor),raw:x};}).filter(function(x){return x.date&&isFinite(x.value);});
+  }
+  function compactDaily(data,maxPts){data=data||[]; if(data.length<=maxPts) return data; var step=Math.ceil(data.length/maxPts); return data.filter(function(_,i){return i%step===0||i===data.length-1;});}
+  function compoundPct(arr){return ((arr||[]).reduce(function(a,v){return a*(1+(+v||0)/100);},1)-1)*100;}
+  async function loadMacroDashboard(force){
+    ensureMacroCache(); var cache=D.macroCache; var now=Date.now(); if(!force&&cache.loadedAt&&now-cache.loadedAt<3*60*60*1000){renderMacroDashboard();return;}
+    var end=new Date(), startDollar=new Date(2025,0,2), start18=new Date(end); start18.setMonth(start18.getMonth()-18);
+    try{
+      var res=await Promise.allSettled([fetchBCBSeries(10813,startDollar,end),fetchBCBSeries(432,startDollar,end),fetchBCBSeries(433,start18,end)]);
+      if(res[0].status==='fulfilled') cache.dollar=res[0].value;
+      if(res[1].status==='fulfilled') cache.selic=res[1].value;
+      if(res[2].status==='fulfilled') cache.ipca=res[2].value;
+      cache.loadedAt=now; cache.source='Banco Central do Brasil SGS'; save(); renderMacroDashboard();
+    }catch(e){console.log('macro',e); renderMacroDashboard(String(e.message||e));}
+  }
+  function varBetween(arr,n){if(!arr||arr.length<2)return 0;var last=arr[arr.length-1].value, prev=arr[Math.max(0,arr.length-1-n)].value;return prev?((last-prev)/prev*100):0;}
+  function renderMacroDashboard(err){
+    ensureMacroCache(); var c=D.macroCache||{},d=c.dollar||[],s=c.selic||[],ip=c.ipca||[];
+    var latestDollar=d.length?d[d.length-1].value:0, latestSelic=s.length?s[s.length-1].value:(D.marketRates&&D.marketRates.selicAnnual)||0, ipca12=ip.length?compoundPct(ip.slice(-12).map(function(x){return x.value;})):0;
+    var dollarVar90=varBetween(d,65), dollarVar30=varBetween(d,22);
+    var k=document.getElementById('market-pro-kpis'); if(k) k.innerHTML=[
+      {tag:'Câmbio',l:'Dólar comercial',v:latestDollar?('R$ '+latestDollar.toLocaleString('pt-BR',{minimumFractionDigits:4,maximumFractionDigits:4})):'—',s:(d.length?'Var. 30d '+(dollarVar30>=0?'+':'')+dollarVar30.toFixed(2)+'% · BCB SGS 10813':'aguardando BCB'),q:'dólar comercial real mercado financeiro Brasil'},
+      {tag:'Juros',l:'Selic Meta',v:latestSelic?latestSelic.toFixed(2)+'% a.a.':'—',s:'Base para CDI, Selic e RF pós-fixada · SGS 432',q:'Selic Copom CDI renda fixa hoje'},
+      {tag:'Inflação',l:'IPCA 12m aprox.',v:ipca12?ipca12.toFixed(2)+'%':'—',s:'Variação composta dos últimos 12 meses · SGS 433',q:'IPCA inflação Brasil mercado financeiro'},
+      {tag:'Renda fixa',l:'CDI usado no app',v:(CDI*100).toFixed(2)+'% a.a.',s:'Atualiza cálculo bruto/líquido estimado de RF',q:'CDI renda fixa CDB Tesouro Selic hoje'}
+    ].map(function(x){return '<div class="market-pro-kpi bi-clickable" onclick="setBIFilter(\'macro\',\''+biEsc(x.l).replace(/'/g,'&#39;')+'\',\''+biEsc(x.l+' · '+x.v).replace(/'/g,'&#39;')+'\',{newsQuery:\''+biEsc(x.q).replace(/'/g,'&#39;')+'\'})"><div class="mk-tag">'+x.tag+'</div><div class="mk-l">'+x.l+'</div><div class="mk-v">'+x.v+'</div><div class="mk-s">'+x.s+'</div></div>';}).join('');
+    var usd=document.getElementById('usdbrl-current'); if(usd) usd.textContent=latestDollar?('R$ '+latestDollar.toLocaleString('pt-BR',{minimumFractionDigits:4,maximumFractionDigits:4})):'—';
+    var ust=document.getElementById('usdbrl-stats'); if(ust) ust.innerHTML=[['Variação 30d',(dollarVar30>=0?'+':'')+dollarVar30.toFixed(2)+'%'],['Variação 90d',(dollarVar90>=0?'+':'')+dollarVar90.toFixed(2)+'%'],['Fonte',c.source||'BCB SGS'],['Último ponto',d.length?biFmtDate(d[d.length-1].date,false):'—']].map(function(x){return '<div class="pro-stat"><span>'+x[0]+'</span><b>'+x[1]+'</b></div>';}).join('');
+    if(d.length) drawChart('usdbrl-svg',compactDaily(d,120),'#D4AF37');
+    if(s.length){drawChart('selic-step-svg',s.map(function(x){return {date:x.date,close:x.value,value:x.value};}),'#00E0A4');var sc=document.getElementById('selic-current-chip');if(sc){sc.className='chip badge-up';sc.textContent=latestSelic.toFixed(2)+'% a.a.';}}
+    if(ip.length){drawBIBarChart('ipca-bar-svg',ip.map(function(x){return {date:x.date,value:x.value};}),{label:'IPCA mensal',color:'#D4AF37',newsQuery:'IPCA inflação Brasil'});var ic=document.getElementById('ipca-12m-chip');if(ic){ic.className=ipca12>5?'chip badge-dn':'chip badge-n';ic.textContent='12m '+ipca12.toFixed(2)+'%';}}
+    var dec=document.getElementById('market-decision-list'); if(dec) dec.innerHTML=buildDecisionCards(latestDollar,dollarVar90,latestSelic,ipca12);
+    var sm=document.getElementById('market-analysis-summary'); if(sm) sm.innerHTML=buildMarketSummary(latestDollar,dollarVar30,dollarVar90,latestSelic,ipca12,err);
+  }
+  function buildDecisionCards(dol,var90,selic,ipca12){
+    var cards=[];
+    cards.push({t:'Câmbio',v:(var90>=0?'Dólar pressionado no período':'Dólar em alívio no período'),s:'Variação aprox. 90d: '+(var90>=0?'+':'')+var90.toFixed(2)+'%. Ajuda a avaliar ativos dolarizados, inflação importada e carteira global.',q:'dólar real bolsa brasileira inflação importada'});
+    cards.push({t:'Renda fixa',v:selic>=10?'Selic ainda favorece pós-fixados':'Selic menor exige olhar prazo e risco',s:'Com Selic em '+(selic?selic.toFixed(2):'—')+'% a.a., CDBs/CDI e Tesouro Selic continuam relevantes para reserva, respeitando IR e liquidez.',q:'Selic CDI CDB Tesouro Selic renda fixa'});
+    cards.push({t:'Inflação',v:ipca12>5?'Inflação acumulada merece atenção':'Inflação em zona mais controlada',s:'IPCA 12m aproximado: '+(ipca12?ipca12.toFixed(2):'—')+'%. Compare retorno líquido da RF contra inflação para medir ganho real.',q:'IPCA inflação retorno real renda fixa'});
+    return cards.map(function(c){return '<div class="decision-card" onclick="setBIFilter(\'decisão macro\',\''+biEsc(c.t).replace(/'/g,'&#39;')+'\',\''+biEsc(c.t+' · '+c.v).replace(/'/g,'&#39;')+'\',{newsQuery:\''+biEsc(c.q).replace(/'/g,'&#39;')+'\'})"><div class="dt">'+c.t+'</div><div class="dv">'+c.v+'</div><div class="ds">'+c.s+'</div></div>';}).join('');
+  }
+  function buildMarketSummary(dol,var30,var90,selic,ipca12,err){
+    if(err) return '<b>Falha parcial no painel macro:</b> '+biEsc(err)+'<br>O app mantém dados em cache quando disponíveis.';
+    return '<b>Leitura rápida:</b><br>• Dólar atual: <b>'+(dol?('R$ '+dol.toLocaleString('pt-BR',{minimumFractionDigits:4,maximumFractionDigits:4})):'—')+'</b>, com variação aprox. de '+(var30>=0?'+':'')+var30.toFixed(2)+'% em 30d e '+(var90>=0?'+':'')+var90.toFixed(2)+'% em 90d.<br>• Selic: <b>'+(selic?selic.toFixed(2):'—')+'% a.a.</b>, usada como referência para renda fixa pós-fixada e cálculo de patrimônio líquido estimado.<br>• IPCA 12m aprox.: <b>'+(ipca12?ipca12.toFixed(2):'—')+'%</b>; compare sempre retorno líquido x inflação para enxergar ganho real.<br>• Clique nos gráficos ou cards para ativar filtros e direcionar o radar de notícias.';
+  }
+
+  window.setNewsTheme=function(v){var q=document.getElementById('market-news-query'); if(q) q.value=themeQuery(v);};
+  window.saveGoogleSearchConfig=function(){var cfg=ensureGoogleSearch();var k=document.getElementById('cfg-google-key'),cx=document.getElementById('cfg-google-cx');cfg.apiKey=(k&&k.value||'').trim();cfg.cx=(cx&&cx.value||'').trim();save();renderGoogleConfigStatus();};
+  function renderGoogleConfigStatus(){var cfg=ensureGoogleSearch();var gp=document.getElementById('google-preview'), chip=document.getElementById('google-news-chip');var ok=!!(cfg.apiKey&&cfg.cx);if(gp)gp.textContent=ok?('Configurado · key '+cfg.apiKey.slice(0,6)+'... · cx '+cfg.cx.slice(0,6)+'...'):'Pendente: informe API Key e CX';if(chip){chip.className=ok?'chip badge-up':'chip badge-n';chip.textContent=ok?'Google API pronta':'Google API pendente';}}
+  window.loadGoogleNews=async function(query,silent){
+    var box=document.getElementById('market-news-list')||document.getElementById('news-list'); if(!box) return;
+    var cfg=ensureGoogleSearch(); var q=(query||((document.getElementById('market-news-query')||{}).value)||themeQuery((document.getElementById('market-news-theme')||{}).value||'mercado')).trim();
+    var inp=document.getElementById('market-news-query'); if(inp&&!inp.value) inp.value=q;
+    renderGoogleConfigStatus();
+    if(!cfg.apiKey||!cfg.cx){
+      box.innerHTML='<div class="notice"><b>Google Search API pendente.</b><br>Para carregar notícias dentro do app, preencha em Configurações: Google API Key e Search Engine ID/CX. Enquanto isso, use o botão abaixo para abrir a busca externa.</div><button class="btn btn-ghost" onclick="window.open(\'https://www.google.com/search?q='+encodeURIComponent(q)+'&tbm=nws\',\'_blank\')">Abrir busca no Google Notícias</button>';
+      if(!silent) toast('Configure Google API Key e CX em Configurações','#F59E0B'); return;
+    }
+    box.innerHTML='<div style="padding:18px;text-align:center;color:var(--tx3)"><span class="spin"></span><br><br>Buscando no Google Search API...</div>';
+    try{
+      var url='https://www.googleapis.com/customsearch/v1?key='+encodeURIComponent(cfg.apiKey)+'&cx='+encodeURIComponent(cfg.cx)+'&q='+encodeURIComponent(q)+'&num=8&lr=lang_pt&safe=active';
+      var r=await fetch(url), j=await r.json(); if(j.error) throw new Error((j.error&&j.error.message)||'Erro Google API');
+      var arr=j.items||[]; if(!arr.length){box.innerHTML='<div class="notice">Nenhuma notícia encontrada para: <b>'+biEsc(q)+'</b>.</div>';return;}
+      box.innerHTML=arr.map(function(n){var meta=(n.pagemap&&n.pagemap.metatags&&n.pagemap.metatags[0])||{};var src=meta['og:site_name']||new URL(n.link).hostname.replace('www.','');var img=((n.pagemap&&n.pagemap.cse_image&&n.pagemap.cse_image[0]&&n.pagemap.cse_image[0].src)||'');return '<div class="news-card-pro">'+(img?'<div style="grid-row:1 / span 3"><img src="'+biEsc(img)+'" style="width:64px;height:64px;border-radius:13px;object-fit:cover;border:1px solid var(--bd)" onerror="this.style.display=\'none\'"></div>':'')+'<div><div class="nt">'+biEsc(n.title||'Notícia')+'</div><div class="nm">'+biEsc(src)+' · Google Search API</div><div class="nd">'+biEsc((n.snippet||'').slice(0,220))+'</div></div><a href="'+biEsc(n.link)+'" target="_blank" rel="noopener">Abrir</a></div>';}).join('');
+    }catch(e){console.log('google news',e);box.innerHTML='<div class="notice">Erro ao carregar Google Search API: '+biEsc(e.message||e)+'. Confira a API Key, CX e restrições de domínio.</div>';}
+  };
+  window.openNewsSearch=function(){var q=((document.getElementById('market-news-query')||{}).value)||themeQuery('mercado');window.open('https://www.google.com/search?q='+encodeURIComponent(q)+'&tbm=nws','_blank');};
+
+  window.loadMarketNews=loadMarketNews=async function(){
+    var tk=((document.getElementById('news-ticker')||{}).value||'PETR4').toUpperCase().trim();
+    var src=(document.getElementById('news-source')||{}).value;
+    var q=src==='ri'?(tk+' relações com investidores resultados dividendos'):(tk+' ações bolsa notícias hoje');
+    var mQ=document.getElementById('market-news-query'); if(mQ) mQ.value=q;
+    var cfg=ensureGoogleSearch();
+    if(cfg.apiKey&&cfg.cx){await loadGoogleNews(q,false);} else if(_origLoadMarketNewsBI){await _origLoadMarketNewsBI();} else {await loadGoogleNews(q,false);}
+  };
+
+  window.renderCfg=renderCfg=function(){if(_origRenderCfgBI) _origRenderCfgBI(); var cfg=ensureGoogleSearch(); var k=document.getElementById('cfg-google-key'),cx=document.getElementById('cfg-google-cx'); if(k&&!k.value) k.value=cfg.apiKey||''; if(cx&&!cx.value) cx.value=cfg.cx||''; renderGoogleConfigStatus();};
+  window.goPage=goPage=function(name,btn){if(_origGoPageBI) _origGoPageBI(name,btn); if(name==='market'){renderBIFilterIndicator(); loadMacroDashboard(false); setTimeout(function(){if(!((document.getElementById('market-news-query')||{}).value)) setNewsTheme('mercado'); renderGoogleConfigStatus();},60);}};
+  window.loadMarket=loadMarket=async function(){if(_origLoadMarketBI) await _origLoadMarketBI(); loadMacroDashboard(false); renderGoogleConfigStatus(); if(!((document.getElementById('market-news-query')||{}).value)) setNewsTheme('mercado');};
+
+  document.addEventListener('click',function(e){
+    var bar=e.target.closest('.plan-month-cluster,.plan-ranking-row,.div-month,.pd-bar,.fund-bar,.bar-line');
+    if(bar){var label=(bar.getAttribute('title')||bar.textContent||'').replace(/\s+/g,' ').trim().slice(0,90); if(label) setBIFilter('dashboard',label,label,{}); bar.classList.add('bi-selected'); setTimeout(function(){bar.classList.remove('bi-selected');},1500);}
+  });
+  document.addEventListener('DOMContentLoaded',function(){
+    ensureGoogleSearch(); ensureMacroCache(); renderBIFilterIndicator(); renderGoogleConfigStatus(); setNewsTheme('mercado'); setTimeout(function(){loadMacroDashboard(false);},850);
+  });
 })();
 
 
