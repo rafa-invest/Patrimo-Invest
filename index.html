@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Patrimo Invest">
-<title>Patrimo Invest 1.4.7 — Planejamento zerado para novos usuários</title>
+<title>Patrimo Invest 1.5.0 — Carteira por período, DI líquido e macro BCB</title>
 <link rel="manifest" href="#" id="mflink">
 <style>
 :root{
@@ -838,6 +838,27 @@ body.app-locked #login-screen{display:flex}
 .news-toolbar{display:grid;grid-template-columns:minmax(180px,1fr) 150px auto;gap:10px;align-items:end}.news-list-pro{display:grid;gap:10px;margin-top:12px}.news-card-pro{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start;border:1px solid rgba(148,163,184,.13);background:rgba(7,17,31,.52);border-radius:16px;padding:13px;transition:all .18s ease}.news-card-pro:hover{border-color:rgba(47,111,237,.30);background:rgba(47,111,237,.08)}.news-card-pro .nt{font-size:13px;font-weight:900;color:var(--tx);line-height:1.35}.news-card-pro .nm{font-size:10px;color:var(--tx3);margin-top:5px}.news-card-pro .nd{font-size:11px;color:var(--tx2);line-height:1.45;margin-top:7px}.news-card-pro a{color:#A9C5FF;text-decoration:none;font-size:11px;font-weight:900}.bi-clickable{cursor:pointer}.bi-selected{outline:2px solid rgba(212,175,55,.72)!important;outline-offset:2px}.chart-svg{touch-action:none}.bi-chart-tooltip{filter:drop-shadow(0 12px 24px rgba(0,0,0,.32))}
 @media(max-width:980px){.market-macro-grid,.market-macro-grid.two,.market-wide-grid{grid-template-columns:1fr}.news-toolbar{grid-template-columns:1fr}.pro-chart-card .chart-wrap{height:225px}}
 @media(max-width:560px){.market-pro-kpis{grid-template-columns:1fr}.pro-stat-row{grid-template-columns:1fr 1fr}.bi-filter-bar{align-items:flex-start;flex-direction:column}.bi-filter-bar button{width:100%}}
+
+
+
+/* Patrimo Invest 1.5.0 — filtros por período, DI líquido e macro sem filtro BI */
+.bi-filter-bar{display:none!important}
+.port-period-tabs,.rf-period-tabs,.macro-date-toolbar{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.port-period-tabs .ptab,.rf-period-tabs .ptab{padding:5px 8px;font-size:9.5px;border-radius:999px}
+#port-kpis .kpi .port-period-tabs{position:relative;z-index:2;margin-bottom:6px}
+#port-kpis .kpi .port-period-tabs .ptab{background:rgba(255,255,255,.06);border:1px solid rgba(148,163,184,.14);color:var(--tx2)}
+#port-kpis .kpi .port-period-tabs .ptab.on{background:linear-gradient(135deg,var(--gold),#F2D987);color:#07111F;border-color:rgba(212,175,55,.45)}
+.port-return-source{position:relative;z-index:2;font-size:9px;color:var(--tx3);line-height:1.35;margin-top:3px}
+.portfolio-market-rates{display:grid;grid-template-columns:1fr 1.6fr;gap:14px;align-items:stretch}
+.di-rate-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-bottom:10px}
+.di-form-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;align-items:end}
+.di-result-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:8px;margin-top:10px}
+.di-result-tile,.macro-hist-table-wrap{background:rgba(7,17,31,.58);border:1px solid rgba(148,163,184,.12);border-radius:14px;padding:10px}
+.di-result-tile span{display:block;font-size:9px;color:var(--tx3);font-weight:900;text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px}.di-result-tile b{font-size:16px;color:var(--tx)}
+.stock-detail-hero{display:flex;align-items:center;gap:14px;margin-bottom:12px}.stock-detail-hero .fund-logo{width:58px;height:58px}.stock-detail-title{font-size:20px;font-weight:950;letter-spacing:-.04em}.stock-detail-sub{font-size:11px;color:var(--tx3);margin-top:4px;line-height:1.45}.position-analysis-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:12px;margin-top:12px}.position-analysis-table{width:100%;border-collapse:collapse;font-size:11px}.position-analysis-table th,.position-analysis-table td{padding:8px 7px;border-bottom:1px solid rgba(148,163,184,.10);text-align:left}.position-analysis-table td:last-child,.position-analysis-table th:last-child{text-align:right;font-weight:900}.stock-position-chart-wrap{height:210px;margin-top:10px}
+.rf-detail-chart-wrap{height:190px;margin-top:10px}.rf-period-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:8px;margin:10px 0}.rf-period-table{width:100%;border-collapse:collapse;font-size:11px}.rf-period-table th,.rf-period-table td{padding:8px;border-bottom:1px solid rgba(148,163,184,.10);text-align:right}.rf-period-table th:first-child,.rf-period-table td:first-child{text-align:left}.macro-date-toolbar{align-items:end;margin:8px 0 10px}.macro-date-toolbar .field{margin:0;min-width:130px}.macro-date-toolbar .btn{padding:10px 12px;font-size:11px}.macro-hist-table{width:100%;border-collapse:collapse;font-size:11px}.macro-hist-table th,.macro-hist-table td{padding:7px 8px;border-bottom:1px solid rgba(148,163,184,.09);text-align:right}.macro-hist-table th:first-child,.macro-hist-table td:first-child{text-align:left}.macro-hist-table-wrap{margin-top:10px;max-height:190px;overflow:auto}.market-note-no-bi{font-size:12px;color:var(--tx2);line-height:1.5;margin-top:4px}
+.bi-clickable,.decision-card{cursor:default!important}
+@media(max-width:920px){.portfolio-market-rates,.position-analysis-grid,.di-form-grid{grid-template-columns:1fr}.di-form-grid{gap:10px}.stock-position-chart-wrap{height:190px}}
 
 </style>
 </head>
@@ -6568,5 +6589,311 @@ document.addEventListener('DOMContentLoaded',function(){
   initSupabase();
 });
 </script>
+
+
+<script>
+// ══════════════════════════════════════════════════════
+// PATRIMO 1.5.0 — Carteira por período, DI líquido e macro com filtros independentes
+// ══════════════════════════════════════════════════════
+(function(){
+  var PERIODS_EXT=[
+    {k:'1d',l:'1D',range:'1d',days:1},
+    {k:'1w',l:'1S',range:'5d',days:7},
+    {k:'1mo',l:'1M',range:'1mo',days:30},
+    {k:'3mo',l:'3M',range:'3mo',days:90},
+    {k:'6mo',l:'6M',range:'6mo',days:180},
+    {k:'1y',l:'1A',range:'1y',days:365},
+    {k:'ytd',l:'YTD',range:'ytd',days:null}
+  ];
+  var PERIOD_BY_KEY={}; PERIODS_EXT.forEach(function(p){PERIOD_BY_KEY[p.k]=p;});
+  var DEFAULT_FALLBACK_CDI=14.65;
+  if(typeof PLAN_RANGES!=='undefined') PLAN_RANGES=['1d','5d','1mo','3mo','6mo','1y','ytd'];
+  if(typeof PERIOD_LABEL!=='undefined') Object.assign(PERIOD_LABEL,{'1d':'1 dia','5d':'5 dias','1w':'1 semana','1mo':'1 mês','3mo':'3 meses','6mo':'6 meses','1y':'1 ano','ytd':'YTD'});
+  if(typeof intervalForPeriod==='function') window.intervalForPeriod=intervalForPeriod=function(p){return p==='1d'?'1d':'1d';};
+  if(typeof isRangeAllowed==='function') window.isRangeAllowed=isRangeAllowed=function(p){return ['1d','5d','1w','1mo','3mo','6mo','1y','ytd'].indexOf(p)>=0;};
+
+  function esc2(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  function n2(v){return Number(v||0)||0;}
+  function fmtPct2(v){return (v>=0?'+':'')+Number(v||0).toFixed(2)+'%';}
+  function isoDate(d){return new Intl.DateTimeFormat('sv-SE',{timeZone:'America/Sao_Paulo',year:'numeric',month:'2-digit',day:'2-digit'}).format(d instanceof Date?d:new Date(d));}
+  function brDateFromISO(iso){var d=new Date(String(iso).slice(0,10)+'T12:00:00');return isNaN(d)?'—':d.toLocaleDateString('pt-BR');}
+  function fromPeriodDate(period){var now=new Date(); if(period==='ytd') return new Date(now.getFullYear(),0,1); var p=PERIOD_BY_KEY[period]||PERIOD_BY_KEY['1mo']; var d=new Date(now); d.setDate(d.getDate()-(p.days||30)); return d;}
+  function rangeForPeriod(period){return (PERIOD_BY_KEY[period]||PERIOD_BY_KEY['1mo']).range;}
+  function getCurrentDIAnnual(){try{syncRateGlobals&&syncRateGlobals();}catch(e){} var r=(D&&D.marketRates)||{}; return +(r.cdiAnnual||r.selicAnnual||DEFAULT_FALLBACK_CDI)||DEFAULT_FALLBACK_CDI;}
+  function getCurrentSelicAnnual(){try{syncRateGlobals&&syncRateGlobals();}catch(e){} var r=(D&&D.marketRates)||{}; return +(r.selicAnnual||DEFAULT_FALLBACK_CDI)||DEFAULT_FALLBACK_CDI;}
+  function progressiveTaxRateForMonthly(base){base=Math.max(0,+base||0); if(base<=2259.20) return 0; if(base<=2826.65) return .075; if(base<=3751.05) return .15; if(base<=4664.68) return .225; return .275;}
+  function taxRateByMode(days, mode, monthlyBase){ if(mode==='progressivo') return progressiveTaxRateForMonthly(monthlyBase||0); return typeof getIRRate==='function'?getIRRate(days):.225; }
+
+  // Remove visual e função de filtro BI da página Mercado.
+  window.setBIFilter=function(){ var bar=document.getElementById('bi-filter-bar'); if(bar){bar.classList.remove('on');bar.style.display='none';} };
+  window.clearBIFilter=function(){ var bar=document.getElementById('bi-filter-bar'); if(bar){bar.classList.remove('on');bar.style.display='none';} document.querySelectorAll('.bi-selected').forEach(function(x){x.classList.remove('bi-selected');}); };
+
+  var originalCalcFIBalance=typeof calcFIBalance==='function'?calcFIBalance:null;
+  window.calcFIBalance=calcFIBalance=function(fi){
+    try{syncRateGlobals&&syncRateGlobals();}catch(e){}
+    var td=today(), days=daysDiff(fi.date,td); if(days<0) days=0;
+    var annualRate=fi.index==='CDI'?CDI*fi.rate/100:fi.index==='SELIC'?SELIC*fi.rate/100:fi.index==='IPCA'?(IPCA+(fi.rate/100)):fi.rate/100;
+    var dailyRate=Math.pow(1+annualRate,1/365)-1;
+    var balance=+fi.initialAmount||0;
+    var movs=(fi.movs||[]).slice().sort(function(a,b){return new Date(a.date)-new Date(b.date);});
+    var prevDate=fi.date;
+    movs.forEach(function(m){ var dDays=daysDiff(prevDate,m.date); if(dDays>0) balance*=Math.pow(1+dailyRate,dDays); if(m.type==='in') balance+=+m.amount||0; else balance-=+m.amount||0; if(balance<0) balance=0; prevDate=m.date; });
+    var remainDays=daysDiff(prevDate,td); if(remainDays>0) balance*=Math.pow(1+dailyRate,remainDays);
+    var totalInvested=(+fi.initialAmount||0)+movs.filter(function(m){return m.type==='in';}).reduce(function(a,m){return a+(+m.amount||0);},0);
+    var totalWithdrawn=movs.filter(function(m){return m.type==='out';}).reduce(function(a,m){return a+(+m.amount||0);},0);
+    var netPrincipal=totalInvested-totalWithdrawn;
+    var earned=balance-netPrincipal;
+    var taxableEarned=Math.max(0,earned);
+    var isExempt=typeof isRFExempt==='function'?isRFExempt(fi):false;
+    var iofPct=typeof getIOFRate==='function'?getIOFRate(days):0;
+    var iofValue=taxableEarned*iofPct;
+    var taxMode=fi.taxMode||D.rfTaxMode||'regressivo';
+    var approxMonthlyIncome=Math.max(0,balance*annualRate/12);
+    var irPct=isExempt?0:taxRateByMode(days,taxMode,approxMonthlyIncome);
+    var irValue=Math.max(0,taxableEarned-iofValue)*irPct;
+    var totalTaxes=iofValue+irValue;
+    var netBalance=Math.max(0,balance-totalTaxes);
+    var netEarned=earned-totalTaxes;
+    var monthlyIncome=netBalance*annualRate/12;
+    return {balance:balance,earned:earned,days:days,annualRate:annualRate*100,monthlyIncome:monthlyIncome,totalInvested:totalInvested,totalWithdrawn:totalWithdrawn,netPrincipal:netPrincipal,taxableEarned:taxableEarned,isExempt:isExempt,iofPct:iofPct,iofValue:iofValue,irPct:irPct,irValue:irValue,totalTaxes:totalTaxes,netBalance:netBalance,netEarned:netEarned,rateSource:typeof rateSourceLabel==='function'?rateSourceLabel():'fallback',taxMode:taxMode};
+  };
+
+  function calcDILiquid(input){
+    input=input||{};
+    var amount=+(input.amount||0)||1000, pctDI=+(input.pctDI||0)||100, days=+(input.days||0)||180;
+    var table=input.table||D.rfTaxMode||'regressivo', exempt=!!input.exempt;
+    var di=getCurrentDIAnnual();
+    var grossAnnual=di*(pctDI/100);
+    var grossPeriod=amount*(Math.pow(1+grossAnnual/100,days/365)-1);
+    var iof=(typeof getIOFRate==='function'?getIOFRate(days):0)*grossPeriod;
+    var monthlyYield=amount*(grossAnnual/100)/12;
+    var irPct=exempt?0:taxRateByMode(days,table,monthlyYield);
+    var ir=Math.max(0,grossPeriod-iof)*irPct;
+    var netPeriod=Math.max(0,grossPeriod-iof-ir);
+    var netAnnual=(Math.pow(1+netPeriod/amount,365/days)-1)*100;
+    return {amount:amount,pctDI:pctDI,days:days,table:table,exempt:exempt,di:di,grossAnnual:grossAnnual,grossPeriod:grossPeriod,iof:iof,irPct:irPct,ir:ir,netPeriod:netPeriod,netAnnual:netAnnual,finalAmount:amount+netPeriod};
+  }
+
+  window.applyRFCalculatorSettings=function(){
+    var table=(document.getElementById('di-ir-table')||{}).value||'regressivo';
+    D.rfTaxMode=table; save(); updateDICalcResult(); renderPort(); toast('Tabela de IR aplicada à renda fixa');
+  };
+  window.updateDICalcResult=function(){
+    var inp={amount:+((document.getElementById('di-calc-amount')||{}).value||1000),pctDI:+((document.getElementById('di-calc-pct')||{}).value||100),days:+((document.getElementById('di-calc-days')||{}).value||180),table:((document.getElementById('di-ir-table')||{}).value||D.rfTaxMode||'regressivo'),exempt:((document.getElementById('di-title-class')||{}).value==='isento')};
+    var r=calcDILiquid(inp), out=document.getElementById('di-calc-result'); if(!out) return;
+    out.innerHTML='<div class="di-result-tile"><span>DI bruto usado</span><b>'+r.di.toFixed(2)+'% a.a.</b></div>'+
+      '<div class="di-result-tile"><span>Taxa bruta do título</span><b>'+r.grossAnnual.toFixed(2)+'% a.a.</b></div>'+
+      '<div class="di-result-tile"><span>IR aplicado</span><b>'+(r.exempt?'Isento':(r.irPct*100).toFixed(1)+'%')+'</b></div>'+
+      '<div class="di-result-tile"><span>Taxa líquida estimada</span><b style="color:var(--green)">'+r.netAnnual.toFixed(2)+'% a.a.</b></div>'+
+      '<div class="di-result-tile"><span>Rendimento líquido</span><b style="color:var(--green)">'+brl(r.netPeriod)+'</b></div>'+
+      '<div class="di-result-tile"><span>Valor final</span><b>'+brl(r.finalAmount)+'</b></div>';
+  };
+
+  function ensurePortfolioRatesCard(){
+    if(document.getElementById('portfolio-rates-card')) return;
+    var anchor=document.getElementById('port-kpis'); if(!anchor) return;
+    var card=document.createElement('div'); card.className='card'; card.id='portfolio-rates-card';
+    card.innerHTML='<div class="shdr"><span class="ctitle" style="margin:0">Selic, DI e calculadora de DI líquido</span><button class="btn btn-ghost btn-sm" onclick="loadBCBRates(false).then(function(){renderPort();})">↻ BCB</button></div>'+
+      '<div class="portfolio-market-rates"><div><div class="di-rate-grid" id="portfolio-rates-kpis"></div><div class="notice">As taxas vêm do Banco Central quando disponíveis. O DI é usado como proxy do CDI para produtos %CDI e respeita regras de isenção já identificadas no título.</div></div>'+
+      '<div><div class="di-form-grid">'+
+      '<div class="field"><label>Valor</label><input id="di-calc-amount" type="number" value="1000" step="100" oninput="updateDICalcResult()"></div>'+
+      '<div class="field"><label>% do DI</label><input id="di-calc-pct" type="number" value="100" step="1" oninput="updateDICalcResult()"></div>'+
+      '<div class="field"><label>Prazo dias</label><input id="di-calc-days" type="number" value="180" step="1" oninput="updateDICalcResult()"></div>'+
+      '<div class="field"><label>Tabela IR</label><select id="di-ir-table" onchange="updateDICalcResult()"><option value="regressivo">Regressiva RF</option><option value="progressivo">Progressiva simulada</option></select></div>'+
+      '<div class="field"><label>Classificação</label><select id="di-title-class" onchange="updateDICalcResult()"><option value="tributavel">Tributável</option><option value="isento">Isento</option></select></div>'+
+      '</div><div id="di-calc-result" class="di-result-grid"></div><button class="btn btn-green" style="margin-top:10px" onclick="applyRFCalculatorSettings()">Aplicar tabela aos títulos RF</button></div></div>';
+    anchor.insertAdjacentElement('afterend',card);
+  }
+  function refreshPortfolioRatesCard(){
+    ensurePortfolioRatesCard();
+    var box=document.getElementById('portfolio-rates-kpis'); if(!box) return;
+    var r=D.marketRates||{}; var sel=getCurrentSelicAnnual(), di=getCurrentDIAnnual();
+    box.innerHTML='<div class="kpi"><div class="kl">Selic atual</div><div class="kv" style="color:var(--gold)">'+sel.toFixed(2)+'%</div><div class="ks">'+esc2(r.source||'fallback')+'</div></div>'+
+      '<div class="kpi"><div class="kl">DI / CDI usado</div><div class="kv" style="color:var(--green)">'+di.toFixed(2)+'%</div><div class="ks">proxy para %DI/%CDI</div></div>'+
+      '<div class="kpi"><div class="kl">IR RF padrão</div><div class="kv" style="color:var(--blue)">'+((D.rfTaxMode||'regressivo')==='progressivo'?'Progressivo':'Regressivo')+'</div><div class="ks">isentos continuam isentos</div></div>';
+    var table=document.getElementById('di-ir-table'); if(table) table.value=D.rfTaxMode||'regressivo';
+    updateDICalcResult();
+  }
+
+  function periodTabsHtml(prefix,active,fn){
+    return '<div class="port-period-tabs">'+PERIODS_EXT.map(function(p){return '<button class="ptab '+(p.k===active?'on':'')+'" onclick="'+fn+'(\''+prefix+'\',\''+p.k+'\',this);event.stopPropagation();">'+p.l+'</button>';}).join('')+'</div>';
+  }
+  window.setPortfolioStockReturnPeriod=function(prefix,period,btn){ D.portStockReturnPeriod=period; save(); document.querySelectorAll('#port-kpis .port-period-tabs .ptab').forEach(function(x){x.classList.remove('on');}); if(btn) btn.classList.add('on'); updatePortfolioStockReturn(period,true); };
+
+  async function fetchStockHistory(ticker,period){
+    var range=rangeForPeriod(period);
+    try{
+      if(!hasToken||!hasToken()) throw new Error('token pendente');
+      var q=await quoteOne(ticker,{range:range,interval:'1d'});
+      updateQuoteMeta(q); save();
+      var h=(typeof synthesizeIntraday==='function'?synthesizeIntraday(q,period):q.historicalDataPrice)||[];
+      if(!h.length && q.regularMarketPrice) h=[{date:Math.floor(fromPeriodDate(period).getTime()/1000),close:q.regularMarketOpen||q.regularMarketPrice},{date:Math.floor(Date.now()/1000),close:q.regularMarketPrice}];
+      return {quote:q,hist:h,source:'brapi '+range};
+    }catch(e){
+      var g=getStockGroup(ticker), curr=g?g.curr:(D.prices&&D.prices[ticker])||0, start=g?g.pm:curr;
+      return {quote:{regularMarketPrice:curr,regularMarketOpen:start},hist:[{date:Math.floor(fromPeriodDate(period).getTime()/1000),close:start,_fallback:true},{date:Math.floor(Date.now()/1000),close:curr,_fallback:true}],source:'fallback PM/cotação'};
+    }
+  }
+
+  function injectStockReturnFilter(){
+    var cards=document.querySelectorAll('#port-kpis .kpi'); if(!cards||cards.length<3) return;
+    var c=cards[2], active=D.portStockReturnPeriod||'1d';
+    var label=c.querySelector('.kl'); if(label) label.textContent='Rentabilidade Ações';
+    if(!c.querySelector('.port-period-tabs')) c.insertAdjacentHTML('beforeend',periodTabsHtml('portfolio',active,'setPortfolioStockReturnPeriod')+'<div id="port-stock-return-source" class="port-return-source">Calculando período...</div>');
+    else c.querySelectorAll('.ptab').forEach(function(b){b.classList.toggle('on',b.textContent.toLowerCase()===(((PERIOD_BY_KEY[active]||{}).l)||'').toLowerCase());});
+    updatePortfolioStockReturn(active,false);
+  }
+  var returnRunning=false;
+  async function updatePortfolioStockReturn(period,force){
+    if(returnRunning&&!force) return;
+    var cards=document.querySelectorAll('#port-kpis .kpi'); if(!cards||cards.length<3) return;
+    var card=cards[2], kv=card.querySelector('.kv'), ks=card.querySelector('.ks'), src=document.getElementById('port-stock-return-source');
+    var groups=typeof getStockGroups==='function'?getStockGroups():[];
+    if(!groups.length){ if(kv) kv.textContent='0.00%'; if(ks) ks.textContent='sem ações'; return; }
+    if(kv) kv.textContent='...'; if(ks) ks.textContent='buscando histórico'; if(src) src.textContent='Período '+((PERIOD_BY_KEY[period]||{}).l||period)+' · histórico por ativo';
+    returnRunning=true;
+    var startTotal=0,currentTotal=0,ok=0,source='';
+    for(var i=0;i<groups.length;i++){
+      var g=groups[i];
+      var h=await fetchStockHistory(g.ticker,period);
+      var hist=(h.hist||[]).filter(function(x){return x&&(x.close||x.price);});
+      var start=hist.length?(+hist[0].close||+hist[0].price||g.pm):g.pm;
+      var end=hist.length?(+hist[hist.length-1].close||+hist[hist.length-1].price||g.curr):g.curr;
+      startTotal+=start*g.qty; currentTotal+=end*g.qty; ok++; source=h.source||source;
+      if(i<groups.length-1) await new Promise(function(r){setTimeout(r,90);});
+    }
+    var abs=currentTotal-startTotal, pct=startTotal?abs/startTotal*100:0, up=pct>=0;
+    if(kv){kv.textContent=fmtPct2(pct);kv.style.color=up?'var(--green)':'var(--red)';}
+    if(ks) ks.textContent=(abs>=0?'+':'')+brl(abs)+' no período '+((PERIOD_BY_KEY[period]||{}).l||period);
+    if(src) src.textContent=(source||'histórico')+' · '+ok+'/'+groups.length+' ativo(s)';
+    returnRunning=false;
+  }
+
+  window.patrimoOpenStockDetail=function(ticker){
+    var g=getStockGroup(ticker); if(!g) return;
+    var qd=(D.quoteDay||{})[g.ticker]||{}, trend=g.pl>=0?'var(--green)':'var(--red)';
+    var body='<div class="stock-detail-hero">'+logoHTML(g.ticker,'fund-logo')+'<div><div class="stock-detail-title">'+esc2(g.ticker)+' — '+esc2(tickerMeta(g.ticker).name)+'</div><div class="stock-detail-sub">'+fmtQty(g.qty)+' cotas · PM consolidado '+brl(g.pm)+' · 1ª compra '+(g.firstDate?brDateFromISO(g.firstDate):'sem data')+'</div></div></div>'+
+      '<div class="portfolio-info-grid">'+
+      '<div class="portfolio-info-tile"><div class="lbl">Valor atual</div><div class="val" style="color:'+trend+'">'+brl(g.total)+'</div><div class="sub">Preço '+brl(g.curr)+'</div></div>'+
+      '<div class="portfolio-info-tile"><div class="lbl">Total investido</div><div class="val" style="color:var(--gold)">'+brl(g.cost)+'</div><div class="sub">Base de compra</div></div>'+
+      '<div class="portfolio-info-tile"><div class="lbl">Resultado</div><div class="val" style="color:'+trend+'">'+(g.pl>=0?'+':'')+brl(g.pl)+'</div><div class="sub">'+fmtPct2(g.perf)+' desde a compra</div></div>'+
+      '<div class="portfolio-info-tile"><div class="lbl">Hoje</div><div class="val" style="color:var(--blue)">'+(qd.price?fmtPct2(qd.changePct):'—')+'</div><div class="sub">'+(qd.price?('Preço '+brl(qd.price)):'atualize cotações')+'</div></div></div>'+
+      '<div class="rf-period-tabs">'+PERIODS_EXT.map(function(p){return '<button class="ptab '+(p.k===(D.stockDetailPeriod||'1d')?'on':'')+'" onclick="loadStockPositionAnalysis(\''+g.ticker+'\',\''+p.k+'\',this)">'+p.l+'</button>';}).join('')+'</div>'+
+      '<div class="position-analysis-grid"><div class="card" style="margin:0"><div class="ctitle">Variação da ação no período</div><div class="chart-wrap stock-position-chart-wrap"><svg id="stock-position-chart" class="chart-svg"></svg></div><div id="stock-position-range" style="display:flex;justify-content:space-between;font-size:10px;color:var(--tx3)"><span id="stock-pos-d1"></span><span id="stock-pos-d2"></span></div></div><div class="card" style="margin:0"><div class="ctitle">Comparativo contra sua compra</div><div id="stock-position-table"></div></div></div>'+
+      '<div class="ctitle" style="margin-top:14px">Lotes consolidados</div><div style="background:rgba(7,17,31,.45);border:1px solid var(--bd);border-radius:14px;padding:8px 12px">'+(g.lots||[]).map(function(l){var b=l.bank||{};return '<div class="mov-row"><div><b>'+fmtQty(l.qty)+' cotas</b> · PM '+brl(l.pm)+' · '+esc2(b.name||'Sem banco')+'</div><span>'+brl((+l.qty||0)*(+l.pm||0))+'</span></div>';}).join('')+'</div>'+
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px"><button class="btn btn-blue" onclick="closeM(\'m-portfolio-info\');openStkChart(\''+g.ticker+'\')">Abrir gráfico completo</button><button class="btn btn-red" onclick="closeM(\'m-portfolio-info\');openSellModal(\'grp:'+g.ticker+'\')">Vender</button></div>';
+    openPortfolioInfo(g.ticker+' — posição completa',body);
+    setTimeout(function(){loadStockPositionAnalysis(g.ticker,D.stockDetailPeriod||'1d');},80);
+  };
+  window.loadStockPositionAnalysis=async function(ticker,period,btn){
+    D.stockDetailPeriod=period; save(); if(btn){document.querySelectorAll('#portfolio-info-body .rf-period-tabs .ptab').forEach(function(x){x.classList.remove('on');});btn.classList.add('on');}
+    var svg=document.getElementById('stock-position-chart'), table=document.getElementById('stock-position-table'); if(svg) svg.innerHTML='<text x="50%" y="50%" fill="#64748B" text-anchor="middle" font-size="12">Carregando histórico...</text>';
+    var g=getStockGroup(ticker); if(!g) return;
+    var h=await fetchStockHistory(ticker,period); var hist=(h.hist||[]).filter(function(x){return x&&(x.close||x.price);});
+    if(hist.length>1 && typeof drawChart==='function') drawChart('stock-position-chart',hist,null,['stock-pos-d1','stock-pos-d2']);
+    var start=hist.length?(+hist[0].close||+hist[0].price||g.pm):g.pm, end=hist.length?(+hist[hist.length-1].close||+hist[hist.length-1].price||g.curr):g.curr;
+    var periodAbs=(end-start)*g.qty, periodPct=start?((end-start)/start*100):0;
+    var buyAbs=(end-g.pm)*g.qty, buyPct=g.pm?((end-g.pm)/g.pm*100):0;
+    if(table) table.innerHTML='<table class="position-analysis-table"><thead><tr><th>Indicador</th><th>Valor</th></tr></thead><tbody>'+
+      '<tr><td>Preço médio de compra</td><td>'+brl(g.pm)+'</td></tr>'+
+      '<tr><td>Preço início do período</td><td>'+brl(start)+'</td></tr>'+
+      '<tr><td>Preço atual/final</td><td>'+brl(end)+'</td></tr>'+
+      '<tr><td>Variação no período</td><td style="color:'+(periodPct>=0?'var(--green)':'var(--red)')+'">'+fmtPct2(periodPct)+' · '+(periodAbs>=0?'+':'')+brl(periodAbs)+'</td></tr>'+
+      '<tr><td>Variação desde sua compra</td><td style="color:'+(buyPct>=0?'var(--green)':'var(--red)')+'">'+fmtPct2(buyPct)+' · '+(buyAbs>=0?'+':'')+brl(buyAbs)+'</td></tr>'+
+      '<tr><td>Fonte</td><td>'+esc2(h.source)+'</td></tr></tbody></table>';
+  };
+
+  function enhanceStockRowsClick(){
+    var groups=typeof getStockGroups==='function'?getStockGroups():[];
+    var rows=document.querySelectorAll('#pos-list > div');
+    rows.forEach(function(row,idx){var g=groups[idx]; if(!g) return; row.classList.add('clickable-portfolio-card'); row.onclick=function(e){if(e.target.closest('button,a,input,select,summary,details')) return; patrimoOpenStockDetail(g.ticker);};});
+  }
+
+  function simulateFIPoints(fi,period){
+    var start=fromPeriodDate(period), app=new Date((fi.date||today())+'T12:00:00'); if(start<app) start=app;
+    var end=new Date(); var points=[]; var daysTotal=Math.max(1,Math.ceil((end-start)/864e5)); var step=Math.max(1,Math.ceil(daysTotal/90));
+    function calcAt(date){
+      try{syncRateGlobals&&syncRateGlobals();}catch(e){}
+      var annualRate=fi.index==='CDI'?CDI*fi.rate/100:fi.index==='SELIC'?SELIC*fi.rate/100:fi.index==='IPCA'?(IPCA+(fi.rate/100)):fi.rate/100;
+      var dailyRate=Math.pow(1+annualRate,1/365)-1;
+      var balance=+fi.initialAmount||0, prev=fi.date;
+      var movs=(fi.movs||[]).slice().sort(function(a,b){return new Date(a.date)-new Date(b.date);}).filter(function(m){return new Date(m.date+'T12:00:00')<=date;});
+      movs.forEach(function(m){ var dd=daysDiff(prev,m.date); if(dd>0) balance*=Math.pow(1+dailyRate,dd); if(m.type==='in') balance+=+m.amount||0; else balance-=+m.amount||0; if(balance<0) balance=0; prev=m.date; });
+      var last=daysDiff(prev,isoDate(date)); if(last>0) balance*=Math.pow(1+dailyRate,last); return balance;
+    }
+    for(var d=new Date(start); d<=end; d.setDate(d.getDate()+step)){ points.push({date:Math.floor(d.getTime()/1000),close:calcAt(new Date(d))}); }
+    if(!points.length || points[points.length-1].date<Math.floor(end.getTime()/1000)) points.push({date:Math.floor(end.getTime()/1000),close:calcAt(end)});
+    return points;
+  }
+  window.renderFIPeriodAnalysis=function(id,period,btn){
+    var f=(D.fi||[]).find(function(x){return x.id===id;}); if(!f) return; D.fiDetailPeriod=period; save(); if(btn){document.querySelectorAll('#fi-period-analysis .ptab').forEach(function(x){x.classList.remove('on');});btn.classList.add('on');}
+    var points=simulateFIPoints(f,period), start=points[0]?points[0].close:0, end=points[points.length-1]?points[points.length-1].close:0;
+    var movs=(f.movs||[]).filter(function(m){return new Date(m.date+'T12:00:00')>=fromPeriodDate(period);});
+    var netMov=movs.reduce(function(a,m){return a+(m.type==='in'?(+m.amount||0):-(+m.amount||0));},0);
+    var gross=Math.max(0,end-start-netMov);
+    var full=calcFIBalance(f), taxMode=full.taxMode||D.rfTaxMode||'regressivo';
+    var irPct=full.isExempt?0:taxRateByMode(full.days,taxMode,Math.max(0,end*(full.annualRate/100)/12));
+    var tax=gross*irPct, net=gross-tax;
+    if(typeof drawChart==='function') drawChart('fi-period-chart',points,'#A855F7');
+    var sum=document.getElementById('fi-period-summary'); if(sum) sum.innerHTML='<div class="di-result-tile"><span>Saldo inicial</span><b>'+brl(start)+'</b></div><div class="di-result-tile"><span>Saldo final</span><b>'+brl(end)+'</b></div><div class="di-result-tile"><span>Rendeu no período</span><b style="color:var(--green)">'+brl(gross)+'</b></div><div class="di-result-tile"><span>Líquido estimado</span><b style="color:var(--green)">'+brl(net)+'</b></div>';
+    var tbl=document.getElementById('fi-period-table'); if(tbl) tbl.innerHTML='<table class="rf-period-table"><thead><tr><th>Item</th><th>Valor</th></tr></thead><tbody><tr><td>Período</td><td>'+((PERIOD_BY_KEY[period]||{}).l||period)+'</td></tr><tr><td>Aportes/resgates no período</td><td>'+brl(netMov)+'</td></tr><tr><td>Rendimento bruto</td><td>'+brl(gross)+'</td></tr><tr><td>IR estimado ('+(full.isExempt?'isento':(irPct*100).toFixed(1)+'%')+')</td><td>'+brl(tax)+'</td></tr><tr><td>Rendimento líquido</td><td>'+brl(net)+'</td></tr><tr><td>Tabela aplicada</td><td>'+(taxMode==='progressivo'?'Progressiva simulada':'Regressiva RF')+'</td></tr></tbody></table>';
+  };
+  var oldOpenFI=typeof openFIDet==='function'?openFIDet:null;
+  window.openFIDet=openFIDet=function(id){ if(oldOpenFI) oldOpenFI(id); setTimeout(function(){ var body=document.getElementById('fi-det-body'); if(!body || document.getElementById('fi-period-analysis')) return; var active=D.fiDetailPeriod||'1mo'; body.insertAdjacentHTML('beforeend','<div id="fi-period-analysis" style="margin-top:16px"><div class="ctitle">Rendimento por período</div><div class="rf-period-tabs">'+PERIODS_EXT.map(function(p){return '<button class="ptab '+(p.k===active?'on':'')+'" onclick="renderFIPeriodAnalysis(\''+id+'\',\''+p.k+'\',this)">'+p.l+'</button>';}).join('')+'</div><div id="fi-period-summary" class="rf-period-summary"></div><div class="position-analysis-grid"><div class="card" style="margin:0"><div class="ctitle">Curva estimada</div><div class="chart-wrap rf-detail-chart-wrap"><svg id="fi-period-chart" class="chart-svg"></svg></div></div><div class="card" style="margin:0"><div class="ctitle">Tabela do período</div><div id="fi-period-table"></div></div></div></div>'); renderFIPeriodAnalysis(id,active); },80); };
+
+  function cleanupMarketBIText(){
+    var sm=document.getElementById('market-analysis-summary');
+    if(sm && /Clique nos gráficos|filtros/.test(sm.textContent||'')){
+      sm.innerHTML=sm.innerHTML.replace(/<br>• Clique[^<]*/g,'<br>• Use os filtros de data independentes dos gráficos para analisar cada indicador sem afetar os demais.');
+    }
+    var bar=document.getElementById('bi-filter-bar'); if(bar) bar.remove();
+  }
+  function ensureMarketDateControls(){
+    var bar=document.getElementById('bi-filter-bar'); if(bar) bar.remove();
+    var dCard=document.getElementById('market-dollar-card');
+    if(dCard && !document.getElementById('macro-dollar-controls')){
+      var todayIso=isoDate(new Date()), start=new Date(); start.setMonth(start.getMonth()-6);
+      var text=dCard.querySelector('.shdr div div[style*="font-size:12px"]'); if(text) text.textContent='Histórico USD/BRL por intervalo independente — use o filtro de data abaixo';
+      dCard.querySelector('.shdr').insertAdjacentHTML('afterend','<div class="macro-date-toolbar" id="macro-dollar-controls"><div class="field"><label>De</label><input type="date" id="macro-dollar-start" value="'+isoDate(start)+'"></div><div class="field"><label>Até</label><input type="date" id="macro-dollar-end" value="'+todayIso+'"></div><button class="btn btn-blue" onclick="loadMacroSeriesFiltered(\'dollar\')">Aplicar dólar</button></div>');
+      dCard.insertAdjacentHTML('beforeend','<div id="macro-dollar-history" class="macro-hist-table-wrap"></div>');
+    }
+    var sSvg=document.getElementById('selic-step-svg'), sCard=sSvg?sSvg.closest('.card'):null;
+    if(sCard && !document.getElementById('macro-selic-controls')){var todayIso2=isoDate(new Date()), start2=new Date(); start2.setFullYear(start2.getFullYear()-1);sCard.querySelector('.shdr').insertAdjacentHTML('afterend','<div class="macro-date-toolbar" id="macro-selic-controls"><div class="field"><label>De</label><input type="date" id="macro-selic-start" value="'+isoDate(start2)+'"></div><div class="field"><label>Até</label><input type="date" id="macro-selic-end" value="'+todayIso2+'"></div><button class="btn btn-blue" onclick="loadMacroSeriesFiltered(\'selic\')">Aplicar Selic</button></div>');sCard.insertAdjacentHTML('beforeend','<div id="macro-selic-history" class="macro-hist-table-wrap"></div>');}
+    var iSvg=document.getElementById('ipca-bar-svg'), iCard=iSvg?iSvg.closest('.card'):null;
+    if(iCard && !document.getElementById('macro-ipca-controls')){var todayIso3=isoDate(new Date()), start3=new Date(); start3.setMonth(start3.getMonth()-18);iCard.querySelector('.shdr').insertAdjacentHTML('afterend','<div class="macro-date-toolbar" id="macro-ipca-controls"><div class="field"><label>De</label><input type="date" id="macro-ipca-start" value="'+isoDate(start3)+'"></div><div class="field"><label>Até</label><input type="date" id="macro-ipca-end" value="'+todayIso3+'"></div><button class="btn btn-blue" onclick="loadMacroSeriesFiltered(\'ipca\')">Aplicar IPCA</button></div>');iCard.insertAdjacentHTML('beforeend','<div id="macro-ipca-history" class="macro-hist-table-wrap"></div>');}
+    cleanupMarketBIText();
+  }
+  async function fetchBCBExt(id,startIso,endIso){
+    function briso(x){var p=String(x||'').split('-');return p.length===3?p[2]+'/'+p[1]+'/'+p[0]:x;}
+    var url='https://api.bcb.gov.br/dados/serie/bcdata.sgs.'+id+'/dados?formato=json&dataInicial='+encodeURIComponent(briso(startIso))+'&dataFinal='+encodeURIComponent(briso(endIso));
+    var r=await fetch(url), j=await r.json(); if(!Array.isArray(j)) throw new Error('BCB sem retorno');
+    return j.map(function(x){return {date:new Date(String(x.data).split('/').reverse().join('-')+'T12:00:00'),value:+String(x.valor||'0').replace(',','.')||0};}).filter(function(x){return x.value||x.value===0;});
+  }
+  function renderMacroHistoryTable(id,rows,suffix){
+    var el=document.getElementById('macro-'+id+'-history'); if(!el) return; rows=(rows||[]).slice(-12).reverse();
+    el.innerHTML='<table class="macro-hist-table"><thead><tr><th>Data</th><th>Valor</th></tr></thead><tbody>'+rows.map(function(r){return '<tr><td>'+r.date.toLocaleDateString('pt-BR')+'</td><td>'+r.value.toLocaleString('pt-BR',{minimumFractionDigits:suffix==='R$'?4:2,maximumFractionDigits:suffix==='R$'?4:2})+(suffix&&suffix!=='R$'?suffix:'')+'</td></tr>';}).join('')+'</tbody></table>';
+  }
+  window.loadMacroSeriesFiltered=async function(kind){
+    ensureMarketDateControls();
+    var cfg={dollar:{sgs:10813,svg:'usdbrl-svg',start:'macro-dollar-start',end:'macro-dollar-end',hist:'dollar',color:'#D4AF37',suffix:'R$'},selic:{sgs:432,svg:'selic-step-svg',start:'macro-selic-start',end:'macro-selic-end',hist:'selic',color:'#00E0A4',suffix:'%'},ipca:{sgs:433,svg:'ipca-bar-svg',start:'macro-ipca-start',end:'macro-ipca-end',hist:'ipca',color:'#D4AF37',suffix:'%'}}[kind]; if(!cfg) return;
+    var s=(document.getElementById(cfg.start)||{}).value, e=(document.getElementById(cfg.end)||{}).value; var svg=document.getElementById(cfg.svg); if(svg) svg.innerHTML='<text x="50%" y="50%" fill="#64748B" text-anchor="middle" font-size="12">Carregando BCB...</text>';
+    try{var rows=await fetchBCBExt(cfg.sgs,s,e); if(!rows.length) throw new Error('sem dados no período');
+      if(kind==='ipca' && typeof drawBIBarChart==='function') drawBIBarChart(cfg.svg,rows.map(function(x){return {date:x.date,value:x.value};}),{label:'IPCA',color:cfg.color}); else drawChart(cfg.svg,rows.map(function(x){return {date:x.date,close:x.value,value:x.value};}),cfg.color);
+      renderMacroHistoryTable(cfg.hist,rows,cfg.suffix); if(kind==='dollar'){var u=document.getElementById('usdbrl-current'); if(u) u.textContent='R$ '+rows[rows.length-1].value.toLocaleString('pt-BR',{minimumFractionDigits:4,maximumFractionDigits:4});}
+      if(kind==='selic'){var sc=document.getElementById('selic-current-chip'); if(sc) sc.textContent=rows[rows.length-1].value.toFixed(2)+'% a.a.';}
+      if(kind==='ipca'){var ic=document.getElementById('ipca-12m-chip'); if(ic) ic.textContent='últ. '+rows[rows.length-1].value.toFixed(2)+'%';}
+    }catch(err){ if(svg) svg.innerHTML='<text x="50%" y="50%" fill="#EF4444" text-anchor="middle" font-size="12">'+esc2(err.message||err)+'</text>'; }
+  };
+
+  var oldRenderPort=typeof renderPort==='function'?renderPort:null;
+  window.renderPort=renderPort=function(){ if(oldRenderPort) oldRenderPort(); refreshPortfolioRatesCard(); injectStockReturnFilter(); enhanceStockRowsClick(); };
+  var oldGoPage=typeof goPage==='function'?goPage:null;
+  window.goPage=goPage=function(name,btn){ if(oldGoPage) oldGoPage(name,btn); if(name==='portfolio'){setTimeout(function(){refreshPortfolioRatesCard();injectStockReturnFilter();enhanceStockRowsClick();},120);} if(name==='market'){setTimeout(function(){ensureMarketDateControls();clearBIFilter();},150);} };
+  var oldLoadMarket=typeof loadMarket==='function'?loadMarket:null;
+  window.loadMarket=loadMarket=async function(){ if(oldLoadMarket) await oldLoadMarket(); ensureMarketDateControls(); clearBIFilter(); cleanupMarketBIText(); };
+  document.addEventListener('DOMContentLoaded',function(){ setTimeout(function(){ if((document.getElementById('page-portfolio')||{}).classList&&document.getElementById('page-portfolio').classList.contains('active')) renderPort(); ensureMarketDateControls(); clearBIFilter(); try{loadBCBRates(true).then(function(){ if((document.getElementById('page-portfolio')||{}).classList&&document.getElementById('page-portfolio').classList.contains('active')) renderPort();});}catch(e){} },1200); });
+})();
+</script>
+
 </body>
 </html>
