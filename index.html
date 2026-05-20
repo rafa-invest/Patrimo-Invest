@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Patrimo Invest">
-<title>Patrimo Invest 1.4.6 — Cartão no mês da fatura</title>
+<title>Patrimo Invest 1.4.7 — Planejamento zerado para novos usuários</title>
 <link rel="manifest" href="#" id="mflink">
 <style>
 :root{
@@ -1817,31 +1817,16 @@ var D = (function(){
     importedMovements:[],
     meta:{},
     ai:{training:'',lastAnswer:''},
+    // Novos usuários começam com o Planejamento Financeiro zerado.
+    // Mantém apenas linhas-modelo para facilitar o preenchimento, sem valores reais ou pessoais.
     plans:[
-      {id:'p1',section:'Entradas',name:'Salário / Pró-labore',values:[2666,2945,3971,5000,2391,2760,2760,2760,2760,2760,2760,2760]},
-      {id:'p2',section:'Entradas',name:'Renda extra / Freelance',values:[858,820,1100,780,2921,2619,2619,1129,1129,1129,1129,1129]},
-      {id:'p3',section:'Entradas',name:'Receitas financeiras',values:[44,34,58,65,65,83,97,112,127,143,158,174]},
-      {id:'p4',section:'Custos',name:'Moradia',values:[0,700,900,900,900,900,900,900,900,900,900,900]},
-      {id:'p5',section:'Custos',name:'Internet / Telefone',values:[0,0,0,147,147,147,147,147,147,147,147,147]},
-      {id:'p6',section:'Despesas',name:'Alimentação',values:[880,880,800,946,880,880,880,880,880,880,880,880]},
-      {id:'p7',section:'Despesas',name:'Transporte',values:[0,0,0,0,100,0,0,0,0,0,0,0]},
-      {id:'p8',section:'Despesas',name:'Educação',values:[329,329,329,329,329,329,329,329,329,329,329,329]},
-      {id:'p9',section:'Despesas',name:'Cartão de Crédito',values:[1167,1387,1316,2836,3069,1441,886,780,780,780,522,0],special:'cards'},
-      {id:'p10',section:'Despesas',name:'Outras despesas',values:[231,231,231,231,311,311,311,311,311,80,80,80]},
-      {id:'p11',section:'Aplicações',name:'Reserva de Emergência',values:[0,0,0,250,0,250,250,250,250,250,250,250]},
-      {id:'p12',section:'Aplicações',name:'Renda Fixa',values:[0,288,1465,500,0,500,500,500,500,500,500,500]},
-      {id:'p13',section:'Aplicações',name:'Renda Variável',values:[0,0,0,418,400,400,400,400,400,400,400,400]},
-      {id:'p14',section:'Aplicações',name:'Previdência',values:[0,0,0,0,0,150,150,150,150,150,150,150]}
+      {id:'p1',section:'Entradas',name:'Receita exemplo',values:[0,0,0,0,0,0,0,0,0,0,0,0]},
+      {id:'p2',section:'Custos',name:'Custo exemplo',values:[0,0,0,0,0,0,0,0,0,0,0,0]},
+      {id:'p3',section:'Despesas',name:'Despesa exemplo',values:[0,0,0,0,0,0,0,0,0,0,0,0]}
     ],
-    cards:[
-      {id:'card1',bank:'Nubank',name:'Nubank Mastercard',limit:4800,closeDay:22,dueDay:1,color:'#820AD1'},
-      {id:'card2',bank:'Inter',name:'Inter Mastercard',limit:3000,closeDay:20,dueDay:30,color:'#F97316'}
-    ],
-    purchases:[
-      {id:'pu1',cardId:'card2',date:'2026-05-03',description:'Supermercado',category:'Alimentação',value:420,installments:1},
-      {id:'pu2',cardId:'card1',date:'2026-05-08',description:'Netflix + Spotify',category:'Assinaturas',value:89.90,installments:1},
-      {id:'pu3',cardId:'card2',date:'2026-05-12',description:'Tênis Nike',category:'Vestuário',value:360,installments:3}
-    ]
+    cards:[],
+    purchases:[],
+    subscriptions:[]
   };
 })();
 
@@ -1894,14 +1879,11 @@ function goPage(name,btn){
 }
 function migrateFinanceData(){
   if(!D.plans||!D.plans.length){
+    var z=[0,0,0,0,0,0,0,0,0,0,0,0];
     D.plans=[
-      {id:uid(),section:'Entradas',name:'Salário / Pró-labore',values:[2760,2760,2760,2760,2760,2760,2760,2760,2760,2760,2760,2760]},
-      {id:uid(),section:'Entradas',name:'Renda extra',values:[0,0,0,0,0,0,0,0,0,0,0,0]},
-      {id:uid(),section:'Custos',name:'Moradia',values:[900,900,900,900,900,900,900,900,900,900,900,900]},
-      {id:uid(),section:'Despesas',name:'Alimentação',values:[880,880,880,880,880,880,880,880,880,880,880,880]},
-      {id:uid(),section:'Despesas',name:'Educação',values:[329,329,329,329,329,329,329,329,329,329,329,329]},
-      {id:uid(),section:'Aplicações',name:'Renda Fixa',values:[500,500,500,500,500,500,500,500,500,500,500,500]},
-      {id:uid(),section:'Aplicações',name:'Renda Variável',values:[400,400,400,400,400,400,400,400,400,400,400,400]}
+      {id:uid(),section:'Entradas',name:'Receita exemplo',values:z.slice()},
+      {id:uid(),section:'Custos',name:'Custo exemplo',values:z.slice()},
+      {id:uid(),section:'Despesas',name:'Despesa exemplo',values:z.slice()}
     ];
     save();
   }
