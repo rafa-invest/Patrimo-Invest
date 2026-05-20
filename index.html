@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Patrimo Invest">
-<title>Patrimo Invest 1.4.5 — Ajustes B3, Carteira, Plano e Cartões</title>
+<title>Patrimo Invest 1.4.6 — Cartão no mês da fatura</title>
 <link rel="manifest" href="#" id="mflink">
 <style>
 :root{
@@ -4473,7 +4473,7 @@ function renderPlanTable(){
         +r.values.map(function(v,i){
           var val=nv(v), isCards=r.special==='cards';
           if(isCards){
-            return '<td title="Calculado pela aba Cartões. Fatura de '+MONTHS_SHORT[(i+1)%12]+' paga em '+MONTHS_SHORT[i]+'" onclick="goPage(\'cards\')" style="text-align:right;padding:8px 10px;font-size:11px;color:'+(val>0?'var(--gold)':'var(--tx3)')+';font-family:monospace;cursor:pointer;background:rgba(212,175,55,.035)">'+(val?brl(val):'-')+'</td>';
+            return '<td title="Calculado pela aba Cartões. Fatura de '+MONTHS_SHORT[i]+' refletida em '+MONTHS_SHORT[i]+'" onclick="goPage(\'cards\')" style="text-align:right;padding:8px 10px;font-size:11px;color:'+(val>0?'var(--gold)':'var(--tx3)')+';font-family:monospace;cursor:pointer;background:rgba(212,175,55,.035)">'+(val?brl(val):'-')+'</td>';
           }
           return '<td contenteditable="true" style="text-align:right;padding:8px 10px;font-size:11px;color:'+(val>0?'var(--tx2)':'var(--tx3)')+';font-family:monospace;cursor:text" onblur="editPlanCell(\''+r.id+'\','+i+',this.textContent)" onfocus="selectEditableCell(this)">'+(val?brl(val):'-')+'</td>';
         }).join('')
@@ -5355,9 +5355,10 @@ function isCardPlanLine(r){
   return !!(r&&(r.special==='cards'||n.indexOf('cartão de crédito')>=0||n.indexOf('cartao de credito')>=0));
 }
 function syncCreditCardPlanLine(){
-  // Linha fixa: fatura de maio impacta abril, junho impacta maio, etc.
+  // Linha fixa: a fatura do mês reflete no próprio mês do planejamento.
+  // Ex.: fatura de maio aparece em maio, junho aparece em junho, e assim por diante.
   D.plans=D.plans||[];
-  var values=new Array(12).fill(0).map(function(_,i){ return Number((totalCardBillMonth((i+1)%12)||0).toFixed(2)); });
+  var values=new Array(12).fill(0).map(function(_,i){ return Number((totalCardBillMonth(i)||0).toFixed(2)); });
   var line={id:'plan_cards_fixed',section:'Despesas',name:'Cartão de Crédito',values:values,special:'cards',locked:true,source:'credit_cards'};
   var out=[], inserted=false;
   (D.plans||[]).forEach(function(r){
@@ -5468,13 +5469,13 @@ function renderCardCascadeTable(){
   if(!container){
     var page=document.getElementById('page-cards'); if(!page) return;
     var card=document.createElement('div'); card.className='card'; card.id='cards-cascade-card';
-    card.innerHTML='<div class="shdr"><span class="ctitle" style="margin:0">Cascata mensal das faturas</span><span class="chip badge-n">cartões + assinaturas</span></div><div id="cards-cascade-table" style="overflow-x:auto"></div><div class="notice">No Planejamento, a linha fixa “Cartão de Crédito” usa a fatura do mês seguinte: a fatura de maio impacta abril, junho impacta maio, e assim por diante.</div>';
+    card.innerHTML='<div class="shdr"><span class="ctitle" style="margin:0">Cascata mensal das faturas</span><span class="chip badge-n">cartões + assinaturas</span></div><div id="cards-cascade-table" style="overflow-x:auto"></div><div class="notice">No Planejamento, a linha fixa “Cartão de Crédito” usa a fatura do próprio mês: a fatura de maio impacta maio, junho impacta junho, e assim por diante.</div>';
     page.appendChild(card);
   }
   var el=document.getElementById('cards-cascade-table'); if(!el) return;
   var cards=D.cards||[];
   var rows=Array.from({length:12},function(_,m){ return {m:m, vals:cards.map(function(c){return cardBillMonth(c.id,m);}), total:totalCardBillMonth(m)}; });
-  el.innerHTML='<table style="width:100%;min-width:'+(360+cards.length*120)+'px;border-collapse:collapse;font-size:12px"><thead><tr><th style="text-align:left;padding:9px;color:var(--gold)">Mês / Fatura</th>'+cards.map(function(c){return '<th style="text-align:right;padding:9px;color:'+c.color+'">'+c.bank+'</th>';}).join('')+'<th style="text-align:right;padding:9px;color:var(--tx)">Total</th><th style="text-align:right;padding:9px;color:var(--green)">Pago no planejamento</th></tr></thead><tbody>'+rows.map(function(r){var payMonth=(r.m+11)%12; return '<tr style="border-top:1px solid rgba(148,163,184,.10);background:'+(r.m===new Date().getMonth()?'rgba(212,175,55,.06)':'transparent')+'"><td style="padding:9px;font-weight:800;color:var(--tx2)">'+monthShort(r.m)+'</td>'+r.vals.map(function(v){return '<td style="padding:9px;text-align:right;font-family:monospace">'+brl(v)+'</td>';}).join('')+'<td style="padding:9px;text-align:right;font-family:monospace;font-weight:900;color:var(--red)">'+brl(r.total)+'</td><td style="padding:9px;text-align:right;color:var(--tx3);font-size:11px">'+monthShort(payMonth)+'</td></tr>';}).join('')+'</tbody></table>';
+  el.innerHTML='<table style="width:100%;min-width:'+(360+cards.length*120)+'px;border-collapse:collapse;font-size:12px"><thead><tr><th style="text-align:left;padding:9px;color:var(--gold)">Mês / Fatura</th>'+cards.map(function(c){return '<th style="text-align:right;padding:9px;color:'+c.color+'">'+c.bank+'</th>';}).join('')+'<th style="text-align:right;padding:9px;color:var(--tx)">Total</th><th style="text-align:right;padding:9px;color:var(--green)">Reflete no planejamento</th></tr></thead><tbody>'+rows.map(function(r){var payMonth=r.m; return '<tr style="border-top:1px solid rgba(148,163,184,.10);background:'+(r.m===new Date().getMonth()?'rgba(212,175,55,.06)':'transparent')+'"><td style="padding:9px;font-weight:800;color:var(--tx2)">'+monthShort(r.m)+'</td>'+r.vals.map(function(v){return '<td style="padding:9px;text-align:right;font-family:monospace">'+brl(v)+'</td>';}).join('')+'<td style="padding:9px;text-align:right;font-family:monospace;font-weight:900;color:var(--red)">'+brl(r.total)+'</td><td style="padding:9px;text-align:right;color:var(--tx3);font-size:11px">'+monthShort(payMonth)+'</td></tr>';}).join('')+'</tbody></table>';
 }
 
 var _origSavePurchase2=savePurchase2;
