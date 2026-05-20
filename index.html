@@ -847,7 +847,14 @@ async function doSignup(){
   if(!em||pw.length<6){setMsg('⚠ Preencha e-mail e senha (mín. 6 chars)','var(--crimson)');return;}
   setAuthLoading(true);setMsg('Criando conta…');
   if(sb){
-    const {data,error}=await sb.auth.signUp({email:em,password:pw,options:{data:{full_name:em.split('@')[0]}}});
+    const {data,error}=await sb.auth.signUp({
+  email: em,
+  password: pw,
+  options: {
+    data: { full_name: em.split('@')[0] },
+    emailRedirectTo: window.location.origin
+  }
+});
     if(error){setMsg('❌ '+error.message,'var(--crimson)');setAuthLoading(false);return;}
     if(data.user?.identities?.length===0){setMsg('⚠ Este e-mail já tem conta. Use "Entrar".','var(--amber)');setAuthLoading(false);return;}
     currentUser=data.user;
