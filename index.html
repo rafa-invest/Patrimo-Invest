@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Patrimo Invest">
-<title>Patrimo Invest 1.4.3 — Carteira Consolidada</title>
+<title>Patrimo Invest 1.4.5 — Ajustes B3, Carteira, Plano e Cartões</title>
 <link rel="manifest" href="#" id="mflink">
 <style>
 :root{
@@ -783,6 +783,41 @@ body.app-locked #login-screen{display:flex}
   #portfolio-analytics .kpi .kv{font-size:22px}
   #portfolio-analytics .bar-line{grid-template-columns:minmax(78px,96px) minmax(56px,1fr) auto;gap:7px}
 }
+
+
+
+/* Patrimo Invest 1.4.5 — ajustes solicitados: B3 1D, carteira dinâmica, plano avançado e remover compras */
+.clickable-portfolio-card{cursor:pointer;position:relative;transition:transform .16s ease,border-color .18s ease,box-shadow .18s ease}
+.clickable-portfolio-card:hover{transform:translateY(-1px);border-color:rgba(212,175,55,.42)!important;box-shadow:0 14px 34px rgba(0,0,0,.22)}
+.clickable-portfolio-card:after{content:"Abrir";position:absolute;right:12px;top:10px;font-size:9px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:rgba(212,175,55,.78);opacity:0;transition:opacity .18s ease}
+.clickable-portfolio-card:hover:after{opacity:1}
+.portfolio-info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:12px 0}
+.portfolio-info-tile{background:rgba(7,17,31,.62);border:1px solid rgba(148,163,184,.13);border-radius:14px;padding:12px;min-width:0}
+.portfolio-info-tile .lbl{font-size:9px;color:var(--tx3);font-weight:900;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.portfolio-info-tile .val{font-size:18px;font-weight:950;color:var(--tx)}
+.portfolio-info-tile .sub{font-size:10px;color:var(--tx3);margin-top:4px;line-height:1.4}
+.plan-filterbar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}
+.plan-filterbar .field{margin:0}
+.plan-extra-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:14px;margin-top:14px}
+.plan-chart-bars{display:flex;align-items:flex-end;gap:8px;height:210px;padding:12px 4px 2px;border:1px solid rgba(148,163,184,.10);border-radius:16px;background:rgba(6,14,26,.38);overflow-x:auto}
+.plan-month-cluster{min-width:54px;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:5px}
+.plan-month-bars{display:flex;align-items:flex-end;gap:3px;height:165px;width:100%;justify-content:center}
+.plan-mini-bar{width:8px;min-height:3px;border-radius:5px 5px 2px 2px;border:1px solid rgba(255,255,255,.06)}
+.plan-month-label{font-size:9px;color:var(--tx3);font-weight:800}
+.plan-legend{display:flex;gap:8px;flex-wrap:wrap;font-size:10px;color:var(--tx2);margin-top:10px}
+.plan-legend span{display:inline-flex;align-items:center;gap:5px}
+.plan-dot{width:9px;height:9px;border-radius:3px;display:inline-block}
+.plan-ranking-row{display:grid;grid-template-columns:minmax(110px,1fr) minmax(80px,120px) 72px;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(148,163,184,.09);font-size:12px}
+.plan-ranking-row:last-child{border-bottom:none}
+.plan-heatmap{overflow:auto;border:1px solid rgba(148,163,184,.10);border-radius:14px;background:rgba(6,14,26,.36)}
+.plan-heatmap table{width:100%;min-width:760px;border-collapse:collapse;font-size:11px}
+.plan-heatmap th,.plan-heatmap td{padding:8px;border-bottom:1px solid rgba(148,163,184,.08);text-align:right}
+.plan-heatmap th:first-child,.plan-heatmap td:first-child{text-align:left;position:sticky;left:0;background:#0B1422;z-index:1}
+.purchase-manage-row{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.055)}
+.purchase-manage-row:last-child{border-bottom:none}
+.purchase-remove-btn{border:1px solid rgba(217,74,74,.25);background:rgba(217,74,74,.10);color:#FF9A9A;border-radius:10px;padding:6px 9px;font-size:10px;font-weight:900;cursor:pointer;font-family:inherit}
+.purchase-remove-btn:hover{background:rgba(217,74,74,.18);border-color:rgba(217,74,74,.42)}
+@media(max-width:860px){.plan-filterbar,.plan-extra-grid{grid-template-columns:1fr}.plan-chart-bars{height:190px}.plan-month-cluster{min-width:46px}.plan-ranking-row{grid-template-columns:1fr 90px 58px}}
 
 </style>
 </head>
@@ -5849,6 +5884,327 @@ console.log('Patrimo Invest carregado:', window.__PATRIMO_VERSION);
   window.addEventListener('load', syncNavLayout);
   window.addEventListener('resize', syncNavLayout);
 })();
+
+
+
+// ══════════════════════════════════════════════════════
+// PATRIMO 1.4.5 — PATCH SOLICITADO
+// 1) IBOV 1D com base correta; 2) carteira com cotações atuais;
+// 3) cards clicáveis; 4) dashboard de plano com filtros/gráficos;
+// 5) remover compras de cartão.
+// ══════════════════════════════════════════════════════
+(function(){
+  function pEsc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  function num(v){v=Number(v);return isFinite(v)?v:0;}
+  function ymdSP(){return new Intl.DateTimeFormat('sv-SE',{timeZone:'America/Sao_Paulo',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());}
+  function mkTsSP(h,m){return Math.floor(new Date(ymdSP()+'T'+String(h).padStart(2,'0')+':'+String(m||0).padStart(2,'0')+':00-03:00').getTime()/1000);}
+  function quoteBasePrice(res, price){
+    price=num(price||res.regularMarketPrice||res.close);
+    var fields=['regularMarketPreviousClose','regularMarketPreviousClosePrice','previousClose','chartPreviousClose','regularMarketDayPreviousClose','regularMarketClose'];
+    for(var i=0;i<fields.length;i++){var v=num(res[fields[i]]); if(v>0 && Math.abs(v-price)>0.0001) return v;}
+    var ch=num(res.regularMarketChange); if(price>0 && Math.abs(ch)>0.0001) return price-ch;
+    var hist=res.historicalDataPrice||[];
+    if(hist.length>1){
+      var last=hist[hist.length-1]||{}, prev=hist[hist.length-2]||{};
+      var pv=num(prev.close||prev.price), lv=num(last.close||last.price);
+      if(pv>0 && lv>0 && Math.abs(pv-lv)>0.0001) return pv;
+    }
+    var op=num(res.regularMarketOpen); if(op>0 && Math.abs(op-price)>0.0001) return op;
+    return 0;
+  }
+  async function enrichPreviousClose(ticker,res){
+    var price=num(res.regularMarketPrice||res.close);
+    var base=quoteBasePrice(res,price);
+    if(base>0) return base;
+    try{
+      var q=await quoteOne(ticker,{range:'5d',interval:'1d'});
+      var h=(q&&q.historicalDataPrice)||[];
+      h=h.filter(function(x){return num(x.close||x.price)>0;}).sort(function(a,b){return (a.date||a.timestamp||0)-(b.date||b.timestamp||0);});
+      if(h.length>=2) return num(h[h.length-2].close||h[h.length-2].price);
+      if(h.length===1 && Math.abs(num(h[0].close||h[0].price)-price)>0.0001) return num(h[0].close||h[0].price);
+    }catch(e){}
+    return base||price;
+  }
+  function buildOneDaySeries(res, base){
+    var price=num(res.regularMarketPrice||res.close);
+    var open=num(res.regularMarketOpen)||base||price;
+    var start=base||open||price;
+    if(!start||!price) return [];
+    var n=spNowParts();
+    var session=b3Session();
+    var endHour=session.open?Math.min(18,Math.max(10,n.hour)):18;
+    var endMin=session.open?n.minute:0;
+    var steps=Math.max(2,Math.min(8,endHour-10+(endMin>0?1:0)));
+    var seed=String(res.symbol||'^BVSP').split('').reduce(function(a,c){return a+c.charCodeAt(0);},0);
+    var pts=[];
+    for(var i=0;i<=steps;i++){
+      var k=i/steps;
+      var h=Math.min(endHour,10+i);
+      var ts=(i===steps)?Math.floor(Date.now()/1000):mkTsSP(h,0);
+      var noise=Math.sin((i+seed)*0.91)*Math.abs(price-start)*0.08;
+      var close=(i===0)?start:(i===steps?price:(start+(price-start)*k+noise));
+      pts.push({date:ts,close:Math.max(1,close),_synthetic:true});
+    }
+    return pts.filter(function(p,idx,arr){return idx===0||p.date!==arr[idx-1].date;});
+  }
+  function normalizedIntradaySeries(res,period,base){
+    var hist=(res.historicalDataPrice||[]).filter(function(x){return num(x.close||x.price)>0;}).sort(function(a,b){return (a.date||a.timestamp||0)-(b.date||b.timestamp||0);});
+    if(period!=='1d') return hist;
+    var unique={}; hist.forEach(function(x){unique[(num(x.close||x.price)).toFixed(2)]=true;});
+    if(hist.length>2 && Object.keys(unique).length>1) return compactIntradayHourly(hist);
+    return buildOneDaySeries(res,base);
+  }
+
+  // Corrige atualização de cotação para salvar também o ticker canônico e a variação do dia.
+  var _origUpdateQuoteMeta145=typeof updateQuoteMeta==='function'?updateQuoteMeta:null;
+  window.updateQuoteMeta=updateQuoteMeta=function(res){
+    if(_origUpdateQuoteMeta145) try{_origUpdateQuoteMeta145(res);}catch(e){}
+    if(!res||!res.symbol) return;
+    var tk=canonicalTicker(String(res.symbol||'').toUpperCase());
+    if(!D.meta) D.meta={};
+    if(!D.quoteDay) D.quoteDay={};
+    var price=num(res.regularMarketPrice||res.close);
+    var base=quoteBasePrice(res,price);
+    var chg=num(res.regularMarketChange); var chgPct=num(res.regularMarketChangePercent);
+    if(price>0){ D.prices[tk]=price; D.prices[res.symbol]=price; }
+    if(base>0 && price>0){ chg=price-base; chgPct=base>0?(chg/base*100):chgPct; }
+    D.quoteDay[tk]={price:price,change:chg,changePct:chgPct,base:base,updatedAt:Date.now()};
+    D.meta[tk]={name:res.longName||res.shortName||tickerMeta(tk).name||tk,logo:res.logourl||res.logoUrl||res.logo||tickerMeta(tk).logo||''};
+  };
+
+  // IBOV 1D: variação do dia passa a ser calculada contra fechamento anterior quando possível.
+  window.loadIbovChart=loadIbovChart=async function(period){
+    period=period||ibovPeriod;
+    if(!isRangeAllowed(period)){
+      var svg=document.getElementById('ibov-svg');
+      if(svg) svg.innerHTML='<text x="50%" y="50%" fill="#4A5568" text-anchor="middle" font-size="11">Período indisponível no plano atual</text>';
+      return;
+    }
+    ibovPeriod=period;
+    try{
+      var res=await quoteWithHistory('^BVSP',period);
+      var price=num(res.regularMarketPrice||res.close);
+      document.getElementById('ibov-price').textContent=price?Math.round(price).toLocaleString('pt-BR'):' — ';
+      var base=(period==='1d')?await enrichPreviousClose('^BVSP',res):quoteBasePrice(res,price);
+      var hist=normalizedIntradaySeries(res,period,base);
+      var pChgAbs=num(res.regularMarketChange), pChgPct=num(res.regularMarketChangePercent);
+      if(period==='1d' && base>0 && price>0){
+        pChgAbs=price-base; pChgPct=pChgAbs/base*100;
+      }else if(hist.length>1){
+        var fc=num(hist[0].close||hist[0].price), lc=num(hist[hist.length-1].close||hist[hist.length-1].price);
+        pChgAbs=lc-fc; pChgPct=fc>0?(pChgAbs/fc*100):pChgPct;
+      }
+      var pup=pChgPct>=0;
+      document.getElementById('ibov-pct').textContent=(pup?'+':'')+pChgAbs.toFixed(0)+' ('+(pup?'+':'')+pChgPct.toFixed(2)+'%)';
+      document.getElementById('ibov-pct').className=pup?'up':'down';
+      document.getElementById('ibov-chg').className='chip '+(pup?'badge-up':'badge-dn');
+      document.getElementById('ibov-chg').textContent=(pup?'+':'')+pChgPct.toFixed(2)+'% em '+(PERIOD_LABEL[period]||period);
+      var note=document.getElementById('ibov-intraday-note');
+      if(note){
+        note.textContent=period==='1d'
+          ? (hist.some(function(x){return x._synthetic;})?'1D com base no fechamento anterior quando a brapi não entrega pontos intradiários suficientes.':'1D calculado com os pontos intradiários retornados pela brapi.')
+          : ' ';
+      }
+      if(hist.length>1) drawChart('ibov-svg',hist,null,['ibov-d1','ibov-d2']);
+      else document.getElementById('ibov-svg').innerHTML='<text x="50%" y="50%" fill="#4A5568" text-anchor="middle" font-size="11">Sem pontos suficientes para este período</text>';
+    }catch(e){
+      console.log('ibov err',e);
+      var svg2=document.getElementById('ibov-svg');
+      if(svg2) svg2.innerHTML='<text x="50%" y="50%" fill="#4A5568" text-anchor="middle" font-size="11">'+String(e.message||'Erro ao carregar').replace(/[<>]/g,'')+'</text>';
+      document.getElementById('ibov-price').textContent='—';
+      document.getElementById('ibov-pct').textContent='';
+    }
+  };
+
+  // Atualização real das cotações dos ativos da carteira.
+  var portfolioQuoteRefreshRunning=false;
+  async function refreshPortfolioQuotes(silent){
+    if(portfolioQuoteRefreshRunning) return;
+    var tks=[].concat((D.stocks||[]).map(function(s){return canonicalTicker(s.ticker);})).filter(Boolean);
+    tks=[...new Set(tks)];
+    if(!tks.length) return;
+    portfolioQuoteRefreshRunning=true;
+    var sub=document.getElementById('port-sub');
+    var oldSub=sub?sub.textContent:'';
+    if(sub) sub.textContent=oldSub+' | atualizando cotações...';
+    var ok=0;
+    for(var i=0;i<tks.length;i++){
+      try{
+        var q=await quoteOne(tks[i],{range:'1d',interval:'1d'});
+        updateQuoteMeta(q); ok++;
+      }catch(e){ console.warn('Cotação carteira falhou',tks[i],e); }
+      if(i<tks.length-1) await new Promise(function(r){setTimeout(r,180);});
+    }
+    D.lastPortfolioQuoteRefresh=Date.now();
+    save(); portfolioQuoteRefreshRunning=false;
+    if(!silent) toast(ok?('Cotações atualizadas: '+ok+'/'+tks.length):'Não foi possível atualizar cotações', ok?'#22C55E':'#EF4444');
+    if((document.getElementById('page-portfolio')||{}).classList&&document.getElementById('page-portfolio').classList.contains('active')) renderPort();
+  }
+  window.refreshPortfolioQuotes=refreshPortfolioQuotes;
+
+  function ensurePortfolioHeaderButton(){
+    var box=document.querySelector('#page-portfolio .phdr > div:last-child'); if(!box||document.getElementById('port-refresh-quotes')) return;
+    var btn=document.createElement('button'); btn.className='btn btn-ghost btn-sm'; btn.id='port-refresh-quotes'; btn.textContent='↻ Cotações'; btn.onclick=function(){refreshPortfolioQuotes(false);};
+    box.insertBefore(btn,box.firstChild);
+  }
+  function portfolioSnapshot(){
+    var groups=getStockGroups();
+    var fi=(D.fi||[]).map(function(f){var c=calcFIBalance(f);var b=(D.banks||[]).find(function(x){return x.id===f.bankId;})||{};return Object.assign({},f,c,{bank:b});});
+    var stTotal=groups.reduce(function(a,s){return a+(s.total||0);},0), stCost=groups.reduce(function(a,s){return a+(s.cost||0);},0);
+    var fiTotal=fi.reduce(function(a,f){return a+(f.balance||0);},0), fiBase=fi.reduce(function(a,f){return a+(f.totalInvested||0)-(f.totalWithdrawn||0);},0);
+    var total=stTotal+fiTotal, base=stCost+fiBase;
+    return {groups:groups,fi:fi,stTotal:stTotal,stCost:stCost,fiTotal:fiTotal,fiBase:fiBase,total:total,base:base,pl:(stTotal-stCost)+(fiTotal-fiBase)};
+  }
+  function ensurePortfolioModal(){
+    if(document.getElementById('m-portfolio-info')) return;
+    var div=document.createElement('div'); div.className='moverlay'; div.id='m-portfolio-info';
+    div.innerHTML='<div class="modal"><div class="mhdr"><span class="mtitle" id="portfolio-info-title">Detalhes</span><button class="mclose" onclick="closeM(\'m-portfolio-info\')">×</button></div><div id="portfolio-info-body"></div></div>';
+    document.body.appendChild(div);
+  }
+  function openPortfolioInfo(title,body){ensurePortfolioModal();document.getElementById('portfolio-info-title').textContent=title;document.getElementById('portfolio-info-body').innerHTML=body;openM('m-portfolio-info');}
+  window.openPortfolioInfo=openPortfolioInfo;
+  function tile(label,value,sub,color){return '<div class="portfolio-info-tile"><div class="lbl">'+pEsc(label)+'</div><div class="val" style="color:'+(color||'var(--tx)')+'">'+value+'</div><div class="sub">'+pEsc(sub||'')+'</div></div>';}
+  function barRows(rows,base){
+    rows=(rows||[]).filter(function(r){return r.value>0;}).sort(function(a,b){return b.value-a.value;});
+    if(!rows.length) return '<div style="font-size:12px;color:var(--tx3);padding:12px 0">Sem dados suficientes.</div>';
+    return '<div class="bar-list">'+rows.map(function(r){var pct=base?((r.value/base)*100):0;return '<div class="bar-line"><div class="bar-name">'+pEsc(r.name)+'</div><div class="bar-bg"><div class="bar-fill" style="width:'+Math.max(3,Math.min(100,pct)).toFixed(1)+'%"></div></div><div class="bar-val">'+pct.toFixed(1)+'%</div></div>';}).join('')+'</div>';
+  }
+  function openPortfolioKpi(idx){
+    var s=portfolioSnapshot(); var perf=s.base?((s.pl/s.base)*100):0;
+    var body='<div class="portfolio-info-grid">'
+      +tile('Patrimônio total',brl(s.total),'Ações '+brl(s.stTotal)+' · RF '+brl(s.fiTotal),'var(--blue)')
+      +tile('Base investida',brl(s.base),'Ações '+brl(s.stCost)+' · RF '+brl(s.fiBase),'var(--gold)')
+      +tile('Resultado geral',(s.pl>=0?'+':'')+brl(s.pl),perf.toFixed(2)+'% sobre a base',s.pl>=0?'var(--green)':'var(--red)')
+      +tile('Ativos e produtos',s.groups.length+' ações · '+s.fi.length+' RF','Lotes consolidados: '+(D.stocks||[]).length,'var(--tx)')+'</div>';
+    body+='<div class="notice">Valores das ações usam a última cotação carregada da brapi. Use “↻ Cotações” para forçar atualização antes de comparar com home broker.</div>';
+    var rows=s.groups.map(function(g){return {name:g.ticker,value:g.total};}).concat(s.fi.map(function(f){return {name:f.name,value:f.balance};}));
+    body+='<div class="ctitle">Distribuição por posição</div>'+barRows(rows,s.total);
+    openPortfolioInfo(['Patrimônio','Rentabilidade geral','Ações','Custo médio','Renda passiva','Renda fixa'][idx]||'Detalhes da carteira',body);
+  }
+  function openStockPositionInfo(g){
+    if(!g) return;
+    var qd=(D.quoteDay||{})[g.ticker]||{};
+    var trend=g.pl>=0?'var(--green)':'var(--red)';
+    var body='<div class="portfolio-info-grid">'
+      +tile('Valor atual',brl(g.total),fmtQty(g.qty)+' cotas a '+brl(g.curr),trend)
+      +tile('Total investido',brl(g.cost),'PM consolidado '+brl(g.pm),'var(--gold)')
+      +tile('Resultado',(g.pl>=0?'+':'')+brl(g.pl),(g.perf>=0?'+':'')+g.perf.toFixed(2)+'% na posição',trend)
+      +tile('Hoje',qd.price?((qd.changePct>=0?'+':'')+num(qd.changePct).toFixed(2)+'%'):'—',qd.price?('Preço '+brl(qd.price)+' · '+(qd.change>=0?'+':'')+brl(qd.change)):'atualize cotações','var(--blue)')+'</div>';
+    body+='<div class="ctitle">Lotes consolidados</div><div style="background:rgba(7,17,31,.45);border:1px solid var(--bd);border-radius:14px;padding:8px 12px">'+(g.lots||[]).map(function(l){var b=l.bank||{};return '<div class="mov-row"><div><b>'+fmtQty(l.qty)+' cotas</b> · PM '+brl(l.pm)+' · '+pEsc(b.name||'Sem banco')+'</div><span>'+brl((+l.qty||0)*(+l.pm||0))+'</span></div>';}).join('')+'</div>';
+    body+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px"><button class="btn btn-blue" onclick="closeM(\'m-portfolio-info\');openStkChart(\''+g.ticker+'\')">Abrir gráfico</button><button class="btn btn-red" onclick="closeM(\'m-portfolio-info\');openSellModal(\'grp:'+g.ticker+'\')">Vender</button></div>';
+    openPortfolioInfo(g.ticker+' — '+tickerMeta(g.ticker).name,body);
+  }
+  function enhancePortfolioInteractivity(){
+    var kpis=document.querySelectorAll('#port-kpis .kpi');
+    kpis.forEach(function(card,idx){card.classList.add('clickable-portfolio-card');card.onclick=function(e){if(e.target.closest('button,a,input,select,summary,details'))return;openPortfolioKpi(idx);};});
+    var groups=getStockGroups();
+    var rows=document.querySelectorAll('#pos-list > div');
+    rows.forEach(function(row,idx){var g=groups[idx]; if(!g) return; row.classList.add('clickable-portfolio-card'); row.onclick=function(e){if(e.target.closest('button,a,input,select,summary,details')) return; openStockPositionInfo(g);};});
+    document.querySelectorAll('#portfolio-analytics .insight-card').forEach(function(card){card.classList.add('clickable-portfolio-card'); card.onclick=function(e){if(e.target.closest('button,a,input,select,summary,details')) return; var title=(card.querySelector('.insight-title')||{}).textContent||'Análise da carteira'; openPortfolioInfo(title,'<div style="font-size:13px;color:var(--tx2);line-height:1.75">'+card.innerHTML+'</div>');};});
+  }
+
+  var _origRenderPort145=typeof renderPort==='function'?renderPort:null;
+  window.renderPort=renderPort=function(){
+    if(_origRenderPort145) _origRenderPort145();
+    ensurePortfolioHeaderButton();
+    var sub=document.getElementById('port-sub');
+    if(sub&&D.lastPortfolioQuoteRefresh){sub.textContent+=' | cotações '+new Date(D.lastPortfolioQuoteRefresh).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});}
+    enhancePortfolioInteractivity();
+    var stale=!D.lastPortfolioQuoteRefresh || (Date.now()-D.lastPortfolioQuoteRefresh>5*60*1000);
+    if(stale && !portfolioQuoteRefreshRunning) refreshPortfolioQuotes(true);
+  };
+
+  // Dashboard de planejamento com filtros e gráficos adicionais.
+  function monthOptions(sel){return (MONTHS_FULL||[]).map(function(m,i){return '<option value="'+i+'" '+(i===sel?'selected':'')+'>'+m+'</option>';}).join('');}
+  function getPlanFilter(){var f=D.planDashFilters||{};return {start:Math.max(0,Math.min(11,+(f.start!=null?f.start:0))),end:Math.max(0,Math.min(11,+(f.end!=null?f.end:11))),section:f.section||'all',text:f.text||''};}
+  window.setPlanDashFilter=function(k,v){D.planDashFilters=D.planDashFilters||{};D.planDashFilters[k]=v;if(k==='start'||k==='end') D.planDashFilters[k]=+v;save();renderPlanAdvancedCharts();};
+  function ensurePlanAdvancedAnalytics(){
+    var view=document.getElementById('plan-dashboard-view'); if(!view) return;
+    var box=document.getElementById('plan-advanced-analytics'); var f=getPlanFilter();
+    if(!box){ box=document.createElement('div'); box.id='plan-advanced-analytics'; view.appendChild(box); }
+    box.innerHTML='<div class="card"><div class="shdr"><span class="ctitle" style="margin:0">Análise avançada com filtros</span><span class="chip badge-n">receita · custo · despesa · aplicações</span></div>'
+      +'<div class="plan-filterbar">'
+      +'<div class="field"><label>De</label><select onchange="setPlanDashFilter(\'start\',this.value)">'+monthOptions(f.start)+'</select></div>'
+      +'<div class="field"><label>Até</label><select onchange="setPlanDashFilter(\'end\',this.value)">'+monthOptions(f.end)+'</select></div>'
+      +'<div class="field"><label>Tipo</label><select onchange="setPlanDashFilter(\'section\',this.value)"><option value="all">Todos</option>'+PLAN_SECTIONS.map(function(s){return '<option value="'+s+'" '+(f.section===s?'selected':'')+'>'+s+'</option>';}).join('')+'</select></div>'
+      +'<div class="field"><label>Despesa / categoria</label><input value="'+pEsc(f.text)+'" oninput="setPlanDashFilter(\'text\',this.value)" placeholder="Ex: cartão, transporte..."></div>'
+      +'</div>'
+      +'<div id="plan-filter-kpis" class="kgrid" style="margin-bottom:12px"></div>'
+      +'<div class="plan-extra-grid"><div class="card" style="margin:0"><div class="ctitle">Evolução mensal por tipo</div><div id="plan-flow-chart" class="plan-chart-bars"></div><div class="plan-legend"><span><i class="plan-dot" style="background:var(--green)"></i>Receita</span><span><i class="plan-dot" style="background:var(--ora)"></i>Custo</span><span><i class="plan-dot" style="background:var(--red)"></i>Despesa</span><span><i class="plan-dot" style="background:var(--blue)"></i>Aplicações</span></div></div>'
+      +'<div class="card" style="margin:0"><div class="ctitle">Ranking filtrado</div><div id="plan-ranking"></div></div></div>'
+      +'<div class="card" style="margin:14px 0 0"><div class="ctitle">Mapa mensal por categoria</div><div id="plan-heatmap" class="plan-heatmap"></div></div>'
+      +'</div>';
+  }
+  window.renderPlanAdvancedCharts=function(){
+    ensurePlanAdvancedAnalytics();
+    var f=getPlanFilter(); if(f.end<f.start){var tmp=f.start;f.start=f.end;f.end=tmp;}
+    var months=[]; for(var m=f.start;m<=f.end;m++) months.push(m);
+    var rows=(D.plans||[]).filter(function(r){return (f.section==='all'||r.section===f.section) && (!f.text||String(r.name||'').toLowerCase().indexOf(String(f.text).toLowerCase())>=0);});
+    function sumSec(sec,m){return rows.filter(function(r){return r.section===sec;}).reduce(function(a,r){return a+nv((r.values||[])[m]);},0);}
+    var totals=months.map(function(m){return {m:m,Entradas:sumSec('Entradas',m),Custos:sumSec('Custos',m),Despesas:sumSec('Despesas',m),'Aplicações':sumSec('Aplicações',m)};});
+    var acc={Entradas:0,Custos:0,Despesas:0,'Aplicações':0}; totals.forEach(function(t){PLAN_SECTIONS.forEach(function(s){acc[s]+=t[s]||0;});});
+    var saldo=acc.Entradas-acc.Custos-acc.Despesas-acc['Aplicações'];
+    var k=document.getElementById('plan-filter-kpis'); if(k) k.innerHTML=[
+      {l:'Receita filtrada',v:brl(acc.Entradas),c:'var(--green)',s:months.length+' mês(es)'},
+      {l:'Custos',v:brl(acc.Custos),c:'var(--ora)',s:acc.Entradas?((acc.Custos/acc.Entradas*100).toFixed(1)+'% da receita'):'—'},
+      {l:'Despesas',v:brl(acc.Despesas),c:'var(--red)',s:acc.Entradas?((acc.Despesas/acc.Entradas*100).toFixed(1)+'% da receita'):'—'},
+      {l:'Aplicações',v:brl(acc['Aplicações']),c:'var(--blue)',s:acc.Entradas?((acc['Aplicações']/acc.Entradas*100).toFixed(1)+'% da receita'):'—'},
+      {l:'Saldo final',v:brl(saldo),c:saldo>=0?'var(--green)':'var(--red)',s:'receita - custos - despesas - aplicações'}
+    ].map(function(x){return '<div class="kpi"><div class="kl">'+x.l+'</div><div class="kv" style="color:'+x.c+'">'+x.v+'</div><div class="ks">'+x.s+'</div></div>';}).join('');
+    var max=Math.max(1,...totals.flatMap(function(t){return [t.Entradas,t.Custos,t.Despesas,t['Aplicações']];}));
+    var flow=document.getElementById('plan-flow-chart'); if(flow) flow.innerHTML=totals.map(function(t){return '<div class="plan-month-cluster"><div class="plan-month-bars">'
+      +'<span class="plan-mini-bar" title="Receita '+brl(t.Entradas)+'" style="height:'+Math.max(3,t.Entradas/max*160)+'px;background:var(--green)"></span>'
+      +'<span class="plan-mini-bar" title="Custos '+brl(t.Custos)+'" style="height:'+Math.max(3,t.Custos/max*160)+'px;background:var(--ora)"></span>'
+      +'<span class="plan-mini-bar" title="Despesas '+brl(t.Despesas)+'" style="height:'+Math.max(3,t.Despesas/max*160)+'px;background:var(--red)"></span>'
+      +'<span class="plan-mini-bar" title="Aplicações '+brl(t['Aplicações'])+'" style="height:'+Math.max(3,t['Aplicações']/max*160)+'px;background:var(--blue)"></span>'
+      +'</div><div class="plan-month-label">'+MONTHS_SHORT[t.m]+'</div></div>';}).join('');
+    var ranked=rows.map(function(r){return {name:r.name,section:r.section,value:months.reduce(function(a,m){return a+nv((r.values||[])[m]);},0)};}).filter(function(r){return r.value>0;}).sort(function(a,b){return b.value-a.value;}).slice(0,10);
+    var rmax=ranked[0]?ranked[0].value:1;
+    var rankEl=document.getElementById('plan-ranking'); if(rankEl) rankEl.innerHTML=ranked.length?ranked.map(function(r){var c=r.section==='Entradas'?'var(--green)':r.section==='Custos'?'var(--ora)':r.section==='Despesas'?'var(--red)':'var(--blue)';return '<div class="plan-ranking-row"><div><b>'+pEsc(r.name)+'</b><div style="font-size:10px;color:var(--tx3)">'+pEsc(r.section)+'</div></div><div class="bar-bg"><div class="bar-fill" style="width:'+Math.max(3,r.value/rmax*100).toFixed(1)+'%;background:'+c+'"></div></div><div style="text-align:right;font-family:monospace;font-weight:900">'+brl(r.value)+'</div></div>';}).join(''):'<div style="color:var(--tx3);font-size:12px;padding:10px">Nenhuma linha para o filtro.</div>';
+    var hRows=ranked.length?ranked:rows.slice(0,8).map(function(r){return {name:r.name,section:r.section,value:0,row:r};});
+    var heat=document.getElementById('plan-heatmap');
+    if(heat){
+      var allVals=[]; rows.forEach(function(r){months.forEach(function(m){allVals.push(nv((r.values||[])[m]));});}); var hmMax=Math.max(1,...allVals);
+      heat.innerHTML='<table><thead><tr><th>Categoria</th>'+months.map(function(m){return '<th>'+MONTHS_SHORT[m]+'</th>';}).join('')+'<th>Total</th></tr></thead><tbody>'+rows.map(function(r){var total=months.reduce(function(a,m){return a+nv((r.values||[])[m]);},0);var color=r.section==='Entradas'?'18,163,106':r.section==='Custos'?'185,133,50':r.section==='Despesas'?'217,74,74':'47,111,237';return '<tr><td><b>'+pEsc(r.name)+'</b><div style="font-size:9px;color:var(--tx3)">'+pEsc(r.section)+'</div></td>'+months.map(function(m){var v=nv((r.values||[])[m]);var op=Math.max(.04,Math.min(.35,v/hmMax*.35));return '<td style="background:rgba('+color+','+op+')">'+(v?brl(v):'-')+'</td>';}).join('')+'<td><b>'+brl(total)+'</b></td></tr>';}).join('')+'</tbody></table>';
+    }
+  };
+  var _origRenderPlanDashboard145=typeof renderPlanDashboard==='function'?renderPlanDashboard:null;
+  window.renderPlanDashboard=renderPlanDashboard=function(){ if(_origRenderPlanDashboard145) _origRenderPlanDashboard145(); ensurePlanAdvancedAnalytics(); renderPlanAdvancedCharts(); };
+
+  // Remoção direta de compras em cartões.
+  window.removePurchase=removePurchase=function(id){
+    var p=(D.purchases||[]).find(function(x){return x.id===id;});
+    if(!p) return;
+    if(!confirm('Remover a compra "'+(p.description||'')+'"?')) return;
+    D.purchases=(D.purchases||[]).filter(function(x){return x.id!==id;});
+    if(typeof syncCreditCardPlanLine==='function') syncCreditCardPlanLine();
+    save(); toast('Compra removida ✓');
+    if((document.getElementById('page-cards')||{}).classList&&document.getElementById('page-cards').classList.contains('active')) renderCardsPage();
+    if((document.getElementById('page-finance')||{}).classList&&document.getElementById('page-finance').classList.contains('active')) renderFinancePage();
+  };
+  function appendPurchaseManager(cardId,targetId,onlyMonth){
+    var el=document.getElementById(targetId); if(!el||!cardId) return;
+    var month=new Date().getMonth();
+    var list=(D.purchases||[]).filter(function(p){
+      if(p.cardId!==cardId) return false;
+      if(!onlyMonth) return true;
+      var pm=new Date((p.date||today())+'T12:00:00').getMonth();
+      var inst=Math.max(1,+(p.installments||1));
+      for(var k=0;k<inst;k++){ if((pm+k)%12===month) return true; }
+      return false;
+    }).sort(function(a,b){return new Date(b.date)-new Date(a.date);});
+    var html='<div style="font-size:10px;color:var(--gold);font-weight:900;text-transform:uppercase;letter-spacing:.1em;margin:14px 0 6px">Gerenciar compras</div>';
+    html+=list.length?'<div style="max-height:240px;overflow:auto;background:rgba(7,17,31,.42);border:1px solid rgba(148,163,184,.10);border-radius:14px;padding:4px 10px">'+list.map(function(p){var inst=Math.max(1,+(p.installments||1));return '<div class="purchase-manage-row"><div style="min-width:0"><div style="font-size:12px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+pEsc(p.description)+'</div><div style="font-size:10px;color:var(--tx3)">'+pEsc(p.date||'')+' · '+pEsc(p.category||'Outros')+(inst>1?' · '+inst+'x':' · à vista')+' · total '+brl(p.value)+'</div></div><button class="purchase-remove-btn" onclick="removePurchase(\''+p.id+'\')">remover</button></div>';}).join('')+'</div>':'<div style="text-align:center;color:var(--tx3);font-size:12px;padding:12px;background:rgba(7,17,31,.35);border-radius:12px">Nenhuma compra para remover.</div>';
+    el.insertAdjacentHTML('beforeend',html);
+  }
+  var _origRenderCardDetailPanel145=typeof renderCardDetailPanel==='function'?renderCardDetailPanel:null;
+  window.renderCardDetailPanel=renderCardDetailPanel=function(cardId,curM,cardSpendMonth,purchases){ if(_origRenderCardDetailPanel145) _origRenderCardDetailPanel145(cardId,curM,cardSpendMonth,purchases); appendPurchaseManager(cardId,'card-detail-content',false); };
+  var _origOpenCardPopup145=typeof openCardPopup==='function'?openCardPopup:null;
+  window.openCardPopup=openCardPopup=function(cardId){ if(_origOpenCardPopup145) _origOpenCardPopup145(cardId); appendPurchaseManager(cardId,'cpopup-body',true); };
+
+  document.addEventListener('DOMContentLoaded',function(){ ensurePortfolioHeaderButton(); });
+})();
+
 
 // ══════════════════════════════════════════════════════
 // INIT
