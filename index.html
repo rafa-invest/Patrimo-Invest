@@ -1814,6 +1814,7 @@ var D = (function(){
     prices:{ITUB4:43.10,TAEE11:45.39,ITSA4:11.20,CSMG3:19.80,VIVT3:57.80,EGIE3:43.20,BBSE3:34.80,PETR4:47.50},
     token:localStorage.getItem(TOKEN_STORAGE_KEY)||HARDCODED_TOKEN||'',
     chartCache:{},
+    marketRates:{selicAnnual:15.00,cdiAnnual:15.00,ipcaAnnual:4.50,lastUpdate:'fallback',source:'fallback'},
     importedMovements:[],
     meta:{},
     ai:{training:'',lastAnswer:''},
@@ -1838,7 +1839,70 @@ function save(){
 // ══════════════════════════════════════════════════════
 // UTILS
 // ══════════════════════════════════════════════════════
-var CDI=0.1375, SELIC=0.15;
+var DEFAULT_SELIC_ANNUAL=15.00, DEFAULT_CDI_ANNUAL=15.00, DEFAULT_IPCA_ANNUAL=4.50;
+var CDI=DEFAULT_CDI_ANNUAL/100, SELIC=DEFAULT_SELIC_ANNUAL/100, IPCA=DEFAULT_IPCA_ANNUAL/100;
+function bcbNum(v){ return +(String(v||'0').replace(',','.'))||0; }
+function annualizeDailyPct(v){ return (Math.pow(1+(bcbNum(v)/100),252)-1)*100; }
+function ensureMarketRates(){
+  D.marketRates=D.marketRates||{};
+  if(!D.marketRates.selicAnnual) D.marketRates.selicAnnual=DEFAULT_SELIC_ANNUAL;
+  if(!D.marketRates.cdiAnnual) D.marketRates.cdiAnnual=D.marketRates.selicAnnual||DEFAULT_CDI_ANNUAL;
+  if(!D.marketRates.ipcaAnnual) D.marketRates.ipcaAnnual=DEFAULT_IPCA_ANNUAL;
+  if(!D.marketRates.source) D.marketRates.source='fallback';
+  return D.marketRates;
+}
+function syncRateGlobals(){
+  var r=ensureMarketRates();
+  SELIC=(+r.selicAnnual||DEFAULT_SELIC_ANNUAL)/100;
+  CDI=(+r.cdiAnnual||+r.selicAnnual||DEFAULT_CDI_ANNUAL)/100;
+  IPCA=(+r.ipcaAnnual||DEFAULT_IPCA_ANNUAL)/100;
+}
+syncRateGlobals();
+async function loadBCBRates(silent){
+  ensureMarketRates();
+  if(D.marketRates.loading) return;
+  var last=D.marketRates.loadedAt||0;
+  if(Date.now()-last<6*60*60*1000){ syncRateGlobals(); return; }
+  D.marketRates.loading=true;
+  try{
+    var urls={
+      selicDaily:'https://api.bcb.gov.br/dados/serie/bcdata.sgs.11/dados/ultimos/1?formato=json',
+      selicTarget:'https://api.bcb.gov.br/dados/serie/bcdata.sgs.432/dados/ultimos/1?formato=json'
+    };
+    var responses=await Promise.allSettled([fetch(urls.selicDaily),fetch(urls.selicTarget)]);
+    async function safeJson(res){ try{ return res&&res.ok?await res.json():null; }catch(e){ return null; } }
+    var daily=responses[0].status==='fulfilled'?await safeJson(responses[0].value):null;
+    var target=responses[1].status==='fulfilled'?await safeJson(responses[1].value):null;
+    var dailyItem=Array.isArray(daily)&&daily.length?daily[daily.length-1]:null;
+    var targetItem=Array.isArray(target)&&target.length?target[target.length-1]:null;
+    var selicAnnual=0, lastUpdate='';
+    if(dailyItem&&dailyItem.valor){
+      selicAnnual=annualizeDailyPct(dailyItem.valor);
+      lastUpdate=dailyItem.data||'';
+    }
+    if((!selicAnnual||selicAnnual<1) && targetItem&&targetItem.valor){
+      selicAnnual=bcbNum(targetItem.valor);
+      lastUpdate=targetItem.data||lastUpdate;
+    }
+    if(selicAnnual&&selicAnnual>1){
+      D.marketRates.selicAnnual=+selicAnnual.toFixed(4);
+      D.marketRates.cdiAnnual=+selicAnnual.toFixed(4); // proxy conservador: CDI acompanha a Selic em produtos %CDI
+      D.marketRates.selicTargetAnnual=targetItem?bcbNum(targetItem.valor):D.marketRates.selicTargetAnnual;
+      D.marketRates.lastUpdate=lastUpdate||new Date().toISOString().slice(0,10);
+      D.marketRates.loadedAt=Date.now();
+      D.marketRates.source='Banco Central do Brasil SGS';
+      syncRateGlobals();
+      save();
+      if(!silent) toast('Taxa Selic atualizada pelo Banco Central');
+      var active=document.querySelector('.page.active');
+      if(active&&active.id==='page-portfolio') renderPort();
+      if(active&&active.id==='page-fc') calcRF();
+      renderMiniAIContext&&renderMiniAIContext();
+    }
+  }catch(e){ console.log('BCB rates fallback',e); if(!silent) toast('Não foi possível atualizar Selic; usando fallback','#F59E0B'); }
+  finally{ if(D.marketRates) D.marketRates.loading=false; syncRateGlobals(); }
+}
+function rateSourceLabel(){ var r=ensureMarketRates(); return (r.source||'fallback')+(r.lastUpdate?' · '+r.lastUpdate:''); }
 function brl(v){ return 'R$'+Number(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}); }
 function K(v){ if(v>=1e6) return 'R$'+(v/1e6).toFixed(2)+'M'; if(v>=1e3) return 'R$'+(v/1e3).toFixed(1)+'k'; return brl(v); }
 function pct(v){ return (v>=0?'+':'')+Number(v).toFixed(2)+'%'; }
@@ -2385,10 +2449,11 @@ async function loadStkChart(ticker,period,btn){
 // RF CALCULATIONS (date-aware)
 // ══════════════════════════════════════════════════════
 function calcFIBalance(fi){
+  syncRateGlobals();
   var td=today();
   var days=daysDiff(fi.date,td);
   if(days<0) days=0;
-  var annualRate=fi.index==='CDI'?CDI*fi.rate/100:fi.index==='SELIC'?SELIC*fi.rate/100:fi.rate/100;
+  var annualRate=fi.index==='CDI'?CDI*fi.rate/100:fi.index==='SELIC'?SELIC*fi.rate/100:fi.index==='IPCA'?(IPCA+(fi.rate/100)):fi.rate/100;
   var dailyRate=Math.pow(1+annualRate,1/365)-1;
 
   // Apply movimentos
@@ -2408,12 +2473,39 @@ function calcFIBalance(fi){
   var remainDays=daysDiff(prevDate,td);
   if(remainDays>0) balance*=Math.pow(1+dailyRate,remainDays);
 
-  var totalInvested=fi.initialAmount+movs.filter(function(m){ return m.type==='in'; }).reduce(function(a,m){ return a+m.amount; },0);
-  var totalWithdrawn=movs.filter(function(m){ return m.type==='out'; }).reduce(function(a,m){ return a+m.amount; },0);
-  var earned=balance-(totalInvested-totalWithdrawn);
-  var monthlyIncome=balance*annualRate/12;
+  var totalInvested=(+fi.initialAmount||0)+movs.filter(function(m){ return m.type==='in'; }).reduce(function(a,m){ return a+(+m.amount||0); },0);
+  var totalWithdrawn=movs.filter(function(m){ return m.type==='out'; }).reduce(function(a,m){ return a+(+m.amount||0); },0);
+  var netPrincipal=totalInvested-totalWithdrawn;
+  var earned=balance-netPrincipal;
+  var taxableEarned=Math.max(0,earned);
+  var isExempt=isRFExempt(fi);
+  var iofPct=getIOFRate(days);
+  var iofValue=taxableEarned*iofPct;
+  var irPct=isExempt?0:getIRRate(days);
+  var irValue=Math.max(0,taxableEarned-iofValue)*irPct;
+  var totalTaxes=iofValue+irValue;
+  var netBalance=Math.max(0,balance-totalTaxes);
+  var netEarned=earned-totalTaxes;
+  var monthlyIncome=netBalance*annualRate/12;
 
-  return {balance:balance,earned:earned,days:days,annualRate:annualRate*100,monthlyIncome:monthlyIncome,totalInvested:totalInvested,totalWithdrawn:totalWithdrawn};
+  return {balance:balance,earned:earned,days:days,annualRate:annualRate*100,monthlyIncome:monthlyIncome,totalInvested:totalInvested,totalWithdrawn:totalWithdrawn,netPrincipal:netPrincipal,taxableEarned:taxableEarned,isExempt:isExempt,iofPct:iofPct,iofValue:iofValue,irPct:irPct,irValue:irValue,totalTaxes:totalTaxes,netBalance:netBalance,netEarned:netEarned,rateSource:rateSourceLabel()};
+}
+function isRFExempt(fi){
+  var text=[fi.name,fi.index,fi.notes,fi.guarantee,fi.liquidity].join(' ').toLowerCase();
+  return /\blci\b|\blca\b|\bcri\b|\bcra\b|poupan|deb[eê]nture incentiv|isento/.test(text);
+}
+function getIOFRate(d){
+  d=Math.max(0,Math.floor(+d||0));
+  if(d<=0||d>=30) return 0;
+  var map={1:.96,2:.93,3:.90,4:.86,5:.83,6:.80,7:.76,8:.73,9:.70,10:.66,11:.63,12:.60,13:.56,14:.53,15:.50,16:.46,17:.43,18:.40,19:.36,20:.33,21:.30,22:.26,23:.23,24:.20,25:.16,26:.13,27:.10,28:.06,29:.03};
+  return map[d]||0;
+}
+function getIRRate(d){
+  d=Math.max(0,Math.floor(+d||0));
+  if(d<=180) return .225;
+  if(d<=360) return .20;
+  if(d<=720) return .175;
+  return .15;
 }
 
 // ══════════════════════════════════════════════════════
@@ -2600,12 +2692,15 @@ function renderPort(){
         +'</div>'
         +'<button onclick="rmFI(\''+f.id+'\')" style="background:none;border:none;color:#EF4444;opacity:.4;cursor:pointer;font-size:18px;padding:4px">×</button>'
         +'</div>'
-        +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">'
-        +'<div style="background:var(--bg4);border-radius:8px;padding:10px"><div style="font-size:9px;color:var(--tx3)">Saldo atual</div><div style="font-size:16px;font-weight:700;color:#A855F7">'+brl(f.balance)+'</div></div>'
-        +'<div style="background:var(--bg4);border-radius:8px;padding:10px"><div style="font-size:9px;color:var(--tx3)">Juros acumulados</div><div style="font-size:16px;font-weight:700;color:#22C55E">+'+brl(f.earned)+'</div></div>'
-        +'<div style="background:var(--bg4);border-radius:8px;padding:10px"><div style="font-size:9px;color:var(--tx3)">Rend./mês est.</div><div style="font-size:14px;font-weight:600;color:#22C55E">'+brl(f.monthlyIncome)+'</div></div>'
+        +'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px">'
+        +'<div style="background:var(--bg4);border-radius:8px;padding:10px"><div style="font-size:9px;color:var(--tx3)">Saldo bruto</div><div style="font-size:16px;font-weight:700;color:#A855F7">'+brl(f.balance)+'</div></div>'
+        +'<div style="background:var(--bg4);border-radius:8px;padding:10px"><div style="font-size:9px;color:var(--tx3)">Saldo líquido est.</div><div style="font-size:16px;font-weight:700;color:#22C55E">'+brl(f.netBalance)+'</div></div>'
+        +'<div style="background:var(--bg4);border-radius:8px;padding:10px"><div style="font-size:9px;color:var(--tx3)">Juros brutos</div><div style="font-size:16px;font-weight:700;color:#22C55E">+'+brl(f.earned)+'</div></div>'
+        +'<div style="background:var(--bg4);border-radius:8px;padding:10px"><div style="font-size:9px;color:var(--tx3)">IR + IOF est.</div><div style="font-size:14px;font-weight:600;color:#EF4444">-'+brl(f.totalTaxes)+'</div></div>'
+        +'<div style="background:var(--bg4);border-radius:8px;padding:10px"><div style="font-size:9px;color:var(--tx3)">Rend./mês líq. est.</div><div style="font-size:14px;font-weight:600;color:#22C55E">'+brl(f.monthlyIncome)+'</div></div>'
         +'<div style="background:var(--bg4);border-radius:8px;padding:10px"><div style="font-size:9px;color:var(--tx3)">Dias aplicado</div><div style="font-size:14px;font-weight:600">'+f.days+' '+daysLabel+'</div></div>'
         +'</div>'
+        +'<div style="font-size:10px;color:var(--tx3);line-height:1.45;margin-bottom:8px">Taxa anual usada: '+(f.annualRate||0).toFixed(2)+'% a.a. · IR '+(f.isExempt?'isento':((f.irPct||0)*100).toFixed(1)+'%')+' · fonte '+(f.rateSource||'fallback')+'</div>'
         +'<button onclick="openFIDet(\''+f.id+'\')" style="background:var(--bg4);border:none;color:var(--tx2);border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;width:100%;font-family:inherit">Ver movimentos &amp; aportes</button>'
         +'</div>';
     }).join('');
@@ -2679,12 +2774,17 @@ function openFIDet(id){
     movHTML='<div style="text-align:center;padding:10px;color:var(--tx3);font-size:12px">Nenhum movimento registrado</div>';
   }
   document.getElementById('fi-det-body').innerHTML=
-    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">'
-    +'<div style="background:var(--bg4);border-radius:8px;padding:10px"><div style="font-size:9px;color:var(--tx3)">Saldo atual</div><div style="font-size:16px;font-weight:700;color:#A855F7">'+brl(calc.balance)+'</div></div>'
-    +'<div style="background:var(--bg4);border-radius:8px;padding:10px"><div style="font-size:9px;color:var(--tx3)">Total juros ganhos</div><div style="font-size:16px;font-weight:700;color:#22C55E">+'+brl(calc.earned)+'</div></div>'
+    '<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px">'
+    +'<div style="background:var(--bg4);border-radius:8px;padding:10px"><div style="font-size:9px;color:var(--tx3)">Saldo bruto</div><div style="font-size:16px;font-weight:700;color:#A855F7">'+brl(calc.balance)+'</div></div>'
+    +'<div style="background:var(--bg4);border-radius:8px;padding:10px"><div style="font-size:9px;color:var(--tx3)">Saldo líquido estimado</div><div style="font-size:16px;font-weight:700;color:#22C55E">'+brl(calc.netBalance)+'</div></div>'
+    +'<div style="background:var(--bg4);border-radius:8px;padding:10px"><div style="font-size:9px;color:var(--tx3)">Juros brutos</div><div style="font-size:16px;font-weight:700;color:#22C55E">+'+brl(calc.earned)+'</div></div>'
+    +'<div style="background:var(--bg4);border-radius:8px;padding:10px"><div style="font-size:9px;color:var(--tx3)">Juros líquidos</div><div style="font-size:16px;font-weight:700;color:#22C55E">'+brl(calc.netEarned)+'</div></div>'
+    +'<div style="background:var(--bg4);border-radius:8px;padding:10px"><div style="font-size:9px;color:var(--tx3)">IR estimado</div><div style="font-size:14px;font-weight:600;color:#EF4444">-'+brl(calc.irValue)+' <span style="font-size:10px;color:var(--tx3)">'+(calc.isExempt?'isento':((calc.irPct||0)*100).toFixed(1)+'%')+'</span></div></div>'
+    +'<div style="background:var(--bg4);border-radius:8px;padding:10px"><div style="font-size:9px;color:var(--tx3)">IOF estimado</div><div style="font-size:14px;font-weight:600;color:#EF4444">-'+brl(calc.iofValue)+' <span style="font-size:10px;color:var(--tx3)">'+((calc.iofPct||0)*100).toFixed(0)+'%</span></div></div>'
     +'<div style="background:var(--bg4);border-radius:8px;padding:10px"><div style="font-size:9px;color:var(--tx3)">Total aportado</div><div style="font-size:14px;font-weight:600">'+brl(calc.totalInvested)+'</div></div>'
     +'<div style="background:var(--bg4);border-radius:8px;padding:10px"><div style="font-size:9px;color:var(--tx3)">Total retirado</div><div style="font-size:14px;font-weight:600;color:#EF4444">'+brl(calc.totalWithdrawn)+'</div></div>'
     +'</div>'
+    +'<div class="notice">Cálculo educativo: Selic/CDI atualizados pelo SGS do Banco Central quando disponível. IR segue tabela regressiva pelo prazo do produto; IOF apenas nos primeiros 29 dias; LCI/LCA/CRI/CRA/poupança/debênture incentivada aparecem como isentos quando identificados no nome ou observação.</div>'
     +'<div class="ctitle">Histórico de Movimentos</div>'+movHTML;
   var td=today();
   var mdt=document.getElementById('mov-dt'); if(mdt) mdt.value=td;
@@ -2907,6 +3007,7 @@ function bootApp(){
   migrateFinanceData();
   updateTickerMenus();
   updateMarketStatus();
+  loadBCBRates(true);
   loadMarket();
   setTimeout(calcRF,500);
   renderPort();
@@ -3167,11 +3268,11 @@ function renderCfg(){
       +'</div>';
   }).join('');
   var cd=document.getElementById('cfg-date');
-  if(cd) cd.textContent=new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'})+' — '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  if(cd) cd.textContent=new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'})+' — '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})+' | Selic RF: '+(SELIC*100).toFixed(2)+'% a.a.';
   var sqlEl=document.getElementById('sql-helper');
   if(sqlEl) sqlEl.value=getAppStateSQL();
   // Update every minute
-  setTimeout(function(){ var cd2=document.getElementById('cfg-date'); if(cd2) cd2.textContent=new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'})+' — '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}); },60000);
+  setTimeout(function(){ var cd2=document.getElementById('cfg-date'); if(cd2) cd2.textContent=new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'})+' — '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})+' | Selic RF: '+(SELIC*100).toFixed(2)+'% a.a.'; },60000);
 }
 function saveToken(){ var t=document.getElementById('cfg-token').value.trim(); D.token=t; try{ localStorage.setItem(TOKEN_STORAGE_KEY,t); }catch(e){} save(); renderCfg(); updateMarketStatus('token atualizado'); toast(t?'Token salvo!':'Token removido'); }
 function addBk(){
@@ -3258,11 +3359,12 @@ function calcRF(){
   var last=rows[rows.length-1];
   if(!last){ document.getElementById('rf-result').innerHTML=''; return; }
 
+  var irLbl=isento?'0% isento':((last.aliq*100).toFixed(1)+'%');
   var html='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">'
     +'<div style="background:var(--bg4);border-radius:8px;padding:10px"><div style="font-size:9px;color:var(--tx3)">Saldo bruto final</div><div style="font-size:16px;font-weight:700;color:#A855F7">'+brl(last.balance)+'</div></div>'
     +'<div style="background:var(--bg4);border-radius:8px;padding:10px"><div style="font-size:9px;color:var(--tx3)">Saldo liq. (apos IR)</div><div style="font-size:16px;font-weight:700;color:#22C55E">'+brl(last.balanceLiq)+'</div></div>'
     +'<div style="background:var(--bg4);border-radius:8px;padding:10px"><div style="font-size:9px;color:var(--tx3)">Rendimento bruto</div><div style="font-size:14px;font-weight:600;color:#F8FAFC">'+brl(last.rendBruto)+'</div></div>'
-    +'<div style="background:var(--bg4);border-radius:8px;padding:10px"><div style="font-size:9px;color:var(--tx3)">IR pago ('+isento?'0% isento':(last.aliq*100).toFixed(1)+'%)'+'</div><div style="font-size:14px;font-weight:600;color:#EF4444">'+brl(last.ir)+'</div></div>'
+    +'<div style="background:var(--bg4);border-radius:8px;padding:10px"><div style="font-size:9px;color:var(--tx3)">IR pago ('+irLbl+')</div><div style="font-size:14px;font-weight:600;color:#EF4444">'+brl(last.ir)+'</div></div>'
     +'</div>';
 
   // Table by milestone
@@ -3289,6 +3391,7 @@ function calcRF(){
 
   // IR info box
   html+='<div style="margin-top:10px;background:var(--bg4);border-radius:8px;padding:10px;font-size:11px;color:var(--tx3);line-height:1.7">'
+    +'<b style="color:var(--tx)">Taxa usada:</b> SELIC '+(SELIC*100).toFixed(2)+'% a.a. · fonte '+rateSourceLabel()+'<br>'
     +'<b style="color:var(--tx)">Tabela Regressiva IR (CDB/RDB/LC):</b><br>'
     +'Ate 180 dias: 22,5% | 181-360 dias: 20% | 361-720 dias: 17,5% | Acima de 720 dias: 15%<br>'
     +(isento?'<b style="color:#22C55E">LCI/LCA/Poupanca: Isentos de IR para pessoa fisica.</b>':'')
@@ -4163,6 +4266,8 @@ function migrateData(){
   if(!D.meta) D.meta={};
   if(!D.profile) D.profile={completed:false};
   if(!D.importedMovements) D.importedMovements=[];
+  ensureMarketRates();
+  syncRateGlobals();
   (D.stocks||[]).forEach(function(st){ if(!st.buyDate) st.buyDate='2026-01-01'; if(st.ticker&&!TICKER_META[st.ticker]&&st.name) TICKER_META[st.ticker]={name:st.name}; });
   if(!D.token) D.token=localStorage.getItem(TOKEN_STORAGE_KEY)||HARDCODED_TOKEN||'';
   if(!D.subscriptions) D.subscriptions=[];
